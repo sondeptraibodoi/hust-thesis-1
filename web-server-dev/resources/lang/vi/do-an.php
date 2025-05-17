@@ -1,0 +1,55 @@
+<?php
+
+return [
+    "title" => [
+        "create_new" => "Thêm mới đồ án",
+        "edit" => "Chỉnh sửa đồ án",
+        "delete" => "Xóa đồ án",
+    ],
+    "sub_title" => [
+        "create_new" => "Thêm mới thông tin đồ án",
+        "edit" => "Thông tin đồ án",
+        "delete" => "Bạn muốn xoá đồ án này khỏi hệ thống",
+    ],
+    "field" => [
+        "ki_hoc" => "Kì học",
+        "ma" => "Mã lớp học",
+        "ten_hp" => "Tên học phần",
+        "ma_hp" => "Mã học phần",
+        "mssv" => "Mã sinh viên",
+        "sinh_vien" => "Tên sinh viên",
+        "ten_de_tai" => "Tên đề tài",
+        "noi_dung" => "Nội dung đề tài",
+        "cac_moc_quan_trong" => "Các mốc kiểm soát chính",
+        "ten_cong_ty" => "Tên công ty",
+        "giao_vien_hd" => "Giáo viên hướng dẫn",
+        "dia_chi" => "Địa chỉ",
+        "ghi_chu" => "Ghi chú",
+        "trang_thai" => "Trạng thái",
+        "action" => "Hành động",
+    ],
+    "required" => [
+        "ten_cong_ty" => "Vui lòng nhập tên công ty",
+    ],
+    "message" => [
+        "success_add" => "Thành công",
+        "success_desc_add" => "Thêm mới đồ án thành công",
+        "error_add" => "Thất bại",
+        "error_desc_add" => "Thêm mới đồ án thất bại",
+        "success_delete" => "Thành công",
+        "success_desc_delete" => "Xoá đồ án thành công",
+        "error_delete" => "Thất bại",
+        "error_desc_delete" => "Xoá đồ án thất bại",
+        "success_edit" => "Thành công",
+        "success_desc_edit" => "Sửa đồ án thành công",
+        "error_edit" => "Thất bại",
+        "error_desc_edit" => "Sửa đồ án thất bại",
+    ],
+    "action" => [
+        "create_new" => "Thêm mới",
+        "accept" => "Xác nhận",
+        "edit" => "Sửa",
+        "delete" => "Xóa đồ án",
+        "cancel" => "Hủy",
+    ],
+];

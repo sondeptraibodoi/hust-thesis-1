@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.scss": "postcss"
+  },
+  "cSpell.words": ["fontsource", "fortawesome", "localstorage", "reduxjs", "roboto", "sortablejs", "tailwindcss"]
+}

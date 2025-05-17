@@ -1,0 +1,139 @@
+.menu_nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--navigate-height);
+  overflow: hidden;
+  z-index: 999;
+  background-color: #fdfdfe;
+  box-shadow: 0 3px 3px 0 rgb(0 0 0 / 30%);
+}
+.header {
+  position: relative;
+  height: calc(var(--header-height) - 2 * 15px);
+  right: 0;
+  left: 0;
+  padding: 15px;
+  background-color: #c02135;
+}
+.main_content {
+  padding-top: var(--navigate-height);
+  min-height: calc(100vh - (var(--header-height) + var(--navigate-height)));
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.main_content-auto {
+  min-height: calc(100vh - (var(--header-height) + var(--navigate-height)));
+  height: 100% !important;
+}
+.thumnail-logo-img {
+  max-width: 100%;
+  display: block;
+}
+
+.phuc-khao-thanh-cong__content {
+  background-color: #f8f8f8;
+  padding: 30;
+  text-align: center;
+}
+.phuc-khao-thanh-cong {
+  background-color: #f8f8f8;
+  padding: 30;
+}
+.ki-hoc-lan-diem-danh .ant-form-item-explain-error {
+  font-size: 12px;
+}
+.ant-form-item-explain-error {
+  color: #c02135;
+}
+@media (max-width: 600px) {
+  .header img {
+    max-width: 100%;
+  }
+}
+@media (max-width: 500px) {
+  .phuc-khao-thanh-cong {
+    padding: 10px;
+  }
+  .phuc-khao-thanh-cong__content {
+    background-color: #f8f8f8;
+    padding: 0px;
+    text-align: center;
+  }
+  .phuc-khao-thanh-cong__content h2 {
+    font-size: 16px;
+  }
+}
+
+.footer1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 20px 40px;
+  background-size: cover;
+  background-color: #b41d24;
+  color: white;
+  font-size: 16px;
+}
+
+.footer2 {
+  text-align: center;
+  background: #9ea2a3;
+  padding: 14px;
+  height: calc(var(--sub-footer-height) - 2 * 14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 1280px) {
+  .mobile {
+    display: none;
+  }
+  .desk {
+    display: block;
+  }
+}
+@media (max-width: 1279px) {
+  .desk {
+    display: none;
+  }
+}
+.is-sticky {
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  height: var(--navigate-height);
+}
+
+.mycard .ant-card-body {
+  display: flex;
+  align-items: center;
+}
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .text-site {
+    display: flex;
+    align-items: center;
+  }
+  .text-sologan {
+    text-transform: uppercase;
+    padding-left: 20px;
+    margin-bottom: 0px;
+  }
+  .text-modile {
+    display: none;
+  }
+  .text-modile {
+    padding-left: 5px;
+    margin-bottom: 0px;
+  }
+}

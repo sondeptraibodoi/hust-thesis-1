@@ -1,0 +1,55 @@
+<?php
+
+return [
+    "title" => [
+        "create_new" => "Thêm mới học phần chủ đề",
+        "edit" => "Chỉnh sửa học phần chủ đề",
+        "delete" => "Xóa học phần chủ đề",
+    ],
+    "sub_title" => [
+        "create_new" => "Thêm mới thông tin học phần chủ đề",
+        "edit" => "Thông tin học phần chủ đề",
+        "delete" => "Bạn muốn xoá học phần chủ đề này khỏi hệ thống",
+    ],
+    "field" => [
+        "ma_hoc_phan" => "Mã học phần",
+        "ma_hp" => "Mã học phần",
+        "ma" => "Mã học phần",
+        "ten_hp" => "Tên học phần",
+        "count_chuong" => "Số lượng chủ đề",
+        "so_cau_hoi" => "Số câu hỏi",
+        "mo_ta" => "Mô tả",
+        "tuan_dong" => "Tuần đóng",
+        "tuan_mo" => "Tuần mở",
+        "thoi_gian_doc" => "Thời gian đọc",
+        "thoi_gian_thi" => "Thời gian thi",
+        "trang_thai" => "Trạng thái",
+        "action" => "Hành động",
+        "ten" => "Tên",
+        "diem_toi_da" => "Điểm tối đa",
+    ],
+    "required" => [
+        "ma_hoc_phan" => "Vui lòng nhập mã học phần",
+    ],
+    "message" => [
+        "success_add" => "Thành công",
+        "success_desc_add" => "Thêm mới học phần chủ đề thành công",
+        "error_add" => "Thất bại",
+        "error_desc_add" => "Thêm mới học phần chủ đề thất bại",
+        "success_delete" => "Thành công",
+        "success_desc_delete" => "Xoá học phần chủ đề thành công",
+        "error_delete" => "Thất bại",
+        "error_desc_delete" => "Xoá học phần chủ đề thất bại",
+        "success_edit" => "Thành công",
+        "success_desc_edit" => "Sửa học phần chủ đề thành công",
+        "error_edit" => "Thất bại",
+        "error_desc_edit" => "Sửa học phần chủ đề thất bại",
+    ],
+    "action" => [
+        "create_new" => "Thêm mới",
+        "accept" => "Xác nhận",
+        "edit" => "Sửa",
+        "delete" => "Xóa học phần chủ đề",
+        "cancel" => "Hủy",
+    ],
+];

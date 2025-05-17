@@ -1,0 +1,288 @@
+.pdf-viewer {
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.pdf-container {
+  border: 1px solid #e8e8e8;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  height: 790px;
+  /* display: flex; */
+  align-items: center;
+}
+
+@media (min-width: 425px) {
+  .pdf-container {
+    border: 1px solid #e8e8e8;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    height: 217px;
+    /* display: flex; */
+    align-items: center;
+  }
+
+  span.anticon.anticon-check-circle {
+    display: none;
+    font-size: 50px;
+  }
+
+  span.anticon.anticon-warning {
+    display: none;
+  }
+
+  .ant-result-title {
+    font-size: 16px !important;
+  }
+
+  .ant-result-subtitle {
+    font-size: 12px !important;
+  }
+
+  .ant-result {
+    padding: 27px 32px;
+  }
+
+  .react-pdf__Document {
+    position: absolute;
+    right: 21px;
+    top: 21px;
+  }
+
+  .ant-result-subtitle p {
+    font-size: 14px !important;
+  }
+
+  .card-cau-hoi-thi {
+    padding: 20px 0 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .pdf-container {
+    border: 1px solid #e8e8e8;
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    height: 410px;
+    /* display: flex; */
+    align-items: center;
+  }
+
+  .prev-button,
+  .next-button {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+    width: 10px;
+    padding: 10px;
+  }
+
+  span.anticon.anticon-check-circle {
+    display: unset;
+    font-size: 50px;
+  }
+
+  span.anticon.anticon-warning {
+    display: unset;
+  }
+
+  .card-cau-hoi-thi {
+    padding: 20px 0 !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pdf-container {
+    height: 415px;
+  }
+
+  .card-cau-hoi-thi {
+    padding: 0 30px !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .pdf-container {
+    height: 790px;
+  }
+
+  .card-cau-hoi-thi {
+    padding: 0 30px !important;
+  }
+
+  .pdf_width .pdf-container {
+    height: 550px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .pdf-container {
+    height: 1054px;
+  }
+
+  .react-pdf__Document {
+    position: absolute;
+    right: 30px;
+    top: 21px;
+  }
+
+  .card-cau-hoi-thi {
+    padding: 0 30px;
+  }
+}
+
+.prev-button,
+.next-button {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: white;
+  width: 10px;
+  padding: 10px;
+}
+
+.prev-button {
+  left: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.next-button {
+  right: 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.react-pdf__message.react-pdf__message--error {
+  display: none;
+}
+
+.textLayer {
+  position: unset !important;
+  text-align: initial;
+  inset: 0;
+  overflow: hidden;
+  line-height: 1;
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  text-size-adjust: none;
+  forced-color-adjust: none;
+  transform-origin: 0 0;
+  z-index: 2;
+}
+
+/*Fix giao diện PDF*/
+.ant-result .ant-result-icon > .anticon {
+  font-size: 100px !important;
+}
+
+/* .react-pdf__Document {
+  position: absolute;
+  right: 20px;
+  top: 21px;
+} */
+
+.sidebar_chuDe.ant-menu-light .ant-menu-submenu-selected .ant-menu-submenu-title .ant-menu-title-content {
+  color: #c02135;
+}
+
+.modal-thi .ant-modal-content {
+  background-color: #f4f7fe !important;
+  padding: 5px;
+}
+
+.modal-thi footer.ant-layout-footer {
+  padding: 0;
+}
+
+.content-thi .ant-card {
+  background-color: #ffffff;
+  color: rgb(17, 24, 39);
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 10px 10px 4px !important;
+  display: flex;
+  flex-direction: column;
+  /* height: 50%; */
+}
+
+.card-cau-hoi-thi {
+  padding: 0 30px;
+}
+
+.content-thi .ant-card .ant-card-head {
+  border-bottom: 1px solid #0000001f;
+  min-height: unset;
+}
+
+.answer-item {
+  min-height: 50px;
+  padding: 8px 48px 8px 16px;
+}
+
+.answer-item:hover {
+  background-color: #0000000a;
+}
+
+.card-cau-hoi-thi .ant-card .ant-card-head-title {
+  overflow: unset;
+  white-space: unset;
+}
+
+.box-test-questions {
+  display: grid;
+}
+
+.box-test-questions .ant-checkbox-group-item {
+  margin-bottom: 30px;
+}
+
+.box-test-questions .ant-checkbox-group-item {
+  /* min-height: 50px; */
+  padding: 8px 48px 8px 16px;
+}
+
+.box-test-questions .ant-checkbox-group-item:hover {
+  background-color: #0000000a;
+}
+
+.box-test-questions .ant-radio-wrapper {
+  /* min-height: 50px; */
+  padding: 8px 48px 8px 16px;
+  display: flex;
+}
+
+.box-test-questions .ant-radio-wrapper:hover {
+  background-color: #0000000a;
+}
+.box-test-questions .ant-radio-wrapper > span:nth-child(1) {
+  flex: 0;
+}
+
+.box-test-questions .ant-radio-wrapper > span:nth-child(2) {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  height: 100%;
+}
+
+.box-radio {
+  overflow: visible !important;
+}
