@@ -17,12 +17,24 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $table = 'users';
+    protected $table = 'nguoi_dung';
     protected $primaryKey = 'nguoi_dung_id';
+    public $timestamps = false;
 
     protected $fillable = [
-        'ho_ten', 'username', 'email', 'password', 'vai_tro'
+        'ho_ten', 'username', 'mat_khau', 'email',
+        'vai_tro', 'trang_thai', 'created_at'
     ];
+
+    public function baiLams()
+    {
+        return $this->hasMany(BaiLam::class, 'nguoi_dung_id');
+    }
+
+    public function deThis()
+    {
+        return $this->hasMany(DeThi::class, 'nguoi_tao');
+    }
 
     protected $hidden = [
         'password', 'remember_token',

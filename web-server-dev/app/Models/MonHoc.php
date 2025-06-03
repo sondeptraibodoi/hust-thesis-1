@@ -12,11 +12,11 @@ class MonHoc extends Model
     protected $primaryKey = 'mon_hoc_id';
     public $timestamps = true;
 
-    protected $fillable = ['ten_mon_hoc'];
+    protected $fillable = ['ten_mon_hoc', 'created_at'];
 
     // Nếu muốn định nghĩa mối quan hệ:
-    public function cauHoi()
+    public function cauHois()
     {
-        return $this->hasMany(CauHoi::class, 'mon_hoc_id', 'mon_hoc_id');
+        return $this->hasMany(CauHoi::class, 'mon_hoc_id');
     }
 }

@@ -7,34 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeThi extends Model
 {
-    use HasFactory;
-
     protected $table = 'de_thi';
-
-    protected $primaryKey = 'id'; // nếu không phải 'id', bạn cần khai báo
+    protected $primaryKey = 'de_thi_id';
+    public $timestamps = false;
 
     protected $fillable = [
-        'ten_de_thi',
-        'mo_ta',
-        'thoi_gian_lam_bai', // tính theo phút
-        'mon_hoc_id',         // liên kết đến bảng monhoc
-        'trang_thai',         // ví dụ: 'hoat_dong', 'tam_khoa'
+        'ten_de', 'do_kho_trung_binh', 'nguoi_tao', 'mo_ta', 'created_at'
     ];
 
-    // Một đề thi thuộc về một môn học
-    public function monHoc()
+    public function nguoiTao()
     {
-        return $this->belongsTo(MonHoc::class, 'mon_hoc_id');
+        return $this->belongsTo(NguoiDung::class, 'nguoi_tao');
     }
 
-    // Một đề thi có nhiều câu hỏi qua bảng chi tiết đề thi
-    public function cauHoi()
+    public function chiTietDeThis()
     {
-        return $this->belongsToMany(CauHoi::class, 'chitietdethi', 'de_thi_id', 'cau_hoi_id');
+        return $this->hasMany(ChiTietDeThi::class, 'de_thi_id');
     }
 
-    // Có thể thêm quan hệ đến Bài làm nếu cần
-    public function baiLam()
+    public function baiLams()
     {
         return $this->hasMany(BaiLam::class, 'de_thi_id');
     }

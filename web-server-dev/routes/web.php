@@ -58,6 +58,7 @@ Route::post('/hust-thesis/admin/cau-hoi/update/{id}', [CauHoiController::class, 
 Route::get('/hust-thesis/admin/cau-hoi/update/{id}', function () {
     return redirect('/');
 });
+
 Route::delete('/hust-thesis/admin/cauhoi/{id}', [CauHoiController::class, 'destroy'])->name('admin.cauhoi.destroy');
 
 Route::get('/user/{id}', function (string $id) {
