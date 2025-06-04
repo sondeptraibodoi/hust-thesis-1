@@ -10,19 +10,24 @@ use Illuminate\Support\Facades\DB;
 
 class CauHoiController extends Controller
 {
-    public function index() {
-        if (!Auth::check()) {
-            return redirect('/hustLmao/sinhvien/login');
-        }
-        $cauHoiList = CauHoi::all(); // Nếu có chọn môn học khi tạo
-        return view ("admin.cauhoi.index", compact('cauHoiList'));
+    public function index()
+    {
+        $cauHoiList = CauHoi::with('monHoc')->get(); // nếu có quan hệ
+        return response()->json([
+            'status' => 'success',
+            'data' => $cauHoiList
+        ]);
     }
 
     public function create()
     {
-        $monHocList = MonHoc::all(); 
-        return view('admin.cauhoi.create', compact('monHocList'));
+        $monHocList = MonHoc::all();
+        return response()->json([
+            'status' => 'success',
+            'data' => $monHocList
+        ]);
     }
+
 
     // public function store(Request $request)
     // {
@@ -62,7 +67,6 @@ class CauHoiController extends Controller
         DB::beginTransaction();
 
         try {
-            // Thêm câu hỏi
             $cauHoiId = DB::table('cau_hoi')->insertGetId([
                 'noi_dung' => $request->noi_dung,
                 'do_kho' => $request->do_kho,
@@ -71,7 +75,6 @@ class CauHoiController extends Controller
                 'updated_at' => null
             ]);
 
-            // Thêm các đáp án
             foreach ($request->dap_an as $index => $dapAn) {
                 DB::table('dap_an')->insert([
                     'noi_dung' => $dapAn['noi_dung'],
@@ -81,19 +84,25 @@ class CauHoiController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.cauhoi.index')->with('success', 'Tạo câu hỏi thành công');
+            return $this->responseCreated(['cau_hoi_id' => $cauHoiId], 'Tạo câu hỏi thành công');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Có lỗi xảy ra: ' . $e->getMessage());
+            return $this->responseError('Có lỗi xảy ra', 500, ['error' => $e->getMessage()]);
         }
     }
 
     public function edit($cau_hoi_id)
     {
-        // Lấy câu hỏi theo ID
+        // Lấy câu hỏi
         $cauHoi = DB::table('cau_hoi')->where('cau_hoi_id', $cau_hoi_id)->first();
+        if (!$cauHoi) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Không tìm thấy câu hỏi'
+            ], 404);
+        }
 
-        // Lấy danh sách đáp án theo câu hỏi
+        // Lấy danh sách đáp án
         $dapAnList = DB::table('dap_an')
                         ->where('cau_hoi_id', $cau_hoi_id)
                         ->orderBy('thu_tu')
@@ -102,8 +111,15 @@ class CauHoiController extends Controller
         // Lấy danh sách môn học
         $monHocList = DB::table('mon_hoc')->get();
 
-        // Trả về view
-        return view('admin.cauhoi.edit', compact('cauHoi', 'dapAnList', 'monHocList'));
+        // Trả JSON về frontend
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'cau_hoi' => $cauHoi,
+                'dap_an_list' => $dapAnList,
+                'mon_hoc_list' => $monHocList,
+            ]
+        ]);
     }
 
     public function update(Request $request, $cau_hoi_id)
@@ -128,7 +144,7 @@ class CauHoiController extends Controller
                 'updated_at' => now()
             ]);
 
-            // Cập nhật các đáp án
+            // Cập nhật từng đáp án
             foreach ($request->dap_an as $index => $dapAn) {
                 DB::table('dap_an')->where('dap_an_id', $dapAn['dap_an_id'])->update([
                     'noi_dung' => $dapAn['noi_dung'],
@@ -138,29 +154,43 @@ class CauHoiController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.cauhoi.index')->with('success', 'Cập nhật câu hỏi thành công');
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cập nhật câu hỏi thành công'
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Có lỗi xảy ra: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi: ' . $e->getMessage()
+            ], 500);
         }
     }
 
-    public function destroy($id)
+   public function destroy($id)
     {
         DB::beginTransaction();
 
         try {
-            // Xóa đáp án liên quan trước (nếu có quan hệ ràng buộc)
+            // Xóa các đáp án liên quan
             DB::table('dap_an')->where('cau_hoi_id', $id)->delete();
 
             // Xóa câu hỏi
             DB::table('cau_hoi')->where('cau_hoi_id', $id)->delete();
 
             DB::commit();
-            return redirect()->route('admin.cauhoi.index')->with('success', 'Đã xóa câu hỏi thành công');
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Đã xóa câu hỏi thành công'
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Lỗi khi xóa: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Lỗi khi xóa: ' . $e->getMessage()
+            ], 500);
         }
     }
 

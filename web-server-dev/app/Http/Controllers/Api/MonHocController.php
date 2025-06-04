@@ -9,17 +9,24 @@ use Illuminate\Support\Facades\DB;
 
 class MonHocController extends Controller
 {
-    public function index () {
+    public function index(Request $request)
+    {
         if (!Auth::check()) {
-            return redirect('/hustLmao/sinhvien/login');
+            return response()->json(['message' => 'Chưa đăng nhập'], 401);
         }
-        $cauHoiList = MonHoc::all(); // Nếu có chọn môn học khi tạo
-        return view ("admin.cau-hoi.index", compact('cauHoiList'));
+
+        $monHocList = MonHoc::all();
+        return response()->json($monHocList);
     }
 
 
-    public function create() {
-        return view('admin.mon-hoc.create', compact('monHocList'));
+    public function create()
+    {
+        $tao_monHoc = [
+            'monHocList' => MonHoc::all()
+        ];
+
+        return response()->json($tao_monHoc);
     }
 
     
@@ -31,58 +38,103 @@ class MonHocController extends Controller
 
         try {
             DB::table('mon_hoc')->insert([
-                'ten_mon_hoc' => $request->ten_mon,
-                'created_at' => now()
+                'ten_mon_hoc' => $request->ten_mon_hoc,
+                'created_at' => now(),
+                'updated_at' => null
             ]);
 
-            return redirect()->route('admin.mon-hoc.index')->with('success', 'Tạo môn học thành công');
+            return response()->json([
+                'message' => 'Tạo môn học thành công'
+            ], 201); 
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Có lỗi xảy ra: ' . $e->getMessage()]);
+            return response()->json([
+                'error' => 'Có lỗi xảy ra',
+                'message' => $e->getMessage()
+            ], 500); 
         }
     }
 
 
-    public function edit($mon_hoc_id)
+    public function show($mon_hoc_id)
     {
-        // Lấy câu hỏi theo ID
-        $monHoc = DB::table('mon-hoc')->where('mon_hoc_id', $mon_hoc_id)->first();
+        $monHoc = DB::table('mon_hoc')->where('mon_hoc_id', $mon_hoc_id)->first();
 
-        // Trả về view
-        return view('admin.mon-hoc.edit', compact('monHoc'));
+        if (!$monHoc) {
+            return response()->json([
+                'error' => 'Không tìm thấy môn học'
+            ], 404); // HTTP 404 Not Found
+        }
+
+        return response()->json([
+            'data' => $monHoc
+        ], 200);
     }
 
-    public function update(Request $request, $mon_hoc_id) {
+    public function update(Request $request, $mon_hoc_id)
+    {
         $request->validate([
             'ten_mon_hoc' => 'required|string|max:255',
         ]);
 
-         try {
-            // Cập nhật câu hỏi
-            DB::table('mon_hoc')->where('mon_hoc_id', $mon_hoc_id)->update([
-                'ten_mon_hoc' => $request->ten_mon_hoc
+        try {
+            // Bắt đầu transaction
+            DB::beginTransaction();
+
+            // Cập nhật môn học
+            $updated = DB::table('mon_hoc')->where('mon_hoc_id', $mon_hoc_id)->update([
+                'ten_mon_hoc' => $request->ten_mon_hoc,
             ]);
 
             DB::commit();
-            return redirect()->route('admin.mon-hoc.index')->with('success', 'Cập nhật câu hỏi thành công');
+
+            if ($updated) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Cập nhật môn học thành công',
+                ], 200);
+            } else {
+                // Không tìm thấy hoặc không cập nhật được
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy môn học hoặc không có thay đổi nào được thực hiện',
+                ], 404);
+            }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Có lỗi xảy ra: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
+            ], 500);
         }
     }
 
-    public function destroy($mon_hoc_id) {
+    public function destroy($mon_hoc_id)
+    {
         DB::beginTransaction();
 
         try {
-            // Xóa đáp án liên quan trước (nếu có quan hệ ràng buộc)
-            DB::table('mon-hoc')->where('mon_hoc_id', $mon_hoc_id)->delete();
+            // Xóa môn học
+            $deleted = DB::table('mon_hoc')->where('mon_hoc_id', $mon_hoc_id)->delete();
 
             DB::commit();
-            return redirect()->route('admin.mon-hoc.index')->with('success', 'Đã xóa môn học thành công');
+
+            if ($deleted) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Đã xóa môn học thành công',
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Không tìm thấy môn học cần xóa',
+                ], 404);
+            }
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->withErrors('Lỗi khi xóa: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Lỗi khi xóa: ' . $e->getMessage(),
+            ], 500);
         }
     }
-
 }
