@@ -74,6 +74,7 @@ class AuthenticateController extends Controller
     {
         try {
             $user = Socialite::driver("azure")->stateless()->user();
+
         } catch (\Throwable $th) {
             abort(400, "Thông tin đăng nhập không chính xác hoặc mã xác thực đã quá hạn");
         }
