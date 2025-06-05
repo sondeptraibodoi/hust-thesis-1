@@ -42,11 +42,17 @@ Route::get('/hust-thesis/sinhvien/dashboard', [ThiController::class, 'index']);
 Route::get('/hust-thesis/admin/dashboard', [AdminController::class, 'index']);
 
 //Quản lý câu hỏi
-Route::get('/hust-thesis/admin/cau-hoi', [CauHoiController::class, 'index'])->name('admin.cauhoi.index');;
-Route::get('/hust-thesis/admin/cau-hoi/create', [CauHoiController::class, 'create'])->name('admin.cauhoi.create');
-Route::post('/hust-thesis/admin/cau-hoi/store', [CauHoiController::class, 'store'])->name("store");
-Route::get('/hust-thesis/admin/cau-hoi/store', function () {
-    return redirect('/');
+// Route::get('/hust-thesis/admin/cau-hoi', [CauHoiController::class, 'index'])->name('admin.cauhoi.index');;
+// Route::get('/hust-thesis/admin/cau-hoi/create', [CauHoiController::class, 'create'])->name('admin.cauhoi.create');
+// Route::post('/hust-thesis/admin/cau-hoi/store', [CauHoiController::class, 'store'])->name("store");
+// Route::get('/hust-thesis/admin/cau-hoi/store', function () {
+//     return redirect('/');
+// });
+
+Route::prefix('/hust-thesis/admin')->name('admin.')->group(function () {
+    Route::get('/cau-hoi', [CauHoiController::class, 'index'])->name('cauhoi.index');
+    Route::get('/cau-hoi/create', [CauHoiController::class, 'create'])->name('cauhoi.create');
+    Route::post('/cau-hoi/store', [CauHoiController::class, 'store'])->name('cauhoi.store');
 });
 
 Route::post('/hust-thesis/admin/cau-hoi/store', [CauHoiController::class, 'store'])->name("store");
