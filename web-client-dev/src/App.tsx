@@ -22,9 +22,9 @@ const queryClient = new QueryClient();
 
 const AppMain = () => {
   const dispatch = useAppDispatch();
-  configApi.getKiHienGio().then((res) => {
-    dispatch(setKiHocHienGio(res.data));
-  });
+  // configApi.getKiHienGio().then((res) => {
+  //   dispatch(setKiHocHienGio(res.data));
+  // });
   useEffect(() => {
     dispatch(getInitData());
     dispatch(getDataPusherConfigAction());

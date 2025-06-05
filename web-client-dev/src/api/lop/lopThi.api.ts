@@ -33,10 +33,10 @@ export default {
     storage.handleGetDataStorage("cache-lop-thi", () =>
       sdk.get<ApiListReturn<LopThi[]>>(`cache/lop-thi`).then((res) => ({ data: res.data }))
     ),
-  listLoaiThi: () =>
-    storage.handleGetDataStorage("cache-loai-lop-thi", () =>
-      sdk.get<LoaiLopThi[]>("cache/loai-lop-thi").then((res) => ({ data: res.data }))
-    ),
+  // listLoaiThi: () =>
+  //   storage.handleGetDataStorage("cache-loai-lop-thi", () =>
+  //     sdk.get<LoaiLopThi[]>("cache/loai-lop-thi").then((res) => ({ data: res.data }))
+  //   ),
   LopThiTheoKi: (kihoc: any) => sdk.post<LopThiKi[]>("lop-thi-ki", kihoc),
   addSinhVien: (item: LopThiSinhVien) => sdk.post<LopThiSinhVien>(`add-sinh-vien-lop-thi`, item),
   deleteSinhVien: (item: any) =>
