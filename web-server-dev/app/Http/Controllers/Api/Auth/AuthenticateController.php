@@ -176,10 +176,8 @@ class AuthenticateController extends Controller
                         if (empty($user)) {
                             $user = User::create([
                                 "username" => $sinh_vien->email,
-                                "role_code" => RoleCode::STUDENT,
+                                "vai_tro" => RoleCode::STUDENT,
                                 "password" => Hash::make(Str::random(8)),
-                                "info_id" => $sinh_vien->getKey(),
-                                "info_type" => $sinh_vien->getMorphClass(),
                             ]);
                         } elseif ($user->username != $mail) {
                             $sinh_vien->update([

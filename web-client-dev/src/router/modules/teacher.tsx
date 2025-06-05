@@ -12,7 +12,7 @@ import lopDoAnApi from "@/api/lop/lopDoAn.api";
 import thiApi from "@/api/sinhVien/thi.api";
 import CauHoiGvPage from "@/pages/giao-vien/cau-hoi";
 import SinhVienPhanBienPage from "@/pages/giao-vien/phan-bien";
-import DanhGiaSinhVien from "@/pages/lop/detail/danh-gia-sinh-vien";
+// import DanhGiaSinhVien from "@/pages/lop/detail/danh-gia-sinh-vien";
 import CoursePage from "@/pages/sinh-vien/course";
 import { lazy } from "react";
 import { Navigate, RouteObject } from "react-router-dom";
@@ -24,11 +24,11 @@ const LopHocDetailPage = lazy(() => import("@/pages/giao-vien/lop/detail"));
 const LopHocDiemDanhPage = lazy(() => import("@/pages/giao-vien/lop/diem-danh"));
 
 //bảng diêm
-const DanhSachBangDiem = lazy(() => import("@/pages/bang-diem/danh-sach-bang-diem"));
-const ShowPDFPage = lazy(() => import("@/pages/bang-diem/showPDFPage"));
-const DanhSachLopThi = lazy(() => import("@/pages/bang-diem/lop-thi-mon/index"));
-const BangDiemMon = lazy(() => import("@/pages/bang-diem/lop-thi-mon/bang-diem-mon"));
-const ListSinhVienSoatDiemLopThiPage = lazy(() => import("@/pages/lop/detail/list-lop-thi-soat-diem"));
+// const DanhSachBangDiem = lazy(() => import("@/pages/bang-diem/danh-sach-bang-diem"));
+// const ShowPDFPage = lazy(() => import("@/pages/bang-diem/showPDFPage"));
+// const DanhSachLopThi = lazy(() => import("@/pages/bang-diem/lop-thi-mon/index"));
+// const BangDiemMon = lazy(() => import("@/pages/bang-diem/lop-thi-mon/bang-diem-mon"));
+// const ListSinhVienSoatDiemLopThiPage = lazy(() => import("@/pages/lop/detail/list-lop-thi-soat-diem"));
 
 //lớp trông thi
 const LopTrongThiPage = lazy(() => import("@/pages/giao-vien/lop-trong-thi"));
@@ -78,15 +78,15 @@ export const TeacherRoute: RouteObject[] = [
               });
             }
           },
-          {
-            path: "bang-diem/:bang_diem_id",
-            element: <ListSinhVienSoatDiemLopThiPage />,
-            loader: async ({ params }: any) => {
-              return lopThiApi.getDetail(params.bang_diem_id, {
-                with: "sinhViens,lopThiSinhVien,lop"
-              });
-            }
-          }
+          // {
+          //   path: "bang-diem/:bang_diem_id",
+          //   element: <ListSinhVienSoatDiemLopThiPage />,
+          //   loader: async ({ params }: any) => {
+          //     return lopThiApi.getDetail(params.bang_diem_id, {
+          //       with: "sinhViens,lopThiSinhVien,lop"
+          //     });
+          //   }
+          // }
         ]
       },
       {
@@ -102,30 +102,30 @@ export const TeacherRoute: RouteObject[] = [
   {
     path: "danh-sach-bang-diem",
     children: [
-      { path: "", element: <DanhSachBangDiem /> },
+      // { path: "", element: <DanhSachBangDiem /> },
       {
         path: ":id",
         children: [
-          {
-            path: "",
-            element: <ShowPDFPage />
-          },
-          {
-            path: "danh-sach-lop-thi",
-            children: [
-              { path: "", element: <DanhSachLopThi /> },
-              {
-                path: "bang-diem/:lop_thi_id",
-                element: <BangDiemMon />,
-                loader: async ({ params }: any) => {
-                  return Promise.all([
-                    diemLopThiApi.list({ id: params.lop_thi_id }).then((res) => res.data),
-                    bangDiemApi.show(params.id).then((res) => res.data)
-                  ]);
-                }
-              }
-            ]
-          }
+          // {
+          //   path: "",
+          //   element: <ShowPDFPage />
+          // },
+          // {
+          //   path: "danh-sach-lop-thi",
+          //   children: [
+          //     { path: "", element: <DanhSachLopThi /> },
+          //     {
+          //       path: "bang-diem/:lop_thi_id",
+          //       element: <BangDiemMon />,
+          //       loader: async ({ params }: any) => {
+          //         return Promise.all([
+          //           diemLopThiApi.list({ id: params.lop_thi_id }).then((res) => res.data),
+          //           bangDiemApi.show(params.id).then((res) => res.data)
+          //         ]);
+          //       }
+          //     }
+          //   ]
+          // }
         ]
       }
     ]
@@ -232,13 +232,13 @@ export const TeacherRoute: RouteObject[] = [
             path: "",
             element: <SinhVienPhanBienPage />
           },
-          {
-            path: ":id/:sinh_vien_id/danh-gia",
-            loader: async ({ params }: any) => {
-              return lopDoAnApi.show(params.id, params.sinh_vien_id).then((res) => res.data);
-            },
-            element: <DanhGiaSinhVien title="Danh sách sinh viên phản biện" readonly />
-          }
+          // {
+          //   path: ":id/:sinh_vien_id/danh-gia",
+          //   loader: async ({ params }: any) => {
+          //     return lopDoAnApi.show(params.id, params.sinh_vien_id).then((res) => res.data);
+          //   },
+          //   element: <DanhGiaSinhVien title="Danh sách sinh viên phản biện" readonly />
+          // }
         ]
       },
       {

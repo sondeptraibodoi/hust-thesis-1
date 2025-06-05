@@ -11,8 +11,8 @@ Route::group(
         "api.access.routeNeedsPermission:" . RoleCode::STUDENT,
     ],
     function () {
-        Route::post("diem-sinh-vien-list", [DiemController::class, "indexAgGrid"]);
-        Route::get("diem-sinh-vien/{id}", "DiemController@indexDiemSinhVien");
+        // Route::post("diem-sinh-vien-list", [DiemController::class, "indexAgGrid"]);
+        // Route::get("diem-sinh-vien/{id}", "DiemController@indexDiemSinhVien");
     }
 );
 
@@ -20,9 +20,9 @@ Route::group(
     [
         "middleware" => "auth:sanctum",
         "namespace" => "Diem",
-        "api.access.routeNeedsPermission:" . RoleCode::ADMIN . ";" . RoleCode::ASSISTANT,
+        "api.access.routeNeedsPermission:" . RoleCode::ADMIN,
     ],
     function () {
-        Route::post("thong-ke-diem", [DiemController::class, "thongKeDiem"]);
+        // Route::post("thong-ke-diem", [DiemController::class, "thongKeDiem"]);
     }
 );

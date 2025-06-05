@@ -7233,7 +7233,7 @@ class SendMailOlympic extends Seeder
                                 $cache["name"] .
                                 ',
                         </p>
-                        <p>Khoa Toán - Tin, Đại học Bách khoa Hà Nội kính mời em tới dự thi Olympic Toán môn ' .
+                        <p>Khoa điện tử viễn thông, Đại học Bách khoa Hà Nội kính mời em tới dự thi Olympic Toán môn ' .
                                 $mon_hoc["Đăng ký thi môn"] .
                                 " vào Sáng thứ bảy ngày <b>02/03/2024</b> tại địa điểm <b>" .
                                 $mon_hoc["phong_thi"] .
@@ -7242,7 +7242,7 @@ class SendMailOlympic extends Seeder
                                 '</b>.</p>
                         <p>Lưu ý: Em nên có mặt tại địa điểm thi trước giờ thi ít nhất 20 phút.</p>
                         <p>Trân trọng,</p>
-                        <p>Khoa Toán - Tin</p>
+                        <p>Khoa điện tử viễn thông</p>
                         ',
                         ])
                     );
