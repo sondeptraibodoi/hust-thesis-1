@@ -8,10 +8,10 @@ Route::group(
     [
         "middleware" => [
             "auth:sanctum",
-            "api.access.routeNeedsPermission:" . RoleCode::ADMIN . ";" . RoleCode::TEACHER . ";" . RoleCode::ASSISTANT,
+            "api.access.routeNeedsPermission:" . RoleCode::ADMIN . ";" . RoleCode::TEACHER,
         ],
     ],
     function () {
-        Route::post("diem-lop-thi/{id}", [DiemLopThiController::class, "indexAgGrid"]);
+        // Route::post("diem-lop-thi/{id}", [DiemLopThiController::class, "indexAgGrid"]);
     }
 );

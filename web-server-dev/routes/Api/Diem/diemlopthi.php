@@ -8,14 +8,14 @@ Route::group(
     [
         "middleware" => [
             "auth:sanctum",
-            "api.access.routeNeedsPermission:" . RoleCode::TEACHER . ";" . RoleCode::ASSISTANT . ";" . RoleCode::ADMIN,
+            "api.access.routeNeedsPermission:" . RoleCode::TEACHER,
         ],
     ],
     function () {
-        Route::post("diem-lop-thi-list/{id}", [DiemLopThiController::class, "indexAgGrid"]);
-        Route::post("diem-nhan-dien-list/{id}", [DiemLopThiController::class, "diemNhanDienList"]);
-        Route::post("diem-lop-thi/save/{id}", [DiemLopThiController::class, "luuDiem"]);
-        Route::get("lop-thi-diem/{id}", [DiemLopThiController::class, "index"]);
-        Route::post("diem-lop-thi/{id}/save-chuyen-nganh", [DiemLopThiController::class, "luuDiemChuyenNganh"]);
+        // Route::post("diem-lop-thi-list/{id}", [DiemLopThiController::class, "indexAgGrid"]);
+        // Route::post("diem-nhan-dien-list/{id}", [DiemLopThiController::class, "diemNhanDienList"]);
+        // Route::post("diem-lop-thi/save/{id}", [DiemLopThiController::class, "luuDiem"]);
+        // Route::get("lop-thi-diem/{id}", [DiemLopThiController::class, "index"]);
+        // Route::post("diem-lop-thi/{id}/save-chuyen-nganh", [DiemLopThiController::class, "luuDiemChuyenNganh"]);
     }
 );

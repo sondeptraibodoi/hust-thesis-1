@@ -11,8 +11,9 @@ import { createAuthUser } from "@/interface/user/auth";
 import { LoginParams } from "@/interface/user/login";
 
 export const getDataPusherConfigAction = createAsyncThunk("config/get-pusher", async () => {
-  const data = await configApi.getConfigPusher();
-  return data;
+  // const data = await configApi.getConfigPusher();
+  // return data;
+  return null
 });
 
 export const loginAction = createAsyncThunk("auth/login", async (data: LoginParams, { dispatch, rejectWithValue }) => {

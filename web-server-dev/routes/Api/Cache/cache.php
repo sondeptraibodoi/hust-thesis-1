@@ -17,10 +17,10 @@ Route::group(["prefix" => "cache"], function () {
         Route::get("sinh-vien", [SinhVienController::class, "indexAgGrid"]);
         Route::get("lop", [LopHocController::class, "index"]);
         Route::get("lop-thi", [LopThiController::class, "index"]);
-        Route::get("phuc-khao-qr-code", [PhucKhaoStudentController::class, "indexThanhToan"]);
+        // Route::get("phuc-khao-qr-code", [PhucKhaoStudentController::class, "indexThanhToan"]);
     });
     Route::group(["middleware" => ["cacheResponse:3600"]], function () {
-        Route::get("ki-hoc", [KiHocController::class, "index"]);
+        // Route::get("ki-hoc", [KiHocController::class, "index"]);
         Route::get("loai-lop-thi", [LopThiController::class, "LoaiLopThi"]);
     });
     Route::get("lop-ma-hps", [GiaoVienLopController::class, "getMaHp"]);

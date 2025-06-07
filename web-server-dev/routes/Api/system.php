@@ -31,7 +31,7 @@ Route::group(["namespace" => "System"], function () {
         [
             "middleware" => [
                 "auth:sanctum",
-                "api.access.routeNeedsPermission:" . RoleCode::ADMIN . ";" . RoleCode::ASSISTANT,
+                "api.access.routeNeedsPermission:" . RoleCode::ADMIN,
             ],
         ],
         function () {

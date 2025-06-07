@@ -16,25 +16,25 @@ export default {
   editDongDiemDanh: (data: any) => sdk.put(`config/dong-diem-danh/${data.id}`, data),
   editDongBaoCao: (data: any) => sdk.put(`config/dong-bao-cao/${data.id}`, data),
   deleteDongDiemDanh: (data: any) => sdk.delete(`config/dong-diem-danh/${data.id}`),
-  getKiHienGio: () =>
-    storage.handleGetDataStorage("cache-config-ki-hien-gio", () =>
-      sdk.get<LaravelSuccessResponse<string>>(`cache/config/ki-hien-gio`).then((res) => res.data)
-    ),
-  getKiHocs: () =>
-    storage
-      .handleGetDataStorage("ki-hoc", () => sdk.get<string[]>("ki-hocs").then((res) => ({ data: res.data })))
-      .then((x) => x.data),
-  getConfigPusher: () =>
-    storage.handleGetDataStorage("cache-config-pusher", () =>
-      sdk
-        .get<{
-          key: string;
-          host: string;
-          port: string;
-          scheme: string;
-          encrypted: boolean;
-          useTLS: boolean;
-        }>("cache/config/pusher")
-        .then((x) => x.data)
-    )
+  // getKiHienGio: () =>
+  //   storage.handleGetDataStorage("cache-config-ki-hien-gio", () =>
+  //     sdk.get<LaravelSuccessResponse<string>>(`cache/config/ki-hien-gio`).then((res) => res.data)
+  //   ),
+  // getKiHocs: () =>
+  //   storage
+  //     .handleGetDataStorage("ki-hoc", () => sdk.get<string[]>("ki-hocs").then((res) => ({ data: res.data })))
+  //     .then((x) => x.data),
+  // getConfigPusher: () =>
+  //   storage.handleGetDataStorage("cache-config-pusher", () =>
+  //     sdk
+  //       .get<{
+  //         key: string;
+  //         host: string;
+  //         port: string;
+  //         scheme: string;
+  //         encrypted: boolean;
+  //         useTLS: boolean;
+  //       }>("cache/config/pusher")
+  //       .then((x) => x.data)
+  //   )
 };
