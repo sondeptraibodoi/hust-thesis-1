@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CauHoi extends Model
 {
     protected $table = 'cau_hoi';
-    protected $primaryKey = 'cau_hoi_id';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
@@ -22,16 +22,16 @@ class CauHoi extends Model
 
     public function dapAns()
     {
-        return $this->hasMany(DapAn::class, 'cau_hoi_id');
+        return $this->hasMany(DapAn::class, 'id');
     }
 
     public function chiTietDeThis()
     {
-        return $this->hasMany(ChiTietDeThi::class, 'cau_hoi_id');
+        return $this->hasMany(ChiTietDeThi::class, 'id');
     }
 
     public function chiTietBaiLams()
     {
-        return $this->hasMany(ChiTietBaiLam::class, 'cau_hoi_id');
+        return $this->hasMany(ChiTietBaiLam::class, 'id');
     }
 }
