@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class NguoiDung extends Model
 {
     protected $table = 'nguoi_dung';
-    protected $primaryKey = 'nguoi_dung_id';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'ma_nguoi_dung', 'ho_ten', 'email', 'username', 'mat_khau', 'lop', 'vai_tro',

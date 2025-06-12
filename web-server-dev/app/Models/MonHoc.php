@@ -9,7 +9,7 @@ class MonHoc extends Model
 {
     use HasFactory;
     protected $table = 'mon_hoc';
-    protected $primaryKey = 'mon_hoc_id';
+    protected $primaryKey = 'id';
     public $timestamps = true;
 
     protected $fillable = ['ten_mon_hoc', 'created_at'];
@@ -17,6 +17,6 @@ class MonHoc extends Model
     // Nếu muốn định nghĩa mối quan hệ:
     public function cauHois()
     {
-        return $this->hasMany(CauHoi::class, 'mon_hoc_id');
+        return $this->hasMany(CauHoi::class, 'id');
     }
 }
