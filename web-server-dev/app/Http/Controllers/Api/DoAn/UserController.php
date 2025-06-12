@@ -6,15 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Models\NguoiDung;
-use Illuminate\Validation\Rules\Password;
+use App\Models\User;
+use Illuminate\Validation\Rules\Password;           
 
 class UserController extends Controller
 {
     // Danh sách người dùng
     public function index()
     {
-        $nguoiDungList = NguoiDung::all();
+        $nguoiDungList = User::all();
         return response()->json(['data' => $nguoiDungList], 200);
     }
 
@@ -28,7 +28,7 @@ class UserController extends Controller
             'email' => 'required|string'
         ]);
 
-        $nguoiDung = NguoiDung::create([
+        $nguoiDung = User::create([
             'ho_ten' => $validated['ho_ten'],
             'ten_dang_nhap' => $validated['ten_dang_nhap'],
             'password' => Hash::make($validated['password']),
@@ -42,7 +42,7 @@ class UserController extends Controller
     // Chi tiết người dùng
     public function show($id)
     {
-        $nguoiDung = NguoiDung::find($id);
+        $nguoiDung = User::find($id);
         if (!$nguoiDung) {
             return response()->json(['error' => 'Không tìm thấy người dùng'], 404);
         }
@@ -52,7 +52,7 @@ class UserController extends Controller
     // Cập nhật người dùng
     public function update(Request $request, $id)
     {
-        $nguoiDung = NguoiDung::find($id);
+        $nguoiDung = User::find($id);
         if (!$nguoiDung) {
             return response()->json(['error' => 'Không tìm thấy người dùng'], 404);
         }
@@ -83,7 +83,7 @@ class UserController extends Controller
     //Xóa người dùng
     public function destroy($id)
     {
-        $nguoiDung = NguoiDung::find($id);
+        $nguoiDung = User::find($id);
         if (!$nguoiDung) {
             return response()->json(['error' => 'Không tìm thấy người dùng'], 404);
         }
@@ -95,7 +95,7 @@ class UserController extends Controller
     //Danh sách sinh viên
     public function indexSinhVien()
     {
-        $sinhVienList = NguoiDung::where('vai_tro', 'sinh_vien')->get(); 
+        $sinhVienList = User::where('vai_tro', 'sinh_vien')->get(); 
         return response()->json($sinhVienList);
     }
 
@@ -108,7 +108,7 @@ class UserController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        $sinhVien = NguoiDung::create([
+        $sinhVien = User::create([
             'ten' => $request->ten,
             'email' => $request->email,
             'password' => bcrypt($request->password),
@@ -121,14 +121,39 @@ class UserController extends Controller
     // Xem thông tin sinh viên
     public function showSinhVien($id)
     {
-        $sinhVien = NguoiDung::where('vai_tro', 'sinh_vien')->findOrFail($id);
-        return response()->json($sinhVien);
+        $sinhVien = User::where('vai_tro', 'sinh_vien')
+            ->with(['baiLams.deThi']) // eager load đề thi tương ứng
+            ->findOrFail($id);
+
+        $baiLams = $sinhVien->baiLams->map(function ($baiLam) {
+            return [
+                'bai_lam_id' => $baiLam->bai_lam_id,
+                'ten_de_thi' => $baiLam->deThi->ten_de ?? 'Không rõ',
+                'diem' => $baiLam->diem,
+                'thoi_gian_nop' => $baiLam->thoi_gian_nop,
+                'xem_chi_tiet_url' => route('admin.xemChiTietBaiLam', [
+                    'sinhVienId' => $baiLam->nguoi_dung_id,
+                    'baiLamId' => $baiLam->bai_lam_id
+                ])
+            ];
+        });
+
+        return response()->json([
+            'sinh_vien' => [
+                'id' => $sinhVien->nguoi_dung_id,
+                'ho_ten' => $sinhVien->ho_ten,
+                'email' => $sinhVien->email,
+                'username' => $sinhVien->username
+            ],
+            'bai_lams' => $baiLams
+        ]);
     }
+
 
     //Cập nhật thông tin sinh viên
     public function updateSinhVien(Request $request, $id)
     {
-        $sinhVien = NguoiDung::where('vai_tro', 'sinh_vien')->findOrFail($id);
+        $sinhVien = User::where('vai_tro', 'sinh_vien')->findOrFail($id);
 
         $request->validate([
             'ten' => 'sometimes|required|string|max:255',
@@ -144,7 +169,7 @@ class UserController extends Controller
     //Xóa sinh viên
     public function destroySinhVien($id)
     {
-        $sinhVien = NguoiDung::where('vai_tro', 'sinh_vien')->findOrFail($id);
+        $sinhVien = User::where('vai_tro', 'sinh_vien')->findOrFail($id);
         $sinhVien->delete();
 
         return response()->json(['message' => 'Xóa sinh viên thành công']);
@@ -159,7 +184,7 @@ class UserController extends Controller
             'new_password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
-        /** @var NguoiDung $user */
+        /** @var User $user */
         $user = $request->user();
 
         if (!Hash::check($request->current_password, $user->password)) {
