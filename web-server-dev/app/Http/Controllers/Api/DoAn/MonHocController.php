@@ -11,12 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class MonHocController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Chưa đăng nhập'], 401);
-        }
-
         $monHocList = MonHoc::all();
         return response()->json($monHocList);
     }
@@ -31,7 +27,7 @@ class MonHocController extends Controller
         return response()->json($tao_monHoc);
     }
 
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -47,12 +43,12 @@ class MonHocController extends Controller
 
             return response()->json([
                 'message' => 'Tạo môn học thành công'
-            ], 201); 
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Có lỗi xảy ra',
                 'message' => $e->getMessage()
-            ], 500); 
+            ], 500);
         }
     }
 

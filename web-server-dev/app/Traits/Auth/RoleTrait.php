@@ -9,7 +9,7 @@ trait RoleTrait
 {
     public function getRolesAttribute($value)
     {
-        return explode(",", $this->role_code);
+        return explode(",", $this->vai_tro);
     }
     public function isTeacher()
     {
@@ -21,7 +21,7 @@ trait RoleTrait
     }
     public function isAdmin()
     {
-        return $this->role_code === RoleCode::ADMIN;
+        return $this->vai_tro === RoleCode::ADMIN;
     }
     public function allow($code)
     {
