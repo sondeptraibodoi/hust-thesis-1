@@ -58,11 +58,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         return response()->json([
-            "user" => new \App\Http\Resources\Profile(
-                User::with("info")
-                    ->find($user->id)
-                    ->append(["is_sinh_vien", "is_giao_vien"])
-            ),
+            "user" => User::find($user->id),
         ]);
     }
 

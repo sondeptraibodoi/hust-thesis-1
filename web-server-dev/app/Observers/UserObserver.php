@@ -18,9 +18,9 @@ class UserObserver
     public function created(User $user)
     {
         //
-        DB::table("users")
-            ->where("id", $user->id)
-            ->update(["fts" => $this->convert_vi_to_en($user->name)]);
+        // DB::table("users")
+        //     ->where("id", $user->id)
+        //     ->update(["fts" => $this->convert_vi_to_en($user->name)]);
     }
 
     /**
@@ -32,11 +32,11 @@ class UserObserver
     public function updated(User $user)
     {
         //
-        if ($user->isDirty("name")) {
-            DB::table("users")
-                ->where("id", $user->id)
-                ->update(["fts" => $this->convert_vi_to_en($user->name)]);
-        }
+        // if ($user->isDirty("name")) {
+        //     DB::table("users")
+        //         ->where("id", $user->id)
+        //         ->update(["fts" => $this->convert_vi_to_en($user->name)]);
+        // }
     }
 
     /**

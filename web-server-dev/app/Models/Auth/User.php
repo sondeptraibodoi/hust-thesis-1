@@ -17,22 +17,20 @@ class User extends Authenticatable
     use Notifiable;
     use RoleTrait;
     use Notifiable, HasApiTokens;
-    protected static $ignoreChangedAttributes = ["password", "updated_at", "created_at"];
+    protected $table = 'nguoi_dung';
+    protected static $ignoreChangedAttributes = ["mat_khau", "updated_at", "created_at"];
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        "password",
+        "mat_khau",
         "username",
-        "inactive",
-        "avatar_url",
-        "count_login",
-        "last_login_at",
-        "role_code",
-        "info_id",
-        "info_type",
+        "ho_ten",
+        "email",
+        "trang_thai",
+        "vai_tro",
     ];
 
     /**
@@ -40,7 +38,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $hidden = ["password", "remember_token", "pivot", "role_code"];
+    protected $hidden = ["mat_khau", "remember_token", "pivot", "role_code"];
 
     /**
      * The attributes that should be cast to native types.
@@ -51,14 +49,14 @@ class User extends Authenticatable
         "inactive" => "boolean",
         "last_login_at" => "datetime",
     ];
-    protected $appends = ["roles"];
+    // protected $appends = ["roles"];
     public static function boot()
     {
         parent::boot();
     }
     public function isActive()
     {
-        return !$this->inactive;
+        return $this->trang_thai;
     }
     public function isSysAdmin()
     {

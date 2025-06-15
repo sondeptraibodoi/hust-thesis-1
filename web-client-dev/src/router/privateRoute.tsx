@@ -14,8 +14,9 @@ export const PrivateRoute: FC<{
   role?: ROLE;
   roles?: ROLE[];
   element: React.ReactNode;
-}> = ({ element, role, roles }) => {
+}> = ({ element, role }) => {
   const { logged, currentUser, loadingInfo } = useAppSelector((state: RootState) => state.auth);
+  console.log("🚀 ~ currentUser:", currentUser, role)
 
   if (!logged) {
     return <Navigate to={getPrefix() + "/login"} />;
@@ -24,9 +25,6 @@ export const PrivateRoute: FC<{
     return <PageLoading />;
   }
   if (!currentUser) {
-    return <Page404 />;
-  }
-  if (roles && roles.length > 0 && !checkUserRoleAllowMultiple(currentUser, roles)) {
     return <Page404 />;
   }
   if (role && !checkUserRoleAllow(currentUser, role)) {

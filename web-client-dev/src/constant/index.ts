@@ -7,9 +7,9 @@ export function getPrefix() {
   return import.meta.env.VITE_PREFIX || "/";
 }
 export const ROLE_CODE = {
-  TEACHER: "teacher",
+  TEACHER: "giang_vien",
   ADMIN: "admin",
-  STUDENT: "student",
+  STUDENT: "sinh_vien",
   ASSISTANT: "assistant",
   HP_ASSISTANT: "hp_assistant",
   HP_OFFICE: "hp_office"

@@ -83,113 +83,29 @@ class AuthenticateController extends Controller
         $userProfile = $this->getUserProfile($accessToken);
         $surname = $userProfile->getSurname() ?? "";
         $given_name = $userProfile->getGivenName() ?? "";
-        $name = trim($surname . " " . $given_name);
-
+        $name = trim($surname . " " . $given_name) ?? "";
         // Xử lý thông tin người dùng ở đây, ví dụ: hiển thị thông tin người dùng
         $mail = $userProfile->getMail();
         $mail = strtolower($mail);
+        $emailParts = explode("@", $mail);
         if (!$mail) {
             abort(400, "Người dùng không tìm thấy thông tin email");
         }
+        $role = RoleCode::STUDENT;
+        if($userProfile->getJobTitle() && ($userProfile->getJobTitle() == 'Teacher' || $userProfile->getJobTitle() == 'teacher')) {
+            $role = RoleCode::TEACHER;
+        }
+
 
         $user = User::where("username", $mail)->first();
-        if (!empty($user)) {
-            if (empty($user->info_id) && $user->role_code == RoleCode::STUDENT) {
-                $sinh_vien = SinhVien::where("email", $mail)->first();
-                if (empty($sinh_vien)) {
-                    $emailParts = explode("@", $mail);
-                    if (end($emailParts) === "sis.hust.edu.vn") {
-                        $numbers = preg_split("/[^0-9]/", $mail);
-                        $numberInEmail = "";
-
-                        foreach ($numbers as $number) {
-                            if (strlen($number) > strlen($numberInEmail)) {
-                                $numberInEmail = $number;
-                            }
-                        }
-                        if (strlen($numberInEmail) >= 6) {
-                            $numberInEmail = "20" . $numberInEmail;
-                        }
-
-                        $sinh_vien = SinhVien::where("mssv", $numberInEmail)->first();
-                        if (isset($sinh_vien)) {
-                            if (empty($sinh_vien->email) || $sinh_vien->email != $mail) {
-                                $sinh_vien->update(["email" => $mail]);
-                            }
-                        }
-                    }
-                }
-                if (!empty($sinh_vien)) {
-                    $user->update([
-                        "info_id" => $sinh_vien->getKey(),
-                        "info_type" => $sinh_vien->getMorphClass(),
-                    ]);
-                }
-            }
-        } else {
-            $giao_vien = GiaoVien::where("email", $mail)->first();
-            if ($giao_vien) {
-                $user = $giao_vien->user;
-                if (empty($user)) {
-                    $user = User::create([
-                        "username" => $giao_vien->email,
-                        "role_code" => RoleCode::TEACHER,
-                        "password" => Hash::make(Str::random(8)),
-                        "info_id" => $giao_vien->getKey(),
-                        "info_type" => $giao_vien->getMorphClass(),
-                    ]);
-                }
-            } else {
-                $emailParts = explode("@", $mail);
-                if (end($emailParts) === "sis.hust.edu.vn") {
-                    $numbers = preg_split("/[^0-9]/", $mail);
-                    $numberInEmail = "";
-
-                    foreach ($numbers as $number) {
-                        if (strlen($number) > strlen($numberInEmail)) {
-                            $numberInEmail = $number;
-                        }
-                    }
-                    if (strlen($numberInEmail) === 6) {
-                        $numberInEmail = "20" . $numberInEmail;
-                    }
-
-                    $sinh_vien = SinhVien::where("mssv", $numberInEmail)->first();
-                    if (empty($sinh_vien)) {
-                        $user = User::where("username", $mail)->first();
-                        if (empty($user)) {
-                            $user = User::updateOrCreate(
-                                ["username" => $mail],
-                                [
-                                    "role_code" => RoleCode::STUDENT,
-                                    "password" => Hash::make(Str::random(8)),
-                                ]
-                            );
-                        }
-                    } else {
-                        $info = [];
-                        $info["email"] = $mail;
-                        if (empty($sinh_vien->name)) {
-                            $info["name"] = $name;
-                        }
-                        $sinh_vien->update($info);
-                        $user = $sinh_vien->user;
-                        if (empty($user)) {
-                            $user = User::create([
-                                "username" => $sinh_vien->email,
-                                "vai_tro" => RoleCode::STUDENT,
-                                "password" => Hash::make(Str::random(8)),
-                            ]);
-                        } elseif ($user->username != $mail) {
-                            $sinh_vien->update([
-                                "username" => $sinh_vien->email,
-                            ]);
-                        }
-                    }
-                } else {
-                    abort(400, "Email của sinh viên không có đuôi sis.hust.edu.vn");
-                }
-            }
+        if(empty($user)) {
+            $user = User::create([
+                'username' => $mail,
+                'ho_ten' => $name,
+                'email' => $mail,
+                'mat_khau' => Hash::make(Str::random(8)),
+                'vai_tro' => $role
+            ]);
         }
         if (!$user->isActive()) {
             abort(400, "Người dùng bị chặn, liên hệ quản trị hệ thống để biết thêm thông tin");
@@ -197,6 +113,7 @@ class AuthenticateController extends Controller
         $token = $user->createToken("login_token");
         Cookie::make("token", $token->plainTextToken);
         return $this->respondWithToken($token->plainTextToken);
+
     }
 
     public function webAuthenticate(WebAuthRequest $request)

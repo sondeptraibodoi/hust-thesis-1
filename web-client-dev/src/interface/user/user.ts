@@ -1,20 +1,13 @@
 import { Dayjs } from "dayjs";
-import { FieldId } from "../common";
 
 export interface User {
   id: string | number;
   avatar_url?: string;
   username: string;
-  inactive: boolean;
-  info?: any;
-  is_sinh_vien: boolean;
-  is_giao_vien: boolean;
-  roles: string[];
+  vai_tro: ROLE,
   created_at: string;
   updated_at: string;
   hoc_phan_quan_ly?: any;
-  info_id?: FieldId;
-  info_type?: string;
 }
 
 export interface SinhVien {
@@ -74,9 +67,9 @@ export interface SinhVien {
   };
 }
 export enum ROLE {
-  student = "student",
+  student = "sinh_vien",
   admin = "admin",
-  teacher = "teacher",
+  teacher = "giang_vien",
   assistant = "assistant",
   hp_assistant = "hp_assistant",
   hp_office = "hp_office"

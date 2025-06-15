@@ -31,7 +31,7 @@ export const BaiThiInfoUser: FC = () => {
           <ChuongCellRender ten={chuong?.ten} stt={chuong?.stt} />
         </p>
       </div>
-      {authUser.is_sinh_vien && authUser.info && (
+      {/* {authUser.is_sinh_vien && authUser.info && (
         <>
           <div className="d-flex mb-4">
             <p className="m-0 font-normal leading-6 text-base mr-2">Tên sinh viên:</p>
@@ -42,7 +42,7 @@ export const BaiThiInfoUser: FC = () => {
             <p className="m-0 font-medium leading-6 text-base">{authUser.info["mssv"]}</p>
           </div>
         </>
-      )}
+      )} */}
     </Card>
   );
 };
