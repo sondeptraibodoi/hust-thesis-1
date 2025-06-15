@@ -14,7 +14,7 @@ class MonHocController extends Controller
     public function index()
     {
         $monHocList = MonHoc::all();
-        return response()->json($monHocList);
+        return $this->responseSuccess($monHocList);
     }
 
 

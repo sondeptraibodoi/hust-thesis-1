@@ -363,32 +363,14 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
   ],
   [ROLE_CODE.STUDENT]: [
     {
-      label: "Lớp học",
-      key: "phong-hoc"
+      label: "Môn học",
+      key: "mon-hoc"
     },
 
     {
       label: "Điểm thi",
       key: "diem-sinh-vien"
     },
-    {
-      label: "Báo lỗi",
-      key: "bao-loi-sinh-vien"
-    },
-    { label: "Điểm thi", key: "diem-sinh-vien" },
-    { label: "Phúc khảo", key: "phuc-khao" },
-    {
-      label: "Lịch thi",
-      key: "lich-thi"
-    },
-    {
-      label: "Thi LT",
-      key: "thi-lt"
-    },
-    {
-      label: "Quy định/Thông báo",
-      key: "sinh-vien/quy-dinh"
-    }
   ]
 };
 const Navigation: FC<Props> = ({ styles, mode }) => {

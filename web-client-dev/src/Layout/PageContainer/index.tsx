@@ -1,4 +1,4 @@
-import { Breadcrumb, Col, Row } from "antd";
+import { Breadcrumb, Col, Divider, Row } from "antd";
 import { FC, ReactNode, useMemo } from "react";
 
 import { NavLink } from "react-router-dom";
@@ -42,6 +42,7 @@ const PageContainer: FC<PageContainerOption> = ({
       <Row className="flex-grow-0">
         <Col span={12}>
           {title && <Title level={2}>{title}</Title>}
+          <Divider  className="!border-t-2 !border-gray-400" orientation="center"/>
           {titleTrans && <Title level={2}>{t(titleTrans)}</Title>}
         </Col>
         <Col span={12}>{extraTitle && extraTitle}</Col>
