@@ -39,6 +39,7 @@ class CauHoiController extends Controller
         }
         return $data;
     }
+    
     public function update(Request $request, $id)
     {
         $request->validate([

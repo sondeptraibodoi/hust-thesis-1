@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $table = 'nguoi_dung';
-    protected $primaryKey = 'nguoi_dung_id';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
@@ -28,7 +28,7 @@ class User extends Authenticatable
 
     public function baiLams()
     {
-        return $this->hasMany(BaiLam::class, 'nguoi_dung_id');
+        return $this->hasMany(BaiLam::class, 'id');
     }
 
     public function deThis()

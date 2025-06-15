@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DeThi extends Model
 {
     protected $table = 'de_thi';
-    protected $primaryKey = 'de_thi_id';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
@@ -22,11 +22,11 @@ class DeThi extends Model
 
     public function chiTietDeThis()
     {
-        return $this->hasMany(ChiTietDeThi::class, 'de_thi_id');
+        return $this->hasMany(ChiTietDeThi::class, 'id');
     }
 
     public function baiLams()
     {
-        return $this->hasMany(BaiLam::class, 'de_thi_id');
+        return $this->hasMany(BaiLam::class, 'id');
     }
 }

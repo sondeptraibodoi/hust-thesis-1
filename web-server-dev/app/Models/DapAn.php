@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DapAn extends Model
 {
     protected $table = 'dap_an';
-    protected $primaryKey = 'dap_an_id';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
@@ -22,6 +22,6 @@ class DapAn extends Model
 
     public function chiTietBaiLams()
     {
-        return $this->hasMany(ChiTietBaiLam::class, 'dap_an_id');
+        return $this->hasMany(ChiTietBaiLam::class, 'id');
     }
 }

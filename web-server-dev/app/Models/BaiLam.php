@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class BaiLam extends Model
 {
     protected $table = 'bai_lam';
-    protected $primaryKey = 'bai_lam_id';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
