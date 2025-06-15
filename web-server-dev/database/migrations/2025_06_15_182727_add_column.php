@@ -14,12 +14,15 @@ class AddColumn extends Migration
     public function up()
     {
         //
-        Schema::table('nguoi_dung', function (Blueprint $table) {
-            $table->integer('level')->default(1);
+        Schema::create('level_mon_hoc', function (Blueprint $table) {
+            $table->foreignId('mon_hoc_id')->constrained('mon_hoc')->onDelete('cascade');
+            $table->foreignId('nguoi_dung_id')->constrained('nguoi_dung')->onDelete('cascade');
+            $table->integer('level');
+            $table->unique(['mon_hoc_id', 'nguoi_dung_id']);
         });
 
         Schema::table('de_thi', function (Blueprint $table) {
-            $table->string('code', 16);
+            $table->string('code', 16)->unique();
         });
     }
 

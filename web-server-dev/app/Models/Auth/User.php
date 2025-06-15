@@ -45,10 +45,6 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $casts = [
-        "inactive" => "boolean",
-        "last_login_at" => "datetime",
-    ];
     // protected $appends = ["roles"];
     public static function boot()
     {
@@ -61,33 +57,5 @@ class User extends Authenticatable
     public function isSysAdmin()
     {
         return $this->username == "administrator";
-    }
-    public function getCauserDisplay()
-    {
-        $this->load("info");
-        if (!empty($this->info)) {
-            return $this->info->getCauserDisplay();
-        }
-        return $this->username;
-    }
-    public function info(): MorphTo
-    {
-        return $this->morphTo();
-    }
-    public function getIsGiaoVienAttribute($value)
-    {
-        return $this->info_type === (new GiaoVien())->getMorphClass() || $this->role_code == RoleCode::TEACHER;
-    }
-    public function getIsSinhVienAttribute($value)
-    {
-        return $this->info_type === (new SinhVien())->getMorphClass() || $this->role_code == RoleCode::STUDENT;
-    }
-    public function hocPhan()
-    {
-        return $this->belongsToMany(HocPhanUser::class, "hp_user", "user_id", "ma_hoc_phan");
-    }
-    public function hocPhanQuanLy()
-    {
-        return $this->hasMany(HocPhanUser::class, "user_id");
     }
 }
