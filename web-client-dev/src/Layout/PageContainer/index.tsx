@@ -39,10 +39,9 @@ const PageContainer: FC<PageContainerOption> = ({
   return (
     <div className="d-flex flex-column full-height">
       {breadcrumbs && breadcrumbs.length > 0 && <Breadcrumb items={items} className="flex-grow-0"></Breadcrumb>}
-      <Row className="flex-grow-0">
+      <Row className="flex-grow-0 w-full">
         <Col span={12}>
-          {title && <Title level={2}>{title}</Title>}
-          <Divider  className="!border-t-2 !border-gray-400" orientation="center"/>
+          {title && <Title level={1}>{title}</Title>}
           {titleTrans && <Title level={2}>{t(titleTrans)}</Title>}
         </Col>
         <Col span={12}>{extraTitle && extraTitle}</Col>

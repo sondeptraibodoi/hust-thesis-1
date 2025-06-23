@@ -11,7 +11,6 @@ export interface AuthUser extends User {
   role_code: string;
 }
 export function checkUserRoleAllow(user: User, role: string) {
-  console.log("🚀 ~ checkUserRoleAllow ~ role:", role)
   return user.vai_tro === role
 }
 export function checkUserRoleAllowMultiple(user: User, roles: string[]) {

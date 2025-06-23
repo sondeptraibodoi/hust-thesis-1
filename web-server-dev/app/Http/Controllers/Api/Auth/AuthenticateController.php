@@ -149,7 +149,7 @@ class AuthenticateController extends Controller
         if (empty($user)) {
             abort(400, "Tên đăng nhập hoặc mật khẩu không đúng");
         }
-        if (!Hash::check($credentials["password"], $user->password)) {
+        if (!Hash::check($credentials["password"], $user->mat_khau)) {
             abort(400, "Tên đăng nhập hoặc mật khẩu không đúng");
         }
         if (!$user->isActive()) {

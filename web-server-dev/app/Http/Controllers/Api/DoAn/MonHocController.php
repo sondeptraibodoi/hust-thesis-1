@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\DoAn;
 
 use App\Http\Controllers\Controller;
-
+use App\Library\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MonHoc;
@@ -11,10 +11,20 @@ use Illuminate\Support\Facades\DB;
 
 class MonHocController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $monHocList = MonHoc::all();
-        return $this->responseSuccess($monHocList);
+        $query = MonHoc::query();
+        $query = QueryBuilder::for($query, $request)
+            ->allowedAgGrid([])
+            ->defaultSort("id")
+            ->allowedSearch(["ten_mon_hoc", "ten_mon_hoc"])
+            ->allowedPagination();
+        $data = $query->paginate();
+        $data->getCollection()->transform(function ($item) {
+            $item['so_cau_hoi'] = $item->soCau();
+            return $item;
+        });
+        return response()->json(new \App\Http\Resources\Items($data), 200, []);
     }
 
 
@@ -53,10 +63,9 @@ class MonHocController extends Controller
     }
 
 
-    public function show($mon_hoc_id)
+    public function show($id)
     {
-        $monHoc = DB::table('mon_hoc')->where('mon_hoc_id', $mon_hoc_id)->first();
-
+        $monHoc = MonHoc::find($id);
         if (!$monHoc) {
             return response()->json([
                 'error' => 'Không tìm thấy môn học'
@@ -134,5 +143,12 @@ class MonHocController extends Controller
                 'message' => 'Lỗi khi xóa: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function getLevel($id)
+    {
+        $mon = MonHoc::find($id);
+        $mon['level'] = $mon->level();
+        return $this->responseSuccess($mon);
     }
 }

@@ -1,38 +1,71 @@
 import monHocApi from "@/api/mon-hoc/monHoc.api";
+import BaseTable from "@/components/base-table";
+import { ActionField } from "@/interface/common";
 import PageContainer from "@/Layout/PageContainer";
 import { RootState } from "@/stores";
 import { useAppSelector } from "@/stores/hook";
-import { Card, Empty } from "antd";
-import { useEffect, useState } from "react";
+import { DeleteOutlined, EditOutlined, SignatureOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import { ColDef } from "ag-grid-community";
+import { Button, Tooltip } from "antd";
+import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MonHocPage = () => {
-  const [data, setData] = useState<any[]>([]);
-  const navigate = useNavigate();
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
-  useEffect(() => {
-    const getMon = async () => {
-      const res = await monHocApi.list();
-      setData(res.data.data);
-    };
-    getMon();
-  }, []);
+
+  const [columnDefs] = useState<ColDef<any & ActionField>[]>([
+    {
+      headerName: "Mã hệ thống",
+      field: "id"
+    },
+    {
+      headerName: "Tên môn học",
+      field: "ten_mon_hoc",
+      filter: "agTextColumnFilter",
+      floatingFilter: true
+    },
+    {
+      headerName: "Số câu hỏi",
+      field: "so_cau_hoi",
+      filter: "agNumberColumnFilter",
+      floatingFilter: true,
+      hide: currentUser?.vai_tro === "sinh_vien"
+    },
+    {
+      headerName: "Hành động",
+      field: "#",
+      pinned: "right",
+      cellRenderer: ActionRender,
+      width: 170
+    }
+  ]);
   return (
     <PageContainer title="Danh sách môn">
-      <div className="flex flex-wrap gap-8 justify-center">
-        {data.length > 0 ?
-          data.map((x) => (
-            <Card
-              key={x.id}
-              onClick={() => navigate(currentUser?.vai_tro === "sinh_vien" ? `sinh-vien/${x.id}` : `gian-vien/${x.id}`)}
-              className="w-[300px] text-center flex items-center justify-center text-5xl font-bold h-[300px] cursor-pointer"
-            >
-              {x.ten_mon_hoc}
-            </Card>
-          )) : <Empty />}
-      </div>
+      <BaseTable columns={columnDefs} api={monHocApi.list} />
     </PageContainer>
   );
 };
 
 export default MonHocPage;
+
+const ActionRender: FC<any> = ({ data }) => {
+  const { currentUser } = useAppSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
+  if (!data) return;
+  return (
+    <>
+    <Tooltip className={currentUser?.vai_tro !== "sinh_vien" ? 'hidden' : ""} title="Làm bài thi">
+        <Button type="text" icon={<SignatureOutlined />} />
+      </Tooltip>
+      <Tooltip className={currentUser?.vai_tro === "sinh_vien" ? 'hidden' : ""} title="Danh sách câu hỏi">
+        <Button onClick={() => navigate(`${data.id}/cau-hoi`)} type="text" icon={<UnorderedListOutlined />} />
+      </Tooltip>
+      <Tooltip className={currentUser?.vai_tro !== "admin" ? 'hidden' : ""} title='Sửa'>
+      <Button type="text" icon={<EditOutlined />} />
+      </Tooltip>
+      <Tooltip className={currentUser?.vai_tro !== "admin" ? 'hidden' : ""} title='Xóa'>
+      <Button type="text" icon={<DeleteOutlined />} />
+      </Tooltip>
+    </>
+  );
+};

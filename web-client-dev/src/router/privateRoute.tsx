@@ -16,7 +16,6 @@ export const PrivateRoute: FC<{
   element: React.ReactNode;
 }> = ({ element, role }) => {
   const { logged, currentUser, loadingInfo } = useAppSelector((state: RootState) => state.auth);
-  console.log("🚀 ~ currentUser:", currentUser, role)
 
   if (!logged) {
     return <Navigate to={getPrefix() + "/login"} />;

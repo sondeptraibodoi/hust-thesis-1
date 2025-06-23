@@ -298,12 +298,12 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
 
   [ROLE_CODE.TEACHER]: [
     {
-      label: "Lớp",
-      key: "giao-vien",
+      label: "Môn học",
+      key: "mon-hoc",
       children: [
         {
-          label: "Lớp dạy",
-          key: "lop-day"
+          label: "Môn học",
+          key: "mon-hoc"
         },
         {
           label: "Lớp coi thi",

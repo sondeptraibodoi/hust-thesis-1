@@ -79,7 +79,6 @@ interface Props {
   isEdit: boolean;
   setIsEdit?: (value: boolean) => void;
   setKeyRender: (value: number) => void;
-  translation: string;
   options: Option[];
   apiCreate: any;
   apiEdit?: any;
@@ -100,16 +99,13 @@ const CreateNEditDialog: FC<Props> = (props) => {
     isEdit,
     setIsEdit,
     setKeyRender,
-    translation,
     options,
     apiCreate,
     apiEdit,
     icon,
     createIdLop,
-    disableSubTitle,
     isFillData
   } = props;
-  const { t } = useTranslation(translation);
   const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -125,7 +121,7 @@ const CreateNEditDialog: FC<Props> = (props) => {
         const error = e as AxiosError<Laravel400ErrorResponse>;
         if (error.response) {
           api.error({
-            message: t("message.error_add"),
+            message: "Thất bại",
             description: error.response.data.message
           });
         }
@@ -158,8 +154,8 @@ const CreateNEditDialog: FC<Props> = (props) => {
       try {
         await apiEdit({ ...data, ...values });
         api.success({
-          message: t("message.success_edit"),
-          description: t("message.success_desc_edit")
+          message: "Thành công",
+          description: "Sửa thành công"
         });
         cancel();
         form.resetFields();
@@ -169,8 +165,8 @@ const CreateNEditDialog: FC<Props> = (props) => {
         const is_handle = handleError(err);
         if (!is_handle) {
           api.error({
-            message: t("message.error_add"),
-            description: t("message.error_desc_add")
+            message: "Thất bại",
+            description: "tạo mới thất bại"
           });
         }
       } finally {
@@ -184,8 +180,8 @@ const CreateNEditDialog: FC<Props> = (props) => {
           await apiCreate(values);
         }
         api.success({
-          message: t("message.success_add"),
-          description: t("message.success_desc_add")
+          message: "Thành công",
+          description: "Thêm mới thành công"
         });
         cancel();
         form.resetFields();
@@ -194,8 +190,8 @@ const CreateNEditDialog: FC<Props> = (props) => {
         const is_handle = handleError(err);
         if (!is_handle) {
           api.error({
-            message: t("message.error_add"),
-            description: t("message.error_desc_add")
+            message: "Thất bại",
+            description: "tạo mới thất bại"
           });
         }
       } finally {
@@ -370,7 +366,7 @@ const CreateNEditDialog: FC<Props> = (props) => {
       return (
         <Upload disabled={value.disabled} {...uploadprops} accept={value.uploadfileType} style={{ width: "100%" }}>
           <Button block icon={<UploadOutlined />}>
-            {t("action.select_file")}
+            Chọn tệp tin
           </Button>
         </Upload>
       );
@@ -395,8 +391,7 @@ const CreateNEditDialog: FC<Props> = (props) => {
           </div>
 
           <div className="">
-            <Title level={4}>{isEdit ? t("title.edit") : t("title.create_new")}</Title>
-            {disableSubTitle ? <></> : <p>{isEdit ? t("sub_title.edit") : t("sub_title.create_new")}</p>}
+            <Title level={4}>{isEdit ? "Sửa" : 'Tạo mới'}</Title>
           </div>
           <div className="scrollable-content">
             <Form className="base-form flex-grow-1 overflow-y-auto" form={form} layout="vertical" onFinish={onFinish}>
@@ -421,10 +416,10 @@ const CreateNEditDialog: FC<Props> = (props) => {
               <Form.Item className="absolute bottom-0 right-0 left-0 px-6 pt-4 bg-white">
                 <div className="flex justify-between gap-4">
                   <ColorButton block onClick={cancel}>
-                    {t("action.cancel")}
+                    Đóng
                   </ColorButton>
                   <ColorButton block htmlType="submit" loading={loading} type="primary">
-                    {t("action.accept")}
+                    Ghi
                   </ColorButton>
                 </div>
               </Form.Item>
