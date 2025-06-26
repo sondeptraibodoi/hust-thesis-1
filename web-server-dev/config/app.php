@@ -10,7 +10,7 @@ return [
     ],
     "prefix_file_export" => env("EXPORT_PREFIX", ""),
     "export_version" => env("EXPORT_VERSION", "1.0.0"),
-    "export_name" => env("EXPORT_NAME", "Hệ thống số hóa - Khoa Toán ứng dụng và Tin học - Đại học Bách Khoa Hà Nội"),
+    "export_name" => env("EXPORT_NAME", "Đồ án - Đại học Bách khoa Hà Nội"),
     "pdftk_path" => env("PDFTK_PATH", "pdftk"),
 
     "url_pusher" => env("PUSHER_ENDPOINT", env("PUSHER_HOST")),

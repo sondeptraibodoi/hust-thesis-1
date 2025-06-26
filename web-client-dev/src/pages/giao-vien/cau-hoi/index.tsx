@@ -8,10 +8,10 @@ import PageContainer from "@/Layout/PageContainer";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ColDef } from "ag-grid-community";
 import { Button, Tooltip } from "antd";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const answer = ['A', 'B', 'C', 'D'];
+const answer = ["A", "B", "C", "D"];
 
 const CauHoiPage = () => {
   const { id } = useParams();
@@ -30,39 +30,43 @@ const CauHoiPage = () => {
     getData();
   }, [id]);
 
+  const breadcrumbs = useMemo(() => {
+    return [{ router: "../", text: "Danh sách môn học" }];
+  }, [id]);
+
   const option = [
     {
       required: true,
-      type: 'textarea',
-      name: 'de_bai',
+      type: "textarea",
+      name: "de_bai",
       label: "Đề bài",
       placeholder: "Vui lòng nhập đề bài"
     },
     {
       required: true,
-      type: 'input',
-      name: 'a',
+      type: "input",
+      name: "a",
       label: "A",
       placeholder: "Vui lòng nhập đáp án A"
     },
     {
       required: true,
-      type: 'input',
-      name: 'b',
+      type: "input",
+      name: "b",
       label: "B",
       placeholder: "Vui lòng nhập đáp án B"
     },
     {
       required: true,
-      type: 'input',
-      name: 'c',
+      type: "input",
+      name: "c",
       label: "C",
       placeholder: "Vui lòng nhập đáp án C"
     },
     {
       required: true,
-      type: 'input',
-      name: 'd',
+      type: "input",
+      name: "d",
       label: "D",
       placeholder: "Vui lòng nhập đáp án D"
     },
@@ -77,20 +81,20 @@ const CauHoiPage = () => {
           value: x,
           title: x
         };
-      }),
+      })
     },
     {
       required: true,
-      type: 'inputnumber',
-      name: 'do_kho',
+      type: "inputnumber",
+      name: "do_kho",
       label: "Độ khó",
       placeholder: "Vui lòng nhập độ khó",
       min: 1,
       propInput: {
-        max: 10,
+        max: 10
       }
-    },
-  ]
+    }
+  ];
 
   const [columnDefs] = useState<ColDef<any & ActionField>[]>([
     {
@@ -102,10 +106,10 @@ const CauHoiPage = () => {
       field: "de_bai",
       filter: "agTextColumnFilter",
       floatingFilter: true,
-      valueFormatter: ({data}) => {
-        if(!data) return;
+      valueFormatter: ({ data }) => {
+        if (!data) return;
         const render = JSON.parse(data.de_bai);
-        return render.de_bai
+        return render.de_bai;
       }
     },
     {
@@ -130,14 +134,14 @@ const CauHoiPage = () => {
       cellRendererParams: {
         onUpdateItem: (item: any) => {
           const result = JSON.parse(item.de_bai);
-          setData({...item,...result, de_bai: result.de_bai });
+          setData({ ...item, ...result, de_bai: result.de_bai });
           setIsEdit(true);
           setModalEditor(true);
         },
         onDeleteItem: (item: any) => {
-                  setData(item);
-                  setIsModalDelete(true);
-                }
+          setData(item);
+          setIsModalDelete(true);
+        }
       },
       width: 170
     }
@@ -146,10 +150,17 @@ const CauHoiPage = () => {
     <PageContainer
       title={"Danh sách câu hỏi môn " + title}
       extraTitle={
-        <Button onClick={() => setModalEditor(true)} type="primary" style={{ float: "right", marginTop: "20px" }}>
+        <Button
+          onClick={() => {
+            setIsEdit(false), setModalEditor(true);
+          }}
+          type="primary"
+          style={{ float: "right", marginTop: "20px" }}
+        >
           Thêm mới
         </Button>
       }
+      breadcrumbs={breadcrumbs}
     >
       <BaseTable
         key={keyRender}
@@ -159,13 +170,22 @@ const CauHoiPage = () => {
           mon_hoc_id: id
         }}
       />
-      <CreateNEditDialog data={data} disableSubTitle setKeyRender={setKeyRender} isEdit={isEdit}  apiCreate={(data: any) => cauHoiApi.post({...data, mon_hoc_id: id})} apiEdit={(data: any) => cauHoiApi.put(data)} options={option} openModal={modalEditor} closeModal={setModalEditor}/>
-        {isModalDelete && (
+      <CreateNEditDialog
+        data={data}
+        disableSubTitle
+        setKeyRender={setKeyRender}
+        isEdit={isEdit}
+        apiCreate={(data: any) => cauHoiApi.post({ ...data, mon_hoc_id: id })}
+        apiEdit={(data: any) => cauHoiApi.put(data)}
+        options={option}
+        openModal={modalEditor}
+        closeModal={setModalEditor}
+      />
+      {isModalDelete && (
         <DeleteDialog
           openModal={isModalDelete}
-          translation=""
           closeModal={setIsModalDelete}
-          name={'Câu hỏi'}
+          name={"Câu hỏi"}
           apiDelete={() => data && cauHoiApi.delete(data)}
           setKeyRender={setKeyRender}
         />
@@ -177,15 +197,15 @@ const CauHoiPage = () => {
 export default CauHoiPage;
 
 const ActionRender: FC<any> = ({ onUpdateItem, onDeleteItem, data }) => {
-  if(!data) return;
+  if (!data) return;
   return (
     <>
-    <Tooltip title="Sửa">
+      <Tooltip title="Sửa">
         <Button shape="circle" icon={<EditOutlined />} type="text" onClick={() => onUpdateItem(data)} />
       </Tooltip>
       <Tooltip title="Xoá">
         <Button shape="circle" icon={<DeleteOutlined />} type="text" onClick={() => onDeleteItem(data)} />
       </Tooltip>
     </>
-  )
+  );
 };

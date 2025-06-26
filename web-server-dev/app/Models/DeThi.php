@@ -12,21 +12,27 @@ class DeThi extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'ten_de', 'do_kho_trung_binh', 'nguoi_tao', 'mo_ta', 'created_at'
+        'code', 'mon_hoc_id', 'da_lam', 'tong_so_cau_hoi', 'thoi_gian_thi', 'nguoi_tao_id', 'diem_toi_da', 'diem_dat', 'ghi_chu'
     ];
 
     public function nguoiTao()
     {
-        return $this->belongsTo(NguoiDung::class, 'nguoi_tao');
+        return $this->belongsTo(NguoiDung::class, 'nguoi_tao_id');
     }
 
     public function chiTietDeThis()
     {
-        return $this->hasMany(ChiTietDeThi::class, 'id');
+        return $this->hasMany(ChiTietDeThi::class, 'de_thi_id');
     }
 
     public function baiLams()
     {
-        return $this->hasMany(BaiLam::class, 'id');
+        return $this->hasMany(BaiLam::class, 'de_thi_id');
     }
+
+    public function monHoc()
+    {
+        return $this->belongsTo(MonHoc::class, 'mon_hoc_id');
+    }
+
 }

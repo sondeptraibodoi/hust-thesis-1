@@ -2,7 +2,6 @@ import { App, Modal } from "antd";
 import { FC, useState } from "react";
 
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import { useTranslation } from "react-i18next";
 import ColorButton from "../Button";
 
 interface Props {
@@ -51,8 +50,7 @@ const DeleteDialog: FC<Props> = (props) => {
       renderAgain && renderAgain(Math.random());
       onDone && onDone();
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || t("message.error_desc_delete");
-
+      const errorMessage = error?.response?.data?.message || "Xóa thất bại";
       api.error({
         message: "Thất bại",
         description: errorMessage

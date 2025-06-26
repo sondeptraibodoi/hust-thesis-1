@@ -4,7 +4,7 @@ import { ActionField } from "@/interface/common";
 import PageContainer from "@/Layout/PageContainer";
 import { RootState } from "@/stores";
 import { useAppSelector } from "@/stores/hook";
-import { DeleteOutlined, EditOutlined, SignatureOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, ExceptionOutlined, SignatureOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { ColDef } from "ag-grid-community";
 import { Button, Tooltip } from "antd";
 import { FC, useState } from "react";
@@ -56,6 +56,9 @@ const ActionRender: FC<any> = ({ data }) => {
     <>
     <Tooltip className={currentUser?.vai_tro !== "sinh_vien" ? 'hidden' : ""} title="Làm bài thi">
         <Button type="text" icon={<SignatureOutlined />} />
+      </Tooltip>
+      <Tooltip className={currentUser?.vai_tro === "sinh_vien" ? 'hidden' : ""} title="Danh sách đề thi">
+        <Button onClick={() => navigate(`${data.id}/de-thi`)} type="text" icon={<ExceptionOutlined />} />
       </Tooltip>
       <Tooltip className={currentUser?.vai_tro === "sinh_vien" ? 'hidden' : ""} title="Danh sách câu hỏi">
         <Button onClick={() => navigate(`${data.id}/cau-hoi`)} type="text" icon={<UnorderedListOutlined />} />

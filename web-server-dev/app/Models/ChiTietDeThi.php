@@ -11,11 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChiTietDeThi extends Model
 {
-    protected $table = 'chi_tiet_de_thi';
+    protected $table = 'de_thi_bai_kiem_tra';
     public $timestamps = false;
 
     protected $fillable = [
-        'de_thi_id', 'cau_hoi_id', 'thu_tu', 'created_at'
+        'de_thi_id', 'cau_hoi_id', 'diem', 'ghi_chu'
     ];
 
     public function deThi()

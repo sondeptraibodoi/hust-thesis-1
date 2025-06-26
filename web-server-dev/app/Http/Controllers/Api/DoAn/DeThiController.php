@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\DoAn;
 
 use App\Http\Controllers\Controller;
-
+use App\Library\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\CauHoi;
@@ -12,57 +12,99 @@ use App\Models\ChiTietDeThi;
 
 class DeThiController extends Controller
 {
-    public function soan_de_tu_dong(Request $request)
+    public function index(Request $request)
     {
-        $request->validate([
-            'ten_de' => 'required|string|max:255',
-            'so_cau' => 'required|integer|min:1',
-            'do_kho_ban_dau' => 'required|integer|min:1|max:10',
+        $query = DeThi::query()->where('mon_hoc_id', $request->get('mon_hoc_id'));
+        $query = QueryBuilder::for($query, $request)
+            ->allowedAgGrid([])
+            ->defaultSort("id")
+            ->allowedSearch(["code"])
+            ->allowedPagination();
+        return response()->json(new \App\Http\Resources\Items($query->get()), 200, []);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        $cau_hois = $data['cau_hoi'] ?? [];
+        $dethi = DeThi::create([
+            'mon_hoc_id' => $data['mon_hoc_id'],
+            'thoi_gian_thi' => $data['thoi_gian'],
+            'ghi_chu' => $data['ghi_chu'] ?? null,
+            'nguoi_tao_id' => auth()->user()->id,
+            'tong_so_cau_hoi' => count($cau_hois),
+            'diem_toi_da' => $data['diem_toi_da'] ?? 0,
+            'diem_dat' => $data['diem_dat'] ?? 0,
+            'code' => now()->format('Ymd') . str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT),
+        ]);
+        foreach ($cau_hois as $cau_hoi) {
+            $cauhoi = ChiTietDeThi::create([
+                'de_thi_id' => $dethi->id,
+                'cau_hoi_id' => $cau_hoi['id'],
+                'diem' => round(10 / count($cau_hois),2) ?? 0,
+                'ghi_chu' => $cau_hoi['ghi_chu'] ?? null,
+            ]);
+        }
+
+        return $this->responseSuccess([
+            'message' => 'Đề thi đã được tạo thành công',
+            'data' => $dethi
+        ]);
+    }
+
+    public function show($id)
+    {
+        $dethi = DeThi::with(['chiTietDeThis', 'monHoc'])->find($id);
+        if (!$dethi) {
+            return response()->json(['message' => 'Đề thi không tồn tại'], 404);
+        }
+        return $this->responseSuccess($dethi);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $dethi = DeThi::find($id);
+        if (!$dethi) {
+            return response()->json(['message' => 'Đề thi không tồn tại'], 404);
+        }
+
+        $data = $request->all();
+        $cau_hois = $data['cau_hoi'] ?? [];
+        $dethi->update([
+            'mon_hoc_id' => $data['mon_hoc_id'],
+            'thoi_gian_thi' => $data['thoi_gian'],
+            'ghi_chu' => $data['ghi_chu'] ?? null,
+            'tong_so_cau_hoi' => count($cau_hois),
+            'diem_toi_da' => $data['diem_toi_da'] ?? 0,
+            'diem_dat' => $data['diem_dat'] ?? 0,
         ]);
 
-        $soCau = $request->so_cau;
-        $mucKho = $request->do_kho_ban_dau;
-        $dsCauHoi = [];
-
-        for ($i = 0; $i < $soCau; $i++) {
-            // Lấy random 1 câu hỏi theo mức độ 
-            $cauHoi = CauHoi::where('do_kho', $mucKho)
-                            ->inRandomOrder()
-                            ->first();
-
-            if ($cauHoi) {
-                $dsCauHoi[] = $cauHoi;
-
-                // Thay đổi mức độ sau khoảng 3 đến 5 câu
-                if (($i + 1) % rand(3, 5) == 0) {
-                    $delta = rand(0, 1) ? 1 : -1;
-                    $mucKho = max(1, min(10, $mucKho + $delta));
-                }
-            }
-        }
-
-        // Lưu đề thi mới
-        DB::beginTransaction();
-        try {
-            $deThiId = DB::table('de_thi')->insertGetId([
-                'ten_de' => $request->ten_de,
-                'nguoi_tao_id' => auth()->id(),
-                'created_at' => now()
+        ChiTietDeThi::where('de_thi_id', $dethi->id)->delete();
+        foreach ($cau_hois as $cau_hoi) {
+            ChiTietDeThi::create([
+                'de_thi_id' => $dethi->id,
+                'cau_hoi_id' => $cau_hoi['id'],
+                'diem' => round(10 / count($cau_hois),2) ?? 0,
+                'ghi_chu' => $cau_hoi['ghi_chu'] ?? null,
             ]);
-
-            foreach ($dsCauHoi as $index => $cauHoi) {
-                DB::table('chi_tiet_de_thi')->insert([
-                    'de_thi_id' => $deThiId,
-                    'cau_hoi_id' => $cauHoi->cau_hoi_id,
-                    'thu_tu' => $index + 1
-                ]);
-            }
-
-            DB::commit();
-            return response()->json(['message' => 'Tạo đề thành công', 'de_thi_id' => $deThiId], 201);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['error' => 'Lỗi khi tạo đề: ' . $e->getMessage()], 500);
         }
+
+        return $this->responseSuccess([
+            'message' => 'Đề thi đã được cập nhật thành công',
+            'data' => $dethi
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $dethi = DeThi::find($id);
+        if (!$dethi) {
+            return response()->json(['message' => 'Đề thi không tồn tại'], 404);
+        }
+
+        ChiTietDeThi::where('de_thi_id', $dethi->id)->delete();
+        $dethi->delete();
+
+        return $this->responseSuccess(['message' => 'Đề thi đã được xóa thành công']);
     }
 }
