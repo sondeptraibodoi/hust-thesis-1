@@ -11,6 +11,7 @@ import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const MonHocPage = () => {
+
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
 
   const [columnDefs] = useState<ColDef<any & ActionField>[]>([
@@ -55,7 +56,7 @@ const ActionRender: FC<any> = ({ data }) => {
   return (
     <>
     <Tooltip className={currentUser?.vai_tro !== "sinh_vien" ? 'hidden' : ""} title="Làm bài thi">
-        <Button type="text" icon={<SignatureOutlined />} />
+        <Button onClick={() => navigate(`kiem-tra/${data.id}`)} type="text" icon={<SignatureOutlined />} />
       </Tooltip>
       <Tooltip className={currentUser?.vai_tro === "sinh_vien" ? 'hidden' : ""} title="Danh sách đề thi">
         <Button onClick={() => navigate(`${data.id}/de-thi`)} type="text" icon={<ExceptionOutlined />} />

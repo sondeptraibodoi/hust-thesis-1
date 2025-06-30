@@ -305,66 +305,21 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
           label: "Môn học",
           key: "mon-hoc"
         },
-        {
-          label: "Lớp coi thi",
-          key: "lop-trong-thi"
-        },
-        {
-          label: "Tài liệu",
-          key: "giao-vien/tai-lieu"
-        }
+        // {
+        //   label: "Lớp coi thi",
+        //   key: "lop-trong-thi"
+        // },
+        // {
+        //   label: "Tài liệu",
+        //   key: "giao-vien/tai-lieu"
+        // }
       ]
     },
-
-    {
-      label: "Công việc",
-      key: "giao-vien/cong-viec",
-      children: [
-        {
-          label: "Nhiệm vụ",
-          key: "giao-vien/nhiem-vu-cua-toi"
-        },
-        {
-          label: "Câu hỏi",
-          key: "giao-vien/cau-hoi"
-        },
-        {
-          label: "Phản biện",
-          key: "giao-vien/cau-hoi/phan-bien"
-        }
-      ]
-    },
-    {
-      label: "Đồ án",
-      key: "do-an",
-      children: [
-        {
-          label: "Đồ án",
-          key: "giao-vien/do-an"
-        },
-        {
-          label: "Đồ án tốt nghiệp",
-          key: "giao-vien/do-an-tot-nghiep"
-        },
-        {
-          label: "Thực tập",
-          key: "giao-vien/thuc-tap"
-        },
-        {
-          label: "Phản biện",
-          key: "giao-vien/do-an/phan-bien"
-        }
-      ]
-    },
-    {
-      label: "Quy định/Thông báo",
-      key: "quy-dinh"
-    }
   ],
   [ROLE_CODE.STUDENT]: [
     {
       label: "Môn học",
-      key: "mon-hoc"
+      key: "sinh-vien/mon-hoc"
     },
 
     {

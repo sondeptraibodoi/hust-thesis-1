@@ -11,7 +11,7 @@ export default {
   get: (data: any) => sdk.get("cau-hoi", { params: data }),
   put: (data: any) => sdk.put(`cau-hoi/${data.id}`, data),
   delete: (data: any) => sdk.delete(`cau-hoi/${data.id}`, data),
-
+  listDanhGia: (params?: any) => sdk.get(`cau-hoi-danh-gia`, {params})
 };
 
 export const cauHoiTroLyApi = {

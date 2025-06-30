@@ -4,11 +4,10 @@ import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 
 //lop hoc
-const MonHocPage = lazy(() => import("@/pages/sinh-vien/mon-hoc/index.tsx"));
-const DanhSachLoiCuaSinhVien = lazy(() => import("@/pages/sinh-vien/bao-loi"));
-const LopHocDetailPage = lazy(() => import("@/pages/sinh-vien/lop/detail"));
+const MonHocPage = lazy(() => import("@/pages/sinh-vien/mon-hoc"));
 const BangDiemPage = lazy(() => import("@/pages/sinh-vien/bang-diem"));
 const KiemTraPage = lazy(() => import("@/pages/sinh-vien/kiem-tra"))
+const DanhGiaPage = lazy(() => import("@/pages/sinh-vien/danh-gia-nang-luc"));
 
 export const StudentRoute = [
   {
@@ -16,7 +15,7 @@ export const StudentRoute = [
     element: <Navigate to="mon-hoc" />
   },
   {
-    path: "mon-hoc",
+    path: "sinh-vien/mon-hoc",
     children: [
       {
         path: "",
@@ -38,6 +37,15 @@ export const StudentRoute = [
         )
       }
     ]
+  },
+  {
+    path: "danh-gia-nang-luc/:id",
+    element: (
+      <>
+        <PageTitle title="Đánh giá năng lực" />
+        <DanhGiaPage />
+      </>
+    )
   },
   {
     path: "diem-sinh-vien",

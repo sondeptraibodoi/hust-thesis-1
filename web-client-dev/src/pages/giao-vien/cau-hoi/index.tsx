@@ -10,6 +10,7 @@ import { ColDef } from "ag-grid-community";
 import { Button, Tooltip } from "antd";
 import React, { FC, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { level } from "../de-thi/form";
 
 const answer = ["A", "B", "C", "D"];
 
@@ -85,14 +86,16 @@ const CauHoiPage = () => {
     },
     {
       required: true,
-      type: "inputnumber",
+      type: "select",
       name: "do_kho",
       label: "Độ khó",
       placeholder: "Vui lòng nhập độ khó",
-      min: 1,
-      propInput: {
-        max: 10
-      }
+      children: level.map((x) => {
+        return {
+          value: x.value,
+          title: x.label
+        };
+      })
     }
   ];
 

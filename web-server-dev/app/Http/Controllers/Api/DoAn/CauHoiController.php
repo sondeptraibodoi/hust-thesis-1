@@ -19,6 +19,7 @@ class CauHoiController extends Controller
             ->allowedAgGrid([])
             ->defaultSort("id")
             ->allowedSearch(["do_kho", "de_bai", 'dap_an'])
+            ->allowedFilters(["do_kho", "de_bai", 'dap_an'])
             ->allowedPagination();
         return response()->json(new \App\Http\Resources\Items($query->get()), 200, []);
     }

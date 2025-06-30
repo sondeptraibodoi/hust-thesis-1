@@ -4,8 +4,6 @@ import PageContainer from "@/Layout/PageContainer";
 import { DeleteOutlined } from "@ant-design/icons";
 import { App, Button, Card, Form, Input } from "antd";
 import { Select } from "antd/lib";
-import { log } from "console";
-import { ca, de } from "date-fns/locale";
 import { debounce, get } from "lodash";
 import React, { FC, useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,7 +12,7 @@ interface Props {
   type?: "create" | "update";
 }
 
-const level = [
+export const level = [
   {
     value: 1,
     label: "Mức độ 1"
@@ -63,11 +61,12 @@ const DeThiForm: FC<Props> = ({ type }) => {
   const [cauHoiSelected, setCauHoiSelected] = React.useState<any[]>([]);
   const { id, dethi } = useParams<{ id: string; dethi?: string }>();
   const [form] = Form.useForm();
+  const levelValue = Form.useWatch("diem_toi_da", form) || 1;
   const { notification: api } = App.useApp();
   useEffect(() => {
     if (!id) return;
     getCauHoi();
-  }, [id, dethi, type]);
+  }, [id, dethi, type, levelValue]);
 
   useEffect(() => {
     if (type === "update" && dethi) {
@@ -79,7 +78,8 @@ const DeThiForm: FC<Props> = ({ type }) => {
   const getCauHoi = async () => {
     if (!id) return;
     const res = await cauHoiApi.get({
-      mon_hoc_id: Number(id)
+      mon_hoc_id: Number(id),
+      do_kho: levelValue
     });
     if (!res.data) return;
     const data = res.data.map((x: any) => {
@@ -180,7 +180,7 @@ const DeThiForm: FC<Props> = ({ type }) => {
             </Form.Item>
             <Form.Item name="diem_toi_da" label="Độ khó" rules={[{ required: true, message: "Vui lòng chọn độ khó" }]}>
               <Select className="w-full" placeholder="Chọn độ khó">
-                {level.map((lvl) => (
+                {level.map((lvl: any) => (
                   <Select.Option key={lvl.value} value={lvl.value}>
                     {lvl.label}
                   </Select.Option>

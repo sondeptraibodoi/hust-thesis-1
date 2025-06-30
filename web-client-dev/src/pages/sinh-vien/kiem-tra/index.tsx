@@ -36,7 +36,10 @@ const KiemTraPage = () => {
         </span>
       ),
       okText: "Xác nhận",
-      cancelText: "Hủy"
+      cancelText: "Hủy",
+      onOk: () => {
+        navigate(`/sohoa/danh-gia-nang-luc/${id}`);
+      },
     });
   };
 

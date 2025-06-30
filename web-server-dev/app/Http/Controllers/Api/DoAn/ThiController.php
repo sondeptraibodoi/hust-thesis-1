@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\BaiLam;
+use App\Models\CauHoi;
 use App\Models\ChiTietBaiLam;
 use App\Models\ChiTietDeThi;
 use App\Models\DapAn;
@@ -74,30 +75,76 @@ class ThiController extends Controller
     // 3. Nộp bài => tính điểm
     public function nopBai(Request $request)
     {
-        $request->validate([
-            'bai_lam_id' => 'required|integer',
+        $type = $request->get('type', 'kiem-tra');
+        $query = $request->all();
+        // $answers = $request->get('answers');
+        // $diem = 0;
+        // foreach ($answers as $key => $value) {
+        //     dd($value, $key);
+        //     # code...
+        // }
+
+        // $baiLam = BaiLam::findOrFail($request->bai_lam_id);
+
+        // $tongCau = ChiTietDeThi::where('de_thi_id', $baiLam->de_thi_id)->count();
+        // $soCauDung = ChiTietBaiLam::where('bai_lam_id', $baiLam->bai_lam_id)
+        //     ->where('dung_hay_sai', 1)
+        //     ->count();
+
+        // $diem = round(($soCauDung / $tongCau) * 10, 2); // tính điểm theo thang 10
+
+        // $baiLam->update([
+        //     'diem' => $diem,
+        //     'thoi_gian_nop' => now(),
+        // ]);
+
+        // return response()->json([
+        //     'message' => 'Nộp bài thành công',
+        //     'diem' => $diem,
+        //     'so_cau_dung' => $soCauDung,
+        //     'tong_so_cau' => $tongCau,
+        // ]);
+        $validated = $request->validate([
+            'answers' => 'required|array'
         ]);
 
-        $baiLam = BaiLam::findOrFail($request->bai_lam_id);
+        $answers = $validated['answers'];
+        $questionIds = array_keys($answers);
+        $questions = CauHoi::whereIn('id', $questionIds)->get();
+        $totalQuestions = count($questions);
+        $correctCount = 0;
 
-        $tongCau = ChiTietDeThi::where('de_thi_id', $baiLam->de_thi_id)->count();
-        $soCauDung = ChiTietBaiLam::where('bai_lam_id', $baiLam->bai_lam_id)
-            ->where('dung_hay_sai', 1)
-            ->count();
+        $totalScore = 0;
+        $score = 0;
 
-        $diem = round(($soCauDung / $tongCau) * 10, 2); // tính điểm theo thang 10
+        foreach ($questions as $question) {
+            $correctAnswer = strtoupper($question->dap_an);
+            $studentAnswer = strtoupper($answers[$question->id] ?? '');
 
-        $baiLam->update([
-            'diem' => $diem,
-            'thoi_gian_nop' => now(),
-        ]);
+            $weight = (int) $question->do_kho ?: 1;
 
-        return response()->json([
-            'message' => 'Nộp bài thành công',
-            'diem' => $diem,
-            'so_cau_dung' => $soCauDung,
-            'tong_so_cau' => $tongCau,
-        ]);
+            $totalScore += $weight;
+
+            if ($studentAnswer === $correctAnswer) {
+                $correctCount++;
+                $score += $weight;
+            }
+        }
+        $correctRate = $totalScore > 0 ? $score / $totalScore : 0;
+        $level = max(1, ceil($correctRate * 10));
+        if ($type === 'danh-gia') {
+            DB::table('level_mon_hoc')->insert([
+                'nguoi_dung_id' => auth()->user()->id,
+                'level' => $level,
+                'mon_hoc_id' => $query['mon_hoc_id']
+            ]);
+        }
     }
 
+    public function cauHoiDanhGia(Request $request)
+    {
+        $monHocId = $request->input('mon_hoc_id');
+        $list = CauHoi::where('mon_hoc_id', $monHocId)->inRandomOrder()->limit(5)->get();
+        return $this->responseSuccess($list);
+    }
 }
