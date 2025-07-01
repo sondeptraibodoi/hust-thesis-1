@@ -8,6 +8,7 @@ const MonHocPage = lazy(() => import("@/pages/sinh-vien/mon-hoc"));
 const BangDiemPage = lazy(() => import("@/pages/sinh-vien/bang-diem"));
 const KiemTraPage = lazy(() => import("@/pages/sinh-vien/kiem-tra"))
 const DanhGiaPage = lazy(() => import("@/pages/sinh-vien/danh-gia-nang-luc"));
+const FormKiemTra = lazy(() => import("@/pages/sinh-vien/kiem-tra/form"))
 
 export const StudentRoute = [
   {
@@ -31,13 +32,22 @@ export const StudentRoute = [
         path: "kiem-tra/:id",
         element: (
           <>
-            <PageTitle title="Phòng học chi tiết" />
+            <PageTitle title="Chi tiết" />
             <KiemTraPage />
           </>
         )
       }
     ]
   },
+  {
+        path: "kiem-tra/:id",
+        element: (
+          <>
+            <PageTitle title="Kiểm tra" />
+            <FormKiemTra />
+          </>
+        )
+      },
   {
     path: "danh-gia-nang-luc/:id",
     element: (

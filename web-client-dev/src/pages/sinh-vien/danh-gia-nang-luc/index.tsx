@@ -9,7 +9,7 @@ export type RawData = {
   de_bai: string; // JSON string
 };
 
-export function convert(rawData: RawData[]): Question[] {
+function convert(rawData: RawData[]): Question[] {
   return rawData.map((item) => {
     const deBai = JSON.parse(item.de_bai);
     return {

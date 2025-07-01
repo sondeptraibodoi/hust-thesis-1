@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\CauHoi;
 use App\Models\DeThi;
 use App\Models\ChiTietDeThi;
+use App\Models\MonHoc;
 
 class DeThiController extends Controller
 {
@@ -106,5 +107,23 @@ class DeThiController extends Controller
         $dethi->delete();
 
         return $this->responseSuccess(['message' => 'Đề thi đã được xóa thành công']);
+    }
+
+    public function getDeThiRandom(Request $request, $id)
+    {
+        $mon = MonHoc::find($id);
+        $level = $mon->level();
+        $deThi = DeThi::where('diem_toi_da', $level)
+    ->with([
+        'monHoc',
+        'nguoiTao',
+        'chiTietDeThis.cauHoi' => function ($query) {
+            $query->select('id', 'de_bai');
+        }
+    ])
+    ->inRandomOrder()
+    ->first();
+        return $this->responseSuccess($deThi);
+
     }
 }

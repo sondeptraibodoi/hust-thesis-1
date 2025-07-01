@@ -52,7 +52,7 @@ const KiemTraPage = () => {
       <Row>
         <Col className="p-6" span={12}>
           <Card
-            // onClick={() => navigate(currentUser?.vai_tro === "sinh_vien" ? `kiem-tra/${x.id}` : `/so-hoa/de-thi/${x.id}`)}
+            onClick={() => navigate(`/sohoa/kiem-tra/${id}`)}
             className="w-full text-center flex items-center justify-center text-5xl font-bold h-[750px] cursor-pointer"
           >
             Làm bài kiểm tra

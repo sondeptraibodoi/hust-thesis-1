@@ -12,5 +12,5 @@ export default {
   put: (data: any) => sdk.put(`de-thi/${data.id}`, data),
   delete: (data: any) => sdk.delete(`de-thi/${data.id}`, data),
   show: (data: any) => sdk.get(`de-thi/${data.id}`),
-
+  getDethi: (data: any) => sdk.get(`lay-de-thi/${data}`)
 };
