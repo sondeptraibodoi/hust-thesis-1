@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Library\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use App\Models\BaiLam;
 use App\Models\DapAn;
@@ -9,8 +10,19 @@ use App\Models\DapAn;
 
 class BaiLamController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $query = BaiLam::query();
+        $query = QueryBuilder::for($query, $request)
+            ->allowedAgGrid([])
+            ->defaultSort("id")
+            ->allowedSearch(["code"])
+            ->allowedPagination();
+        return response()->json(new \App\Http\Resources\Items($query->get()), 200, []);
+    }
     //Xem bài làm của sinh viên đối với vai trò là admin/super_admin
-    public function chiTietBaiLam($baiLamId)
+    public function show($baiLamId)
     {
         $baiLam = BaiLam::with([
             'nguoiDung',

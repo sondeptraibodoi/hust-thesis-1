@@ -1,7 +1,7 @@
 import monHocApi from "@/api/mon-hoc/monHoc.api";
 import PageContainer from "@/Layout/PageContainer";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { Card, Col, Modal, Row } from "antd";
+import { Button, Card, Col, Modal, Row } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -36,10 +36,13 @@ const KiemTraPage = () => {
         </span>
       ),
       okText: "Xác nhận",
-      cancelText: "Hủy",
+      cancelText: "Quay lại",
       onOk: () => {
         navigate(`/sohoa/danh-gia-nang-luc/${id}`);
       },
+      onCancel: () => {
+        navigate('/sohoa/sinh-vien/mon-hoc');
+      }
     });
   };
 
@@ -49,23 +52,8 @@ const KiemTraPage = () => {
   return (
     <PageContainer title="Kiểm tra">
       {contextHolder}
-      <Row>
-        <Col className="p-6" span={12}>
-          <Card
-            onClick={() => navigate(`/sohoa/kiem-tra/${id}`)}
-            className="w-full text-center flex items-center justify-center text-5xl font-bold h-[750px] cursor-pointer"
-          >
-            Làm bài kiểm tra
-          </Card>
-        </Col>
-        <Col className="p-6" span={12}>
-          <Card
-            onClick={() => navigate(`/sohoa/diem-sinh-vien`)}
-            className="w-full text-center flex items-center justify-center text-5xl font-bold h-[750px] cursor-pointer"
-          >
-            Danh sách bài đã làm
-          </Card>
-        </Col>
+      <Row className="flex justify-center">
+        <Button type="primary" className="w-[50%] mt-[10%] text-center  text-5xl font-bold h-[250px] cursor-pointer" onClick={() => navigate(`/sohoa/kiem-tra/${id}`)}>Làm bài kiểm tra</Button>
       </Row>
     </PageContainer>
   );
