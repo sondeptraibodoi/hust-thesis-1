@@ -116,6 +116,50 @@ const CauHoiPage = () => {
       }
     },
     {
+      headerName: "Đáp án A",
+      field: "de_bai",
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
+      valueFormatter: ({ data }) => {
+        if (!data) return;
+        const render = JSON.parse(data.de_bai);
+        return render.a;
+      }
+    },
+    {
+      headerName: "Đáp án B",
+      field: "de_bai",
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
+      valueFormatter: ({ data }) => {
+        if (!data) return;
+        const render = JSON.parse(data.de_bai);
+        return render.b;
+      }
+    },
+    {
+      headerName: "Đáp án C",
+      field: "de_bai",
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
+      valueFormatter: ({ data }) => {
+        if (!data) return;
+        const render = JSON.parse(data.de_bai);
+        return render.c;
+      }
+    },
+    {
+      headerName: "Đáp án D",
+      field: "de_bai",
+      filter: "agTextColumnFilter",
+      floatingFilter: true,
+      valueFormatter: ({ data }) => {
+        if (!data) return;
+        const render = JSON.parse(data.de_bai);
+        return render.d;
+      }
+    },
+    {
       headerName: "Đáp án",
       field: "dap_an",
       filter: "agNumberColumnFilter",
@@ -164,6 +208,7 @@ const CauHoiPage = () => {
         </Button>
       }
       breadcrumbs={breadcrumbs}
+
     >
       <BaseTable
         key={keyRender}
@@ -171,6 +216,12 @@ const CauHoiPage = () => {
         api={cauHoiApi.list}
         defaultParams={{
           mon_hoc_id: id
+        }}
+        gridOption={{
+          defaultColDef: {
+            flex: 1,
+            resizable: true
+          }
         }}
       />
       <CreateNEditDialog

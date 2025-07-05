@@ -108,6 +108,12 @@ const DethiPage = () => {
         defaultParams={{
           mon_hoc_id: id
         }}
+        gridOption={{
+          defaultColDef: {
+            flex: 1,
+            resizable: true
+          }
+        }}
       />
       {isModalDelete && (
         <DeleteDialog
