@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 import PageContainer from "@/Layout/PageContainer";
 import configApi from "@/api/config.api";
 import { getPrefix } from "@/constant";
-import kiHocApi from "@/api/kiHoc/kiHoc.api";
 import userApi from "@/api/admin/user.api";
 
 interface ThongKeData {
@@ -35,26 +34,6 @@ const ThongKeDuLieuPage = () => {
   const [kiHocFilter, setKiHocFilter] = useState<string>(kiHienGio);
   const [data, setData] = useState<ThongKeData | null>(null);
 
-  useEffect(() => {
-    const getKyHoc = async () => {
-      const res = await kiHocApi.list();
-      if (res.data && res.data.length > 0) {
-        setKihoc(res.data);
-      }
-    };
-    getKyHoc();
-  }, []);
-
-  useEffect(() => {
-    const getKyHocHienGio = async () => {
-      const res = await configApi.getKiHienGio();
-      if (res.data && res.data.length > 0) {
-        setKiHienGio(res.data);
-        setKiHocFilter(res.data);
-      }
-    };
-    getKyHocHienGio();
-  }, []);
 
   const fetchData = async (kiHocFilter: string) => {
     try {

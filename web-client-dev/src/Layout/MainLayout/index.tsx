@@ -16,8 +16,6 @@ import { getPrefix } from "@/constant";
 import { isServerInvalid } from "@/api/axios";
 import { useAppSelector } from "@/stores/hook";
 import { useCheckCapNhatCode } from "@/hooks/useCheckCapNhatCode";
-import { useKiHoc } from "@/hooks/useKiHoc";
-import { useLoaiLopThi } from "@/hooks/useLoaiLopThi";
 
 const THEME_CONFIG = {
   token: {
@@ -62,8 +60,6 @@ const AdminLayout: React.FC<any> = () => {
       }
     }
   });
-  useLoaiLopThi();
-  useKiHoc();
   useCheckCapNhatCode();
   return (
     <ConfigProvider theme={THEME_CONFIG}>

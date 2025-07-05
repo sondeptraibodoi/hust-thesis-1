@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import BaseTable from "@/components/base-table/lan-diem-danh";
 import PageContainer from "@/Layout/PageContainer";
 import bangDiemApi from "@/api/sinhVien/bangDiem.api";
-import kiHocApi from "@/api/kiHoc/kiHoc.api";
-import dotThiApi from "@/api/lop/lopThi.api";
 // import { GhiChuCellRender } from "./diem-ghi-chu";
 import { convertErrorAxios } from "@/api/axios";
 import { Button, Select, Form, notification, Input, Pagination } from "antd";
@@ -167,40 +165,12 @@ const ThongKeDiemPage = () => {
       }
     }
   };
-  useEffect(() => {
-    const getKyHoc = async () => {
-      const res = await kiHocApi.list();
-      if (res.data && res.data.length > 0) {
-        setKihoc(res.data);
-      }
-    };
-    getKyHoc();
-  }, []);
 
-  useEffect(() => {
-    const getKyHocHienGio = async () => {
-      const res = await configApi.getKiHienGio();
-      if (res.data && res.data.length > 0) {
-        setKiHienGio(res.data);
-      }
-    };
-    getKyHocHienGio();
-  }, []);
 
   useEffect(() => {
     form.setFieldsValue({ ki_hoc: kiHienGio });
     onFinish({ ki_hoc: kiHienGio });
   }, [kiHienGio]);
-
-  useEffect(() => {
-    const getDotThi = async () => {
-      const res = await dotThiApi.listLoaiThi();
-      if (res.data && res.data.length > 0) {
-        setDotThi(res.data);
-      }
-    };
-    getDotThi();
-  }, []);
 
   const onFinish = async (values: any) => {
     setLoading(true);

@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import BaseTable from "@/components/base-table/lan-diem-danh";
 import PageContainer from "@/Layout/PageContainer";
 // import { DeleteOutlined } from "@ant-design/icons";
-import lopHocApi from "@/api/lop/lopHoc.api";
-import kiHocApi from "@/api/kiHoc/kiHoc.api";
 import { convertErrorAxios } from "@/api/axios";
 import { Button, Select, Form, notification, Tooltip, InputNumber } from "antd";
 import { LaravelValidationResponse } from "@/interface/axios/laravel";
@@ -154,24 +152,6 @@ const ThongKeDiemDanhPage = () => {
     }
   };
   useEffect(() => {
-    const getKyHoc = async () => {
-      const res = await kiHocApi.list();
-      if (res.data && res.data.length > 0) {
-        setKihoc(res.data);
-      }
-    };
-    getKyHoc();
-  }, []);
-  useEffect(() => {
-    const getKyHocHienGio = async () => {
-      const res = await configApi.getKiHienGio();
-      if (res.data && res.data.length > 0) {
-        setKiHienGio(res.data);
-      }
-    };
-    getKyHocHienGio();
-  }, []);
-  useEffect(() => {
     form.setFieldsValue({ ki_hoc: kiHienGio });
     onFinish({ ki_hoc: kiHienGio });
   }, [kiHienGio]);
@@ -194,20 +174,7 @@ const ThongKeDiemDanhPage = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await lopHocApi.listLopDiemDanh({ ...values });
-        setListData(response.data);
-      } catch (error) {
-        console.error("Error fetching data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loaded && fetchData();
-  }, [values]);
+
   const handleExport = async () => {
     setLoadingEx(true);
     try {

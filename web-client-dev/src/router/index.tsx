@@ -1,5 +1,5 @@
 import { Navigate, Outlet, createBrowserRouter } from "react-router-dom";
-import { AdminRoute, AssistantRoute, HpAssistantRoute, StudentRoute, TeacherRoute } from "./modules";
+import { AdminRoute, StudentRoute, TeacherRoute } from "./modules";
 
 import { getPrefix } from "@/constant";
 import { ROLE } from "@/interface/user";
@@ -11,7 +11,6 @@ import { lazy } from "react";
 import type { RouteObject } from "react-router";
 import WrapperRouteComponent from "./config";
 import { ErrorBoundary } from "./error-router";
-import { HpOfficeRoute } from "./modules/hp_office";
 import { GuestOnlyRoute } from "./privateRoute";
 
 const MainLayout = lazy(() => import("@/Layout/MainLayout"));
@@ -98,21 +97,6 @@ const routeList: RouteObject[] = [
         element: <WrapperRouteComponent element={<Outlet />} auth role={ROLE.student} />,
         children: StudentRoute
       },
-      {
-        path: "",
-        element: <WrapperRouteComponent element={<Outlet />} auth roles={[ROLE.admin, ROLE.assistant]} />,
-        children: AssistantRoute
-      },
-      {
-        path: "",
-        element: <WrapperRouteComponent element={<Outlet />} auth roles={[ROLE.hp_assistant, ROLE.assistant]} />,
-        children: HpAssistantRoute
-      },
-      {
-        path: "",
-        element: <WrapperRouteComponent element={<Outlet />} auth roles={[ROLE.hp_office]} />,
-        children: HpOfficeRoute
-      }
     ]
   },
   {

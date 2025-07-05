@@ -2,7 +2,6 @@ import { Badge, Button, Dropdown, Menu, MenuProps } from "antd";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import nhiemVuCuaToiApi from "@/api/nhiemVu/nhiemVuCuaToi.api";
 import { ROLE_CODE } from "@/constant";
 import { ROLE } from "@/interface/user";
 import { checkUserRoleAllow } from "@/interface/user/auth";
@@ -366,18 +365,6 @@ const Navigation: FC<Props> = ({ styles, mode }) => {
   }, [authUser, taskCount]);
 
   authUser ? MENUS[authUser.role_code] : [];
-  useEffect(() => {
-    // Fetch the badge counts from API
-    const getNhiemVu = async () => {
-      try {
-        const res = await nhiemVuCuaToiApi.list();
-        setTaskCount(res.data.length);
-      } catch (error) {
-        console.error("Error fetching badge counts:", error);
-      }
-    };
-    authUser?.role_code == ROLE.teacher && getNhiemVu();
-  }, []);
 
   const handleNavigate: MenuProps["onClick"] = (e) => {
     if (location.pathname == "sami/" + e.key) return;
