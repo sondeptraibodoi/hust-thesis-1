@@ -2,7 +2,7 @@ import cauHoiApi from "@/api/cauHoi/cauHoi.api";
 import deThiApi from "@/api/deThi/deThi.api";
 import PageContainer from "@/Layout/PageContainer";
 import { DeleteOutlined } from "@ant-design/icons";
-import { App, Button, Card, Form, Input } from "antd";
+import { App, Button, Card, Form, Input, message } from "antd";
 import { Select } from "antd/lib";
 import { debounce, get } from "lodash";
 import React, { FC, useCallback, useEffect } from "react";
@@ -74,7 +74,6 @@ const DeThiForm: FC<Props> = ({ type }) => {
     }
   }, [id, dethi, type, cauHoi]);
 
-
   const getCauHoi = async () => {
     if (!id) return;
     const res = await cauHoiApi.get({
@@ -102,9 +101,9 @@ const DeThiForm: FC<Props> = ({ type }) => {
     const res = await deThiApi.show({ id: Number(dethi) });
     if (!res.data) return;
     const data = res.data.data;
-    setCauHoiSelected(cauHoi.filter((cauHoi: any) =>
-    data.chi_tiet_de_this.some((chiTiet: any) => chiTiet.cau_hoi_id === cauHoi.id)
-  ));
+    setCauHoiSelected(
+      cauHoi.filter((cauHoi: any) => data.chi_tiet_de_this.some((chiTiet: any) => chiTiet.cau_hoi_id === cauHoi.id))
+    );
     form.setFieldsValue({
       thoi_gian: data.thoi_gian_thi,
       diem_dat: data.diem_dat,
@@ -176,7 +175,18 @@ const DeThiForm: FC<Props> = ({ type }) => {
               label="Điểm đạt"
               rules={[{ required: true, message: "Vui lòng nhập số điểm đạt" }]}
             >
-              <Input type="number" placeholder="Nhập điểm đạt" />
+              <Input
+                min={0}
+                max={10}
+                type="number"
+                placeholder="Nhập điểm đạt"
+                onBlur={(e) => {
+                  const val = parseFloat(e.target.value);
+                  if (val < 0 || val > 10) {
+                    message.error("Điểm phải từ 0 đến 10");
+                  }
+                }}
+              />
             </Form.Item>
             <Form.Item name="diem_toi_da" label="Độ khó" rules={[{ required: true, message: "Vui lòng chọn độ khó" }]}>
               <Select className="w-full" placeholder="Chọn độ khó">
