@@ -198,7 +198,6 @@ const SinhVienPageDesktop: FC<any> = () => {
         apiCreate={sinhVienApi.create}
         apiEdit={sinhVienApi.edit}
         options={options}
-        translation={"sinh-vien"}
         data={data}
         isEdit={isEdit}
         setIsEdit={setIsEdit}
@@ -208,7 +207,6 @@ const SinhVienPageDesktop: FC<any> = () => {
       />
       <DeleteDialog
         openModal={isModalDelete}
-        translation="sinh-vien"
         closeModal={setIsModalDelete}
         name={data?.name}
         apiDelete={() => data && sinhVienApi.delete(data)}
@@ -501,7 +499,6 @@ const SinhVienPageMobile: FC<{ setKeyRender: any }> = ({ setKeyRender }) => {
           apiCreate={sinhVienApi.create}
           apiEdit={sinhVienApi.edit}
           options={options}
-          translation={"sinh-vien"}
           data={data}
           isEdit={isEdit}
           setIsEdit={setIsEdit}
@@ -511,7 +508,6 @@ const SinhVienPageMobile: FC<{ setKeyRender: any }> = ({ setKeyRender }) => {
         />
         <DeleteDialog
           openModal={isModalDelete}
-          translation="sinh-vien"
           closeModal={setIsModalDelete}
           name={data?.name}
           apiDelete={() => data && sinhVienApi.delete(data)}

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Library\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\MonHoc;
 use App\Models\CauHoi;
 use Illuminate\Support\Facades\DB;
 

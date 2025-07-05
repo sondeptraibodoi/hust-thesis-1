@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\DoAn;
 
 use App\Library\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use App\Models\BaiLam;
 use App\Models\DapAn;
+use App\Http\Controllers\Controller;
 
 
 class BaiLamController extends Controller
@@ -13,7 +14,10 @@ class BaiLamController extends Controller
 
     public function index(Request $request)
     {
-        $query = BaiLam::query();
+        $query = BaiLam::query()->when($request->has('user_id'), function ($q) use ($request) {
+            $q->where('nguoi_dung_id', $request->get('user_id'));
+        })
+            ->with(['nguoiDung', 'deThi', 'monHoc']);
         $query = QueryBuilder::for($query, $request)
             ->allowedAgGrid([])
             ->defaultSort("id")

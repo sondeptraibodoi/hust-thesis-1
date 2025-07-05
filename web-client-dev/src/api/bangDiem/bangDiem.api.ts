@@ -5,7 +5,7 @@ import { LopThi } from "@/interface/lop";
 import { FieldId } from "@/interface/common";
 
 export default {
-  list: (params: CallbackParams) => sdk.post(`bang-diem-list`, params),
+  list: (params: CallbackParams) => sdk.get(`bai-lam`, {params}),
 
   create: (data: any) =>
     sdk.post(`bang-diem/add`, data, {

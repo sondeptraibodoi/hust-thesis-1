@@ -33,6 +33,13 @@ const MonHocPage = () => {
       hide: currentUser?.vai_tro === "sinh_vien"
     },
     {
+      headerName: "Cấp độ",
+      field: "level",
+      filter: "agNumberColumnFilter",
+      floatingFilter: true,
+      hide: currentUser?.vai_tro !== "sinh_vien"
+    },
+    {
       headerName: "Hành động",
       field: "#",
       pinned: "right",
@@ -42,7 +49,12 @@ const MonHocPage = () => {
   ]);
   return (
     <PageContainer title="Danh sách môn">
-      <BaseTable columns={columnDefs} api={monHocApi.list} />
+      <BaseTable gridOption={{
+          defaultColDef: {
+            flex: 1,
+            resizable: true
+          }
+        }} columns={columnDefs} api={monHocApi.list} />
     </PageContainer>
   );
 };

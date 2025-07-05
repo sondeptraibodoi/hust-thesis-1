@@ -76,6 +76,8 @@ class ThiController extends Controller
                     'diem' => ceil($diemMoiCau),
                 ]);
             }
+            $baiThi->diem = $diemTong;
+            $baiThi->save();
             if ($diemTong >= $deThi->diem_dat) {
                 DB::table('level_mon_hoc')
                     ->updateOrInsert(

@@ -21,6 +21,7 @@ class MonHocController extends Controller
             ->allowedPagination();
         $data = $query->paginate();
         $data->getCollection()->transform(function ($item) {
+            $item['level'] = $item->level();
             $item['so_cau_hoi'] = $item->soCau();
             return $item;
         });

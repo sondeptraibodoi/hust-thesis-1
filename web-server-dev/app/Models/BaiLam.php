@@ -29,4 +29,9 @@ class BaiLam extends Model
     {
         return $this->hasMany(ChiTietBaiLam::class, 'bai_lam_id');
     }
+
+    public function monHoc()
+    {
+        return $this->belongsTo(MonHoc::class, 'mon_hoc_id');
+    }
 }
