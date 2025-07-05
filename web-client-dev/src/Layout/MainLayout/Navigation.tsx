@@ -22,7 +22,7 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
     },
     {
       label: "Thống kê",
-      key: "Thống kê"
+      key: "thong-ke"
     },
   ],
   [ROLE_CODE.ASSISTANT]: [
