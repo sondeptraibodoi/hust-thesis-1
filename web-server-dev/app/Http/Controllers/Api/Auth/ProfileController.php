@@ -66,8 +66,8 @@ class ProfileController extends Controller
     {
         $atts = $request->only("old_password", "password");
         $user = $request->user();
-        if (Hash::check($atts["old_password"], $user->password)) {
-            $user->password = bcrypt($request->input("password"));
+        if (Hash::check($atts["old_password"], $user->mat_khau)) {
+            $user->mat_khau = bcrypt($request->input("password"));
             $user->save();
         } else {
             return response()->json(
@@ -108,10 +108,10 @@ class ProfileController extends Controller
         if (isset($info["email"])) {
             $user->update(["username" => $info["email"]]);
         }
-        if (isset($user->info)) {
-            $user->info->update($info);
+        if (isset($user)) {
+            $user->update($info);
         } elseif ($user->role_code == RoleCode::STUDENT) {
-            $user->info()->create($info);
+            $user->create($info);
         }
 
         try {
@@ -122,7 +122,7 @@ class ProfileController extends Controller
         return response()->json([
             "status_code" => 200,
             "message" => "Updated Profile",
-            "data" => new \App\Http\Resources\Profile($user->load("info")),
+            "data" => new \App\Http\Resources\Profile($user),
         ]);
     }
     function checkEmail($str)

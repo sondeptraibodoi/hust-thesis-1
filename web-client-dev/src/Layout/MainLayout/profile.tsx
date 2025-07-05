@@ -324,7 +324,7 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
               {element(authUser)}
               <Form.Item
                 label="Tên sinh viên  "
-                name="name"
+                name="ho_ten"
                 rules={[
                   {
                     required: true,
@@ -333,21 +333,6 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
                 ]}
               >
                 <Input type="text" />
-              </Form.Item>
-              <Form.Item
-                label="Tên lớp"
-                name="group"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng điền tên lớp "
-                  }
-                ]}
-              >
-                <Input type="text" />
-              </Form.Item>
-              <Form.Item label="Mã số sinh viên " name={"mssv"}>
-                <Input type="text" disabled />
               </Form.Item>
               <Form.Item label="Địa chỉ Email" name={"email"}>
                 <Input type="text" disabled />
@@ -374,7 +359,7 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
               {element(authUser)}
               <Form.Item
                 label="Tên"
-                name="name"
+                name="ho_ten"
                 rules={[
                   {
                     required: true,

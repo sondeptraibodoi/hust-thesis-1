@@ -22,6 +22,7 @@ class CreateTables extends Migration
             $table->enum('vai_tro', ['admin', 'giang_vien', 'sinh_vien']);
             $table->boolean('trang_thai')->default(true);
             $table->boolean('first_login')->default(true);
+            $table->text('avatar_url')->nullable();
             $table->timestamps();
         });
 

@@ -31,6 +31,7 @@ class User extends Authenticatable
         "email",
         "trang_thai",
         "vai_tro",
+        'avatar_url'
     ];
 
     /**
