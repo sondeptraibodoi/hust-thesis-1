@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CreateTestDataSeeder::class,
+            MonHocSeeder::class
         ]);
     }
 }

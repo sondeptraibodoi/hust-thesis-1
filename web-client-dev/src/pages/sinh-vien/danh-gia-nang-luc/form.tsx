@@ -17,12 +17,13 @@ interface Props {
   type?: "danh-gia" | "kiem-tra";
   title?: string;
   time?: number;
-  mon_hoc_id?: string | number
+  mon_hoc_id?: string | number,
+  de_thi_id?: string | number
 }
 
 export const QuizPage: FC<Props> = (props) => {
   const navigator = useNavigate();
-  const { questions, type, title, mon_hoc_id,time = 15 } = props;
+  const { questions, type, title, mon_hoc_id,time = 15, de_thi_id } = props;
   const [current, setCurrent] = useState<number>(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [timeLeft, setTimeLeft] = useState<number>(time * 60);
@@ -80,7 +81,8 @@ export const QuizPage: FC<Props> = (props) => {
         await baiThiApi.nopBai({
         type: type,
         answers: answers,
-        mon_hoc_id: mon_hoc_id
+        mon_hoc_id: mon_hoc_id,
+        de_thi_id: de_thi_id
       })
       const endTime = new Date();
       const elapsedSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);

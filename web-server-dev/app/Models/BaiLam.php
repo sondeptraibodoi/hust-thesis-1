@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaiLam extends Model
 {
-    protected $table = 'bai_lam';
+    protected $table = 'bai_kiem_tra';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
-        'nguoi_dung_id', 'de_thi_id', 'thoi_gian_nop', 'diem', 'created_at'
+        'nguoi_dung_id', 'de_thi_id', 'thoi_gian_nop', 'diem', 'mon_hoc_id', 'thoi_gian_lam_bai', 'created_at', 'updated_at'
     ];
 
     public function nguoiDung()

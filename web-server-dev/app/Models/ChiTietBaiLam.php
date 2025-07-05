@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChiTietBaiLam extends Model
 {
-    protected $table = 'chi_tiet_bai_lam';
+    protected $table = 'cau_hoi_bai_kiem_tra';
     public $timestamps = false;
 
     protected $fillable = [
-        'bai_lam_id', 'cau_hoi_id', 'dap_an_id', 'dung_hay_sai', 'created_at'
+        'bai_kiem_tra_id', 'cau_hoi_id', 'da_tra_loi', 'cau_tra_loi', 'dap_an_dung', 'diem'
     ];
 
     public function baiLam()

@@ -10,6 +10,7 @@ use App\Models\CauHoi;
 use App\Models\ChiTietBaiLam;
 use App\Models\ChiTietDeThi;
 use App\Models\DapAn;
+use App\Models\DeThi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -77,6 +78,40 @@ class ThiController extends Controller
     {
         $type = $request->get('type', 'kiem-tra');
         $query = $request->all();
+        $diem = 0;
+        if($request->filled('de_thi_id') && $type === 'kiem-tra') {
+            $de = DeThi::find($query['de_thi_id'])->load(['chiTietDeThis']);
+            $cauHoiDe = $de->chiTietDeThis;
+            $allCauHoiIds = $cauHoiDe->pluck('cau_hoi_id')->toArray();
+            $answeredCauHoiIds = array_keys($query['answers']);
+            dd($answeredCauHoiIds);
+            $unansweredCauHoiIds = array_diff($allCauHoiIds, $answeredCauHoiIds);
+
+            dd($unansweredCauHoiIds);
+            $baiThi = BaiLam::create([
+                'nguoi_dung_id' => auth()->user()->id,
+                'mon_hoc_id' => $query['mon_hoc_id'],
+                'de_thi_id' => $query['de_thi_id'],
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            foreach ($query['answers'] as $key => $value) {
+                $cauHoi = CauHoi::find($key);
+                if($cauHoi->dap_an === $value) $diem += 10 / count($query['answers']);
+                $line = ChiTietBaiLam::create([
+                    'bai_kiem_tra_id' => $baiThi->id,
+                    'cau_hoi_id' => $key,
+                    'cau_tra_loi' => $value,
+                    'da_tra_loi' => true,
+                    'dap_an_dung' => $cauHoi->dap_an,
+                    'diem' => 10 / count($query['answers'])
+                ]);
+            };
+
+            if($diem)
+            dd(1);
+        }
         // $answers = $request->get('answers');
         // $diem = 0;
         // foreach ($answers as $key => $value) {
