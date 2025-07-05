@@ -1,22 +1,21 @@
 import userApi from "@/api/admin/user.api";
-import BaseResponsive from "@/components/base-responsive";
 import BaseTable from "@/components/base-table";
-import SelectFilter from "@/components/custom-filter/SelectFilter";
+import CreateNEditDialog from "@/components/createNEditDialog";
+import ExternalFilter from "@/components/custom-filter/ExternalFilter";
+
+import SelectFilterAggrid from "@/components/custom-filter/SelectFilterAggrid";
 import SelectFloatingFilterCompoment from "@/components/custom-filter/SelectFloatingFilterCompoment";
 import DeleteDialog from "@/components/dialog/deleteDialog";
-import { Paginate } from "@/interface/axios";
 import { ActionField } from "@/interface/common";
-import { ROLE, User } from "@/interface/user/user";
+import { ROLE, User } from "@/interface/user";
 import PageContainer from "@/Layout/PageContainer";
-import { DeleteOutlined, EditOutlined, ReloadOutlined } from "@ant-design/icons";
-import { type ColDef } from "ag-grid-community";
-import { Button, Card, Col, Form, Input, Pagination, Row, Select, Spin, Tag, Tooltip } from "antd";
-import { PaginationProps } from "antd/lib";
-import { FC, useCallback, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import CreateUser from "./createUser";
-import ResetPassword from "./reset-password";
-import UpdateUser from "./updateUser";
+import { RootState } from "@/stores";
+import { useAppSelector } from "@/stores/hook";
+import { DeleteOutlined, EditOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
+import { ColDef } from "ag-grid-community";
+import { App, Button, Space, Tag, Tooltip } from "antd";
+import { FC, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const defaultColDef = {
   flex: 1,
@@ -27,14 +26,21 @@ const defaultColDef = {
   }
 };
 
+const active = [
+  {
+    value: true,
+    label: "Hoạt động"
+  },
+  {
+    value: false,
+    label: "Chặn"
+  }
+];
+
 const roleoption = [
   {
     value: ROLE.admin,
     label: "Quản trị"
-  },
-  {
-    value: ROLE.assistant,
-    label: "Trợ lý"
   },
   {
     value: ROLE.teacher,
@@ -43,430 +49,319 @@ const roleoption = [
   {
     value: ROLE.student,
     label: "Sinh viên"
-  },
-  {
-    value: ROLE.hp_assistant,
-    label: "Trưởng nhóm chuyên môn"
-  },
-  {
-    value: ROLE.hp_office,
-    label: "Trợ lý văn phòng"
   }
 ];
 const UserPage: React.FC = () => {
-  const [keyRender, setKeyRender] = useState(0);
-
-  const contentDesktop = () => <UserPageDesktop />;
-  const contentMobile = () => <UserPageMobile key={keyRender} setKeyRender={setKeyRender} />;
-  return (
-    <>
-      <BaseResponsive contentDesktop={contentDesktop} contentMobile={contentMobile} />
-    </>
-  );
-};
-export default UserPage;
-const UserPageDesktop: FC<any> = () => {
-  const { t } = useTranslation("user-manager-modal");
-  const [statusModalDelete, setStatusModalDelete] = useState(false);
-  const [valueSelected, setValueSelected] = useState<any>({
-    role_code: ROLE.admin
-  });
-  const [createUserModal, setCreatUserModal] = useState(false);
-  const [updateUserModal, setUpdateUserModal] = useState(false);
+  const [data, setData] = useState<any>();
   const [isEdit, setIsEdit] = useState(false);
-  const [resetModel, setResetModel] = useState(false);
   const [keyRender, setKeyRender] = useState(0);
-  const [columnDefs] = useState<ColDef<User & ActionField>[]>([
+  const [isModalEdit, setIsModalEdit] = useState(false);
+  const [isModalDelete, setIsModalDelete] = useState(false);
+  const [columnDefs] = useState<ColDef<any & ActionField>[]>([
     {
-      headerName: t("field.username"),
-      field: "username",
-      sortable: true,
-      filter: "agTextColumnFilter"
+      headerName: "Mã hệ thống",
+      field: "id"
     },
     {
-      headerName: t("field.role_code"),
-      field: "role_code",
-      filter: SelectFilter,
+      headerName: "Họ tên",
+      field: "ho_ten",
+      filter: "agTextColumnFilter",
+      floatingFilter: true
+    },
+    {
+      headerName: "Email",
+      field: "email",
+      filter: "agTextColumnFilter",
+      floatingFilter: true
+    },
+    {
+      headerName: "Vai trò",
+      field: "vai_tro",
+      filter: SelectFilterAggrid,
       floatingFilter: true,
       cellRenderer: RoleCellRender,
       floatingFilterComponent: SelectFloatingFilterCompoment,
       floatingFilterComponentParams: {
-        suppressFilterButton: true,
         placeholder: "Vai trò",
         data: roleoption
       }
     },
     {
-      headerName: t("field.action"),
-      field: "action",
+      headerName: "Trạng thái",
+      field: "trang_thai",
+      filter: SelectFilterAggrid,
+      floatingFilter: true,
+      floatingFilterComponent: SelectFloatingFilterCompoment,
+      floatingFilterComponentParams: {
+        placeholder: "Trạng thái",
+        data: active
+      },
+      cellRenderer: ActiveCellRender
+    },
+    {
+      headerName: "Hành động",
+      field: "#",
       pinned: "right",
-      width: 150,
-      filter: false,
-      cellRenderer: ActionCellRender,
+      cellRenderer: ActionRender,
+      width: 170,
       cellRendererParams: {
-        onUpdateItem: (item: User) => {
-          setValueSelected(item);
-          setUpdateUserModal(true);
+        onUpdateItem: (item: any) => {
+          setData(item);
+          setIsModalEdit(true);
           setIsEdit(true);
         },
-        onDeleteItem: (item: User) => {
-          setValueSelected(item);
-          setStatusModalDelete(true);
+        onDeleteItem: (item: any) => {
+          setData(item);
+          setIsModalDelete(true);
         },
-        onResetPassword: (item: User) => {
-          setValueSelected(item);
-          setResetModel(true);
+        render: () => {
+          setKeyRender(Math.random())
         }
       }
     }
   ]);
 
-  return (
-    <>
-      <PageContainer
-        titleTrans={"accountManagement.title"}
-        extraTitle={
-          <Button
-            type="primary"
-            onClick={() => {
-              setCreatUserModal(true);
-            }}
-            style={{ float: "right", height: "2.5rem" }}
-          >
-            {t("action.create_new")}
-          </Button>
+  const optionsCreate = [
+    {
+      type: "input",
+      name: "ho_ten",
+      placeholder: "Vui lòng nhập họ và tên",
+      label: "Họ tên",
+      rule: [
+        {
+          required: true,
+          message: "Họ và tên không được để trống"
         }
-      >
-        <BaseTable
-          columns={columnDefs}
-          api={userApi.list}
-          key={keyRender}
-          gridOption={{ defaultColDef: defaultColDef }}
-        ></BaseTable>
-      </PageContainer>
-      <CreateUser showModal={createUserModal} setShowModal={setCreatUserModal} setKeyRender={setKeyRender}></CreateUser>
-      <UpdateUser
-        setIsEdit={setIsEdit}
+      ]
+    },
+    {
+      type: "input",
+      name: "email",
+      placeholder: "Vui lòng nhập email",
+      label: "Email",
+      rule: [
+        {
+          required: true,
+          message: "Email không được để trống"
+        },
+        {
+          type: "email",
+          message: "Email không hợp lệ"
+        }
+      ]
+    },
+    {
+      type: "password",
+      name: "password",
+      placeholder: "Vui lòng nhập mật khẩu",
+      label: "Mật khẩu",
+      rule: [
+        {
+          required: true,
+          message: "Mật khẩu không được để trống"
+        }
+      ]
+    },
+    {
+      type: "password",
+      name: "confirm",
+      placeholder: "Xác nhận lại mật khẩu",
+      label: "Xác nhận mật khẩu",
+      dependencies: ["password"],
+      rule: [
+        {
+          required: true,
+          message: "Bạn cần xác nhận mật khẩu"
+        },
+        ({ getFieldValue }: any) => ({
+          validator(_: any, value: any) {
+            if (!value || getFieldValue("password") === value) {
+              return Promise.resolve();
+            }
+            return Promise.reject(new Error("Mật khẩu xác nhận không khớp"));
+          }
+        })
+      ]
+    },
+    {
+      rule: [
+        {
+          required: true,
+          message: "Mật khẩu không được để trống"
+        }
+      ],
+      type: "select",
+      name: "vai_tro",
+      label: "Vai trò",
+      placeholder: "Vui lòng chọn vai trò",
+      children: roleoption.map((x) => {
+        return {
+          value: x.value,
+          title: x.label
+        };
+      })
+    }
+  ];
+
+  const optionsEdit = [
+    {
+      type: "input",
+      name: "ho_ten",
+      placeholder: "Vui lòng nhập họ và tên",
+      label: "Họ tên",
+      rule: [
+        {
+          required: true,
+          message: "Họ và tên không được để trống"
+        }
+      ]
+    },
+    {
+      type: "input",
+      name: "email",
+      placeholder: "Vui lòng nhập email",
+      label: "Email",
+      rule: [
+        {
+          required: true,
+          message: "Email không được để trống"
+        },
+        {
+          type: "email",
+          message: "Email không hợp lệ"
+        }
+      ]
+    }
+  ];
+
+  return (
+    <PageContainer
+      title="Danh sách tài khoản"
+      extraTitle={
+        <Space style={{ float: "right" }}>
+          <Button onClick={() => setIsModalEdit(true)} type="primary">
+            Tạo mới
+          </Button>
+        </Space>
+      }
+    >
+      <BaseTable
+        key={keyRender}
+        gridOption={{ defaultColDef: defaultColDef }}
+        columns={columnDefs}
+        api={userApi.list}
+      ></BaseTable>
+      <CreateNEditDialog
+        apiCreate={userApi.create}
+        apiEdit={userApi.edit}
+        options={isEdit == true ? optionsEdit : optionsCreate}
+        data={data}
         isEdit={isEdit}
-        showModal={updateUserModal}
-        setShowModal={setUpdateUserModal}
-        data={valueSelected}
+        setIsEdit={setIsEdit}
         setKeyRender={setKeyRender}
-      ></UpdateUser>
+        openModal={isModalEdit}
+        closeModal={setIsModalEdit}
+      />
       <DeleteDialog
-        openModal={statusModalDelete}
-        translation="user-manager-modal"
-        closeModal={setStatusModalDelete}
-        name={valueSelected?.username}
-        apiDelete={() => valueSelected && userApi.delete(valueSelected)}
+        openModal={isModalDelete}
+        closeModal={setIsModalDelete}
+        name={"Tài khoản " + data?.ho_ten}
+        apiDelete={() => data && userApi.delete(data)}
         setKeyRender={setKeyRender}
       />
-      <ResetPassword showModal={resetModel} setShowModal={setResetModel} data={valueSelected} />
-    </>
+    </PageContainer>
   );
 };
-const UserPageMobile: FC<{ setKeyRender: any }> = ({ setKeyRender }) => {
-  const [dataSource, setDataSource] = useState<User[]>([]);
-  const { t } = useTranslation("user-manager-modal");
-  const [statusModalDelete, setStatusModalDelete] = useState(false);
-  const [valueSelected, setValueSelected] = useState<any>({
-    role_code: ROLE.admin
-  });
-  const [createUserModal, setCreatUserModal] = useState(false);
-  const [updateUserModal, setUpdateUserModal] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [resetModel, setResetModel] = useState(false);
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [form] = Form.useForm();
-  const layout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 18 }
-  };
-  const [pagination, setPagination] = useState<Paginate>({
-    count: 1,
-    hasMoreItems: true,
-    itemsPerPage: 10,
-    page: 1,
-    total: 1,
-    totalPage: 1
-  });
-  const getData = useCallback(async (filter: any) => {
-    setLoading(true);
+export default UserPage;
+
+const ActionRender: FC<any> = ({ onUpdateItem, onDeleteItem, data, render }) => {
+  const { notification: api } = App.useApp();
+  const { currentUser } = useAppSelector((state: RootState) => state.auth);
+  const handleActive = async () => {
     try {
-      const res = await userApi.list(filter);
-      if (res.data.list.length > 0) {
-        setDataSource(res.data.list);
-        setPagination((state) => {
-          return {
-            ...state,
-            total: res.data.pagination.total
-          };
-        });
-      } else {
-        setDataSource([]);
-      }
-    } finally {
-      setLoading(false);
+       await userApi.setactive({
+      id: data.id,
+      trang_thai: !data.trang_thai
+    })
+    api.success({
+        message: "Thành công",
+        description: "Cập nhật trạng thái thành công"
+      })
+      render()
+    } catch (err) {
+      api.error({
+        message: "Thất bại",
+        description: "Cập nhật trạng thái thất bại"
+      })
     }
-  }, []);
 
-  const onShowSizeChange: PaginationProps["onShowSizeChange"] = useCallback((current: number, pageSize: number) => {
-    setPagination((state) => {
-      return {
-        ...state,
-        itemsPerPage: pageSize,
-        page: current
-      };
-    });
-  }, []);
-  const handleFieldChanged = (field: string, value: any) => {
-    form.setFieldsValue({ [field]: value });
-    onSubmit(form.getFieldsValue());
-  };
-  const onSubmit = (filter?: any) => {
-    const sendData = {
-      filterModel: {
-        username: {
-          filterType: "text",
-          type: "contains",
-          filter: filter.username
-        },
-        role_code: {
-          filterType: "text",
-          type: "contains",
-          filter: filter.role_code
-        }
-      },
-      count: 1,
-      hasMoreItems: true,
-      itemsPerPage: pagination.itemsPerPage,
-      page: pagination.page,
-      total: 1,
-      totalPage: 1
-    };
-    getData(sendData);
-  };
-
-  useEffect(() => {
-    onSubmit(form.getFieldsValue());
-  }, [pagination.itemsPerPage, pagination.page]);
-  const Filter = (
-    <Form form={form} layout="vertical" {...layout} labelWrap onFinish={onSubmit}>
-      <Row>
-        <Col xs={24} sm={12} md={8} lg={8} xxl={6}>
-          <Form.Item className="col-span-12 sm:col-span-6 lg:col-span-3" name="username" label="Tên đăng nhập">
-            <Input
-              onPressEnter={(e: any) => {
-                pagination.page = 1;
-                handleFieldChanged("username", e.target.value);
-              }}
-            />
-          </Form.Item>
-        </Col>
-
-        <Col xs={24} sm={12} md={8} lg={8} xxl={6}>
-          <Form.Item className="col-span-12 sm:col-span-6 lg:col-span-3" name="role_code" label="Vai trò">
-            <Select
-              allowClear
-              onChange={(value) => {
-                pagination.page = 1;
-                handleFieldChanged("role_code", value);
-              }}
-            >
-              {roleoption.map((item) => (
-                <Select.Option key={item.value}>{item.label}</Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
-    </Form>
-  );
-  let Content = undefined;
-  if (loading) {
-    Content = (
-      <div className="p-2">
-        {" "}
-        <Spin />{" "}
-      </div>
-    );
-  } else if (dataSource.length == 0) {
-    Content = <div className="p-2 text-center"> Chưa có tài khoản nào</div>;
-  } else {
-    Content = (
-      <>
-        {dataSource.map((record, key) => {
-          return (
-            <Col span={24} key={record.id} className="my-2">
-              <Card>
-                <p className="my-1">
-                  <strong>STT:</strong> {key + 1}
-                </p>
-                <p className="my-1">
-                  <strong>Tên đăng nhập:</strong> {record.username}
-                </p>
-                <p className="my-1">
-                  <strong>Vai trò:</strong>{" "}
-                  {record.roles.map((role: string) => {
-                    switch (role) {
-                      case ROLE.teacher:
-                        return <Tag key={ROLE.teacher}>Giảng viên</Tag>;
-                      case ROLE.admin:
-                        return <Tag key={ROLE.admin}>Quản trị</Tag>;
-                      case ROLE.assistant:
-                        return <Tag key={ROLE.assistant}>Trợ lý</Tag>;
-                      case ROLE.student:
-                        return <Tag key={ROLE.student}>Sinh viên</Tag>;
-                    }
-                  })}
-                </p>
-
-                <div className="flex justify-center">
-                  <Tooltip title="Tải lại">
-                    <Button
-                      shape="circle"
-                      type="text"
-                      icon={<ReloadOutlined />}
-                      onClick={() => {
-                        setValueSelected(record);
-                        setResetModel(true);
-                      }}
-                    ></Button>
-                  </Tooltip>
-                  <Tooltip title="Sửa">
-                    <Button
-                      shape="circle"
-                      icon={<EditOutlined />}
-                      type="text"
-                      onClick={() => {
-                        setValueSelected(record);
-                        setUpdateUserModal(true);
-                        setIsEdit(true);
-                      }}
-                    />
-                  </Tooltip>
-                  <Tooltip title="Xoá">
-                    <Button
-                      shape="circle"
-                      icon={<DeleteOutlined />}
-                      type="text"
-                      onClick={() => {
-                        setValueSelected(record);
-                        setStatusModalDelete(true);
-                      }}
-                    />
-                  </Tooltip>
-                </div>
-              </Card>
-            </Col>
-          );
-        })}
-
-        <div
-          className="flex justify-between items-center flex-grow-0"
-          style={{
-            padding: " 8px 0"
-          }}
-        >
-          <Pagination
-            current={pagination.page}
-            pageSize={pagination.itemsPerPage}
-            showSizeChanger
-            onChange={onShowSizeChange}
-            total={pagination.total}
-          />
-          <div className="px-2">Tổng số: {pagination.total || 0}</div>
-        </div>
-        <CreateUser
-          showModal={createUserModal}
-          setShowModal={setCreatUserModal}
-          setKeyRender={setKeyRender}
-        ></CreateUser>
-        <UpdateUser
-          setIsEdit={setIsEdit}
-          isEdit={isEdit}
-          showModal={updateUserModal}
-          setShowModal={setUpdateUserModal}
-          data={valueSelected}
-          setKeyRender={setKeyRender}
-        ></UpdateUser>
-        <DeleteDialog
-          openModal={statusModalDelete}
-          translation="user-manager-modal"
-          closeModal={setStatusModalDelete}
-          name={valueSelected?.username}
-          apiDelete={() => valueSelected && userApi.delete(valueSelected)}
-          setKeyRender={setKeyRender}
-        />
-        <ResetPassword showModal={resetModel} setShowModal={setResetModel} data={valueSelected} />
-      </>
-    );
   }
-
+  if (!data) return;
   return (
-    <div>
-      <PageContainer
-        title="Quản lý tài khoản"
-        extraTitle={
-          <Button
-            type="primary"
-            onClick={() => {
-              setCreatUserModal(true);
-            }}
-            style={{ float: "right" }}
-          >
-            {t("action.create_new")}
-          </Button>
-        }
+    <>
+      <Tooltip
+        className={currentUser?.vai_tro !== "admin" ? "hidden" : ""}
+        title={data.trang_thai ? "Chặn" : "Mở khóa"}
       >
-        {Filter}
-        <div className="card-container card-chi-tiet-diem-danh">{Content}</div>
-      </PageContainer>
-    </div>
+        <Button
+          type="text"
+          icon={data.trang_thai ? <LockOutlined /> : <UnlockOutlined />}
+          onClick={() => handleActive()}
+        />
+      </Tooltip>
+      <Tooltip className={currentUser?.vai_tro !== "admin" ? "hidden" : ""} title="Sửa">
+        <Button type="text" icon={<EditOutlined />} onClick={() => onUpdateItem(data)} />
+      </Tooltip>
+      <Tooltip className={currentUser?.vai_tro !== "admin" ? "hidden" : ""} title="Xóa">
+        <Button type="text" icon={<DeleteOutlined />} onClick={() => onDeleteItem(data)} />
+      </Tooltip>
+    </>
   );
 };
 
-const ActionCellRender: FC<any> = ({ onUpdateItem, onDeleteItem, data, onResetPassword }) => {
-  if (!data) {
-    return <span></span>;
-  }
-  return (
-    <>
-      <Tooltip title="Tải lại">
-        <Button shape="circle" type="text" icon={<ReloadOutlined />} onClick={() => onResetPassword(data)}></Button>
-      </Tooltip>
-      <Tooltip title="Sửa">
-        <Button shape="circle" icon={<EditOutlined />} type="text" onClick={() => onUpdateItem(data)} />
-      </Tooltip>
-      <Tooltip title="Xoá">
-        <Button shape="circle" icon={<DeleteOutlined />} type="text" onClick={() => onDeleteItem(data)} />
-      </Tooltip>
-    </>
-  );
-};
 const RoleCellRender: FC<any> = ({ data }) => {
-  if (!data) {
-    return <span></span>;
+  if (!data) return <span />;
+
+  let content = null;
+  switch (data.vai_tro) {
+    case ROLE.teacher:
+      content = <Tag key={ROLE.teacher}>Giảng viên</Tag>;
+      break;
+    case ROLE.admin:
+      content = <Tag key={ROLE.admin}>Quản trị</Tag>;
+      break;
+    case ROLE.assistant:
+      content = <Tag key={ROLE.assistant}>Trợ lý</Tag>;
+      break;
+    case ROLE.student:
+      content = <Tag key={ROLE.student}>Sinh viên</Tag>;
+      break;
+    case ROLE.hp_assistant:
+      content = <Tag key={ROLE.hp_assistant}>Trưởng nhóm chuyên môn</Tag>;
+      break;
+    case ROLE.hp_office:
+      content = <Tag key={ROLE.hp_office}>Trợ lý văn phòng</Tag>;
+      break;
+    default:
+      content = <Tag>Không rõ</Tag>;
   }
-  return (
-    <>
-      {data.roles.map((role: string) => {
-        switch (role) {
-          case ROLE.teacher:
-            return <Tag key={ROLE.teacher}>Giảng viên</Tag>;
-          case ROLE.admin:
-            return <Tag key={ROLE.admin}>Quản trị</Tag>;
-          case ROLE.assistant:
-            return <Tag key={ROLE.assistant}>Trợ lý</Tag>;
-          case ROLE.student:
-            return <Tag key={ROLE.student}>Sinh viên</Tag>;
-          case ROLE.hp_assistant:
-            return <Tag key={ROLE.hp_assistant}>Trưởng nhóm chuyên môn</Tag>;
-          case ROLE.hp_office:
-            return <Tag key={ROLE.hp_office}>Trợ lý văn phòng</Tag>;
-        }
-      })}
-    </>
-  );
+
+  return <>{content}</>;
+};
+
+const ActiveCellRender: FC<any> = ({ data }) => {
+  if (!data) return <span />;
+
+  let content = null;
+  switch (data.trang_thai) {
+    case true:
+      content = <Tag>Hoạt động</Tag>;
+      break;
+    case false:
+      content = <Tag>Chặn</Tag>;
+      break;
+  }
+
+  return <>{content}</>;
 };

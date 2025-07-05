@@ -177,17 +177,6 @@ class AuthenticateController extends Controller
                     if (strlen($numberInEmail) >= 6) {
                         $numberInEmail = "20" . $numberInEmail;
                     }
-
-                    $sinh_vien = SinhVien::where("mssv", $numberInEmail)->first();
-                    if (!empty($sinh_vien)) {
-                        $user->update([
-                            "info_id" => $sinh_vien->getKey(),
-                            "info_type" => $sinh_vien->getMorphClass(),
-                        ]);
-                        if (empty($sinh_vien->email) || $sinh_vien->email != $mail) {
-                            $sinh_vien->update(["email" => $mail]);
-                        }
-                    }
                 }
             }
 
