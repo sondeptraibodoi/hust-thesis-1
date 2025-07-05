@@ -2,12 +2,9 @@ import bangDiemApi from "@/api/bangDiem/bangDiem.api";
 import BaseTable from "@/components/base-table";
 import { ActionField } from "@/interface/common";
 import PageContainer from "@/Layout/PageContainer";
-import { InfoCircleOutlined } from "@ant-design/icons";
 import { ColDef } from "ag-grid-community";
-import { Button, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const BangDiemPage = () => {
   const [columnDefs] = useState<ColDef<any & ActionField>[]>([

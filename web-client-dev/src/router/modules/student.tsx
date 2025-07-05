@@ -1,6 +1,6 @@
 // import configApi from "@/api/config.api";
 import PageTitle from "@/Layout/PageTitle";
-import { Children, lazy } from "react";
+import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 
 //lop hoc

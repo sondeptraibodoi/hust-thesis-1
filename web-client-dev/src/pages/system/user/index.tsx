@@ -1,13 +1,12 @@
 import userApi from "@/api/admin/user.api";
 import BaseTable from "@/components/base-table";
 import CreateNEditDialog from "@/components/createNEditDialog";
-import ExternalFilter from "@/components/custom-filter/ExternalFilter";
 
 import SelectFilterAggrid from "@/components/custom-filter/SelectFilterAggrid";
 import SelectFloatingFilterCompoment from "@/components/custom-filter/SelectFloatingFilterCompoment";
 import DeleteDialog from "@/components/dialog/deleteDialog";
 import { ActionField } from "@/interface/common";
-import { ROLE, User } from "@/interface/user";
+import { ROLE } from "@/interface/user";
 import PageContainer from "@/Layout/PageContainer";
 import { RootState } from "@/stores";
 import { useAppSelector } from "@/stores/hook";
@@ -15,7 +14,6 @@ import { DeleteOutlined, EditOutlined, LockOutlined, UnlockOutlined } from "@ant
 import { ColDef } from "ag-grid-community";
 import { App, Button, Space, Tag, Tooltip } from "antd";
 import { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const defaultColDef = {
   flex: 1,

@@ -8,14 +8,12 @@ import {
   UsergroupDeleteOutlined
 } from "@ant-design/icons";
 import { Col, Row, Select, Typography } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import CardDuLieu from "./card-du-lieu";
 import { Link } from "react-router-dom";
 import PageContainer from "@/Layout/PageContainer";
-import configApi from "@/api/config.api";
 import { getPrefix } from "@/constant";
-import userApi from "@/api/admin/user.api";
 
 interface ThongKeData {
   totalBaoLoi: number;
@@ -26,43 +24,17 @@ interface ThongKeData {
   totalNhiemVuQuaHan: number;
   totalNhiemVu: number;
 }
-const { Option } = Select;
 const { Title } = Typography;
 const ThongKeDuLieuPage = () => {
-  const [kiHoc, setKihoc] = useState<string[]>([]);
-  const [kiHienGio, setKiHienGio] = useState<string>("");
-  const [kiHocFilter, setKiHocFilter] = useState<string>(kiHienGio);
-  const [data, setData] = useState<ThongKeData | null>(null);
+  const [data] = useState<ThongKeData | null>(null);
 
-
-  const fetchData = async (kiHocFilter: string) => {
-    try {
-      const response = await userApi.listThongKeDuLieu(kiHocFilter);
-      setData(response.data);
-    } catch (error) {
-      console.error("Error fetching data", error);
-    } finally {
-      <></>;
-    }
-  };
-
-  useEffect(() => {
-    if (kiHocFilter) {
-      fetchData(kiHocFilter);
-    }
-  }, [kiHocFilter]);
-
-  const handleChange = (value: string) => {
-    setKiHocFilter(value);
-  };
 
   return (
     <>
       <PageContainer title="Thống kê dữ liệu">
         <div className="flex gap-2" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <p>Kì học: </p>
-          <Select allowClear style={{ width: 200 }} placeholder="Kì học" value={kiHocFilter} onChange={handleChange}>
-            {renderKiHoc(kiHoc)}
+          <Select allowClear style={{ width: 200 }} placeholder="Kì học">
           </Select>
         </div>
         <div className="pt-5">
@@ -129,19 +101,3 @@ const ThongKeDuLieuPage = () => {
 };
 
 export default ThongKeDuLieuPage;
-
-const renderKiHoc = (kihoc: string[]) => {
-  if (!Array.isArray(kihoc)) return <></>;
-  if (!kihoc || !kihoc.length) return <></>;
-  return (
-    <>
-      {kihoc.map((item) => {
-        return (
-          <Option key={item} value={item} label={item}>
-            {item}
-          </Option>
-        );
-      })}
-    </>
-  );
-};

@@ -1,5 +1,5 @@
 import { ROLE_CODE, getPrefix } from "@/constant";
-import { checkUserRoleAllow, checkUserRoleAllowMultiple } from "@/interface/user/auth";
+import { checkUserRoleAllow } from "@/interface/user/auth";
 
 import type { FC } from "react";
 import { Navigate } from "react-router-dom";

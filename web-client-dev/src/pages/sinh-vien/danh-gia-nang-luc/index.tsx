@@ -1,5 +1,5 @@
 import PageContainer from '@/Layout/PageContainer'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Question, QuizPage } from './form'
 import { useParams } from 'react-router-dom'
 import cauHoiApi from '@/api/cauHoi/cauHoi.api'

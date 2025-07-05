@@ -12,11 +12,9 @@ import vi from "antd/locale/vi_VN";
 import { AxiosError } from "axios";
 import { isServerError, isTokenInvalid } from "./api/axios";
 import { GlobalHandlers } from "./api/axios/error-handle";
-import configApi from "./api/config.api";
 import { LaravelServerErrorResponse } from "./interface/axios/laravel";
 import { PageLoading } from "./pages/Loading";
 import { getDataPusherConfigAction, getInitData, logout } from "./stores/features/auth";
-import { setKiHocHienGio } from "./stores/features/config";
 import { useAppDispatch } from "./stores/hook";
 const queryClient = new QueryClient();
 

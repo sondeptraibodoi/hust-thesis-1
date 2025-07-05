@@ -4,7 +4,6 @@ import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 
 import { setDataToken } from "@/api/auth";
 import { convertErrorAxios } from "@/api/axios/error";
-import configApi from "@/api/config.api";
 import { Laravel400ErrorResponse } from "@/interface/axios/laravel";
 import { AuthState } from "@/interface/store/auth";
 import { createAuthUser } from "@/interface/user/auth";

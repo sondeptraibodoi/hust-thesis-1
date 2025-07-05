@@ -1,8 +1,8 @@
 import monHocApi from "@/api/mon-hoc/monHoc.api";
 import PageContainer from "@/Layout/PageContainer";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Modal, Row } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button, Modal, Row } from "antd";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 interface Mon {

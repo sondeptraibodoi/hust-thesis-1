@@ -56,7 +56,7 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
 
   useEffect(() => {
     if (activeTab && authUser) {
-      form.setFieldsValue(authUser.info);
+      form.setFieldsValue(authUser);
     }
   }, [activeTab, authUser, form]);
 
@@ -306,7 +306,7 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
           <div> {buttonChange()}</div>
         </Form>
       );
-      if (authUser.is_sinh_vien) {
+      if (authUser.vai_tro === 'sinh_vien') {
         formEdit = (
           <Form
             encType="multipart/form-data"
@@ -356,7 +356,7 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
             {buttonChange()}
           </Form>
         );
-      } else if (authUser.is_giao_vien) {
+      } else if (authUser.vai_tro === 'giang_vien') {
         formEdit = (
           <Form
             encType="multipart/form-data"

@@ -1,9 +1,8 @@
-import { Badge, Button, Dropdown, Menu, MenuProps } from "antd";
+import { Button, Dropdown, Menu, MenuProps } from "antd";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { ROLE_CODE } from "@/constant";
-import { ROLE } from "@/interface/user";
 import { checkUserRoleAllow } from "@/interface/user/auth";
 import { getAuthUser } from "@/stores/features/auth";
 import { useAppSelector } from "@/stores/hook";
@@ -22,131 +21,9 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
       key: "tai-khoan"
     },
     {
-      label: "Cài đặt",
-      key: "cai-dat"
+      label: "Thống kê",
+      key: "Thống kê"
     },
-    {
-      label: "Nhập tập tin",
-      key: "tai-tap-tin"
-    },
-    {
-      label: "Danh mục",
-      key: "danh-muc",
-      children: [
-        {
-          label: "Giảng viên",
-          key: "giang-vien"
-        },
-        {
-          label: "Sinh viên",
-          key: "sinh-vien"
-        },
-        {
-          label: "Lớp học",
-          key: "lop-hoc"
-        },
-        {
-          label: "Lớp thi",
-          key: "lop-thi"
-        },
-        {
-          label: "Bảng điểm",
-          key: "bang-diem-tro-ly"
-        },
-        {
-          label: "Bảng điểm phúc khảo",
-          key: "diem-phuc-khao"
-        },
-        {
-          label: "Quản lý học phần",
-          key: "ma-hoc-phan"
-        },
-        {
-          label: "Danh sách thực tập",
-          key: "tro-ly/danh-sach-thuc-tap"
-        },
-        {
-          label: "Danh sách đồ án",
-          key: "tro-ly/danh-sach-do-an"
-        },
-        {
-          label: "Danh sách phản biện",
-          key: "tro-ly/danh-sach-phan-bien"
-        },
-        {
-          label: "Tài liệu học phần",
-          key: "tai-lieu-hoc-phan"
-        },
-        {
-          label: "Tài liệu chung",
-          key: "tai-lieu-chung"
-        },
-        {
-          label: "Loại tài liệu",
-          key: "loai-tai-lieu"
-        }
-      ]
-    },
-    {
-      label: "Dịch vụ",
-      key: "dich-vu",
-      children: [
-        {
-          label: "Đăng ký thi bù",
-          key: "danh-sach-thi-bu"
-        },
-        {
-          label: "Phúc khảo",
-          key: "danh-sach-phuc-khao"
-        },
-        {
-          label: "Tin nhắn",
-          key: "tin-nhan-thanh-toan"
-        },
-        {
-          label: "Báo lỗi",
-          key: "bao-loi"
-        }
-      ]
-    },
-    {
-      label: "Công cụ",
-      key: "cong-cu",
-      children: [
-        {
-          label: "Thống kê",
-          key: "thong-ke-du-lieu"
-        },
-        {
-          label: "Thống kê điểm",
-          key: "thong-ke-diem"
-        },
-        {
-          label: "Thống kê điểm danh",
-          key: "thong-ke-diem-danh"
-        },
-        {
-          label: "Sắp xếp lịch trông thi",
-          key: "sap-xep-lich-trong-thi"
-        },
-        {
-          label: "Giao nhiệm vụ",
-          key: "giao-nhiem-vu"
-        },
-        {
-          label: "Danh sách trượt môn",
-          key: "danh-sach-truot-mon"
-        },
-        {
-          label: "Danh sách bài thi",
-          key: "tro-ly/danh-sach-bai-thi"
-        },
-        {
-          label: "Danh sách điểm",
-          key: "tro-ly/danh-sach-diem"
-        }
-      ]
-    }
   ],
   [ROLE_CODE.ASSISTANT]: [
     {
@@ -332,7 +209,6 @@ const Navigation: FC<Props> = ({ styles, mode }) => {
   const location = useLocation();
   const authUser = useAppSelector(getAuthUser);
   const [current, setCurrent] = useState(`${location.pathname.replace("/sohoa/", "")}`);
-  const [taskCount, setTaskCount] = useState<number | null>(null);
 
   const menuItems: MENU_ITEM[] = useMemo(() => {
     if (!authUser) {
@@ -349,20 +225,10 @@ const Navigation: FC<Props> = ({ styles, mode }) => {
     }
     const menusFiltered = getUniqueItemsByProperties(menus, ["key"]);
     const newMenus = menusFiltered.map((item) => {
-      if (item.key === "giao-vien/cong-viec") {
-        return {
-          ...item,
-          label: (
-            <Badge count={taskCount || 0}>
-              <div className="ant-menu-title-content w-24">Công việc</div>
-            </Badge>
-          )
-        };
-      }
       return item;
     });
     return newMenus;
-  }, [authUser, taskCount]);
+  }, [authUser]);
 
   authUser ? MENUS[authUser.role_code] : [];
 

@@ -8,7 +8,7 @@ import PageContainer from "@/Layout/PageContainer";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ColDef } from "ag-grid-community";
 import { Button, Tooltip } from "antd";
-import React, { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { level } from "../de-thi/form";
 
