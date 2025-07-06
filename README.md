@@ -1,6 +1,6 @@
 # Đồ án 1
 # set up
-tải php, composer, node
+tải php ver8, composer, node ver22
 
 ---
 backend
