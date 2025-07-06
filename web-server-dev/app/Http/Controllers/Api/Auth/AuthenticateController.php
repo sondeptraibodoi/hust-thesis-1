@@ -104,9 +104,11 @@ class AuthenticateController extends Controller
                 'ho_ten' => $name,
                 'email' => $mail,
                 'mat_khau' => Hash::make(Str::random(8)),
-                'vai_tro' => $role
+                'vai_tro' => $role,
+                'active' => true
             ]);
         }
+        $user = User::find($user->id);
         if (!$user->isActive()) {
             abort(400, "Người dùng bị chặn, liên hệ quản trị hệ thống để biết thêm thông tin");
         }
