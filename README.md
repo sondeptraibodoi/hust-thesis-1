@@ -10,6 +10,7 @@ backend
  + composer install
  + composer dump
  + kết nối database trong file env
+ + php artisan key:generate
  + php artisan optimize
  + php artisan migrate
  + php artisan db:seed
