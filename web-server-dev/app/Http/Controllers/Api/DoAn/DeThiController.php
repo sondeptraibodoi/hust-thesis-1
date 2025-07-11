@@ -166,7 +166,7 @@ class DeThiController extends Controller
                 'thoi_gian_thi' => 30,
                 'nguoi_tao_id' => $nguoiTaoId,
                 'diem_toi_da' => $doKho,
-                'diem_dat' => 0,
+                'diem_dat' => 8,
                 'ghi_chu' => null,
                 'code' => $code,
             ]);

@@ -46,7 +46,7 @@ class DeThiSeeder extends Seeder
                         'thoi_gian_thi' => 30,
                         'nguoi_tao_id' => $nguoiTaoId,
                         'diem_toi_da' => $diemToiDa,
-                        'diem_dat' => 0,
+                        'diem_dat' => 8,
                         'ghi_chu' => null,
                         'code' => $code,
                         'created_at' => now(),
