@@ -21,5 +21,6 @@ Route::group(
         Route::post('nop-bai', [ThiController::class, 'nopBai']);
         Route::get('lay-de-thi/{id}', [DeThiController::class, 'getDeThiRandom']);
         Route::get('bai-lam', [BaiLamController::class, 'index']);
+        Route::get('bai-lam/{id}', [BaiLamController::class, 'show']);
     }
 );

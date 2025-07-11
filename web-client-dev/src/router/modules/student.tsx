@@ -9,6 +9,7 @@ const BangDiemPage = lazy(() => import("@/pages/sinh-vien/bang-diem"));
 const KiemTraPage = lazy(() => import("@/pages/sinh-vien/kiem-tra"));
 const DanhGiaPage = lazy(() => import("@/pages/sinh-vien/danh-gia-nang-luc"));
 const FormKiemTra = lazy(() => import("@/pages/sinh-vien/kiem-tra/form"));
+const FormDetailDiem = lazy(() => import("@/pages/sinh-vien/bang-diem/detail"))
 
 export const StudentRoute = [
   {
@@ -70,6 +71,13 @@ export const StudentRoute = [
           </>
         )
       },
+      {
+        path: ":id",
+        index: true,
+        element: (
+          <FormDetailDiem />
+        )
+      }
     ]
   }
 ];

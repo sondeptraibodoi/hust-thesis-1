@@ -26,30 +26,42 @@ class BaiLamController extends Controller
         return response()->json(new \App\Http\Resources\Items($query->get()), 200, []);
     }
     //Xem bài làm của sinh viên đối với vai trò là admin/super_admin
-    public function show($baiLamId)
+    public function show($id)
     {
-        $baiLam = BaiLam::with([
-            'nguoiDung',
-            'deThi',
-            'chiTietBaiLam.cauHoi',
-            'chiTietBaiLam.dapAnChon',
-        ])->findOrFail($baiLamId);
+    $baiLam = BaiLam::with([
+        'nguoiDung',
+        'deThi',
+        'chiTietBaiLams.cauHoi',
+    ])->findOrFail($id);
 
-        $chiTiet = $baiLam->chiTietBaiLam->map(function ($ct) {
-            $dapAnDung = DapAn::where('cau_hoi_id', $ct->cau_hoi_id)->where('la_dap_an_dung', 1)->first();
-            return [
-                'cau_hoi' => $ct->cauHoi->noi_dung ?? null,
-                'dap_an_sinh_vien_chon' => $ct->dapAnChon->noi_dung ?? null,
-                'dap_an_dung' => $dapAnDung->noi_dung ?? null,
-                'dung_hay_sai' => $ct->dung_hay_sai ? 'Đúng' : 'Sai',
-            ];
-        });
+    $chiTiet = $baiLam->chiTietBaiLams->map(function ($ct) {
+        $cauHoi = $ct->cauHoi;
 
-        return response()->json([
-            'sinh_vien' => $baiLam->nguoiDung->ho_ten,
-            'de_thi' => $baiLam->deThi->ten_de,
-            'diem' => $baiLam->diem,
-            'chi_tiet_cau_hoi' => $chiTiet,
-        ]);
-    }
+        $noiDung = json_decode($cauHoi->de_bai, true);
+        $dapAnDung = strtoupper($cauHoi->dap_an); // A/B/C/D
+        $dapAnChon = strtoupper($ct->cau_tra_loi); // từ chi_tiet_bai_lam
+
+        return [
+            'cau_hoi' => $noiDung['de_bai'] ?? '',
+            'cac_dap_an' => [
+                'A' => $noiDung['a'] ?? '',
+                'B' => $noiDung['b'] ?? '',
+                'C' => $noiDung['c'] ?? '',
+                'D' => $noiDung['d'] ?? '',
+            ],
+            'dap_an_sinh_vien_chon' => $dapAnChon,
+            'noi_dung_sv_chon' => $noiDung[strtolower($dapAnChon)] ?? null,
+            'dap_an_dung' => $dapAnDung,
+            'noi_dung_dung' => $noiDung[strtolower($dapAnDung)] ?? null,
+            'dung_hay_sai' => $dapAnChon === $dapAnDung ? 'Đúng' : 'Sai',
+        ];
+    });
+
+    return response()->json([
+        'sinh_vien' => $baiLam->nguoiDung->ho_ten ?? 'Không rõ',
+        'de_thi' => $baiLam->deThi->code ?? '',
+        'diem' => $baiLam->diem ?? 0,
+        'chi_tiet_cau_hoi' => $chiTiet,
+    ]);
+}
 }

@@ -30,5 +30,6 @@ Route::group(
         Route::post('de-thi', [DeThiController::class, 'store']);
         Route::put('de-thi/{id}', [DeThiController::class, 'update']);
         Route::delete('de-thi/{id}', [DeThiController::class, 'destroy']);
+        Route::post('de-thi-random', [DeThiController::class, 'taoDeThiRandom']);
     }
 );

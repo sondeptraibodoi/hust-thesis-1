@@ -27,7 +27,7 @@ class BaiLam extends Model
 
     public function chiTietBaiLams()
     {
-        return $this->hasMany(ChiTietBaiLam::class, 'bai_lam_id');
+        return $this->hasMany(ChiTietBaiLam::class, 'bai_kiem_tra_id');
     }
 
     public function monHoc()

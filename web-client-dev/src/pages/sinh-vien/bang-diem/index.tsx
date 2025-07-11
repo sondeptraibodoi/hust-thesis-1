@@ -2,9 +2,14 @@ import bangDiemApi from "@/api/bangDiem/bangDiem.api";
 import BaseTable from "@/components/base-table";
 import { ActionField } from "@/interface/common";
 import PageContainer from "@/Layout/PageContainer";
+import { RootState } from "@/stores";
+import { useAppSelector } from "@/stores/hook";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import { ColDef } from "ag-grid-community";
+import { Button, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { FC, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BangDiemPage = () => {
   const [columnDefs] = useState<ColDef<any & ActionField>[]>([
@@ -60,6 +65,12 @@ const BangDiemPage = () => {
         if (!params || !params.data) return "";
         return "Mức độ " + params.data.de_thi.diem_toi_da;
       }
+    },
+    {
+      headerName: "Hành động",
+      floatingFilter: false,
+      pinned: 'right',
+      cellRenderer: ActionRender
     }
   ]);
   return (
@@ -86,4 +97,18 @@ const DateFormat: FC<any> = (data) => {
   }
   const formattedDate = dayjs(data.created_at).format("DD/MM/YYYY");
   return <>{<span>{formattedDate}</span>}</>;
+};
+
+const ActionRender: FC<any> = ({ data }) => {
+  const { currentUser } = useAppSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
+  if (!data) return;
+  return (
+    <>
+    <Tooltip className={currentUser?.vai_tro !== "sinh_vien" ? 'hidden' : ""} title="Làm bài thi">
+        <Button onClick={() => navigate(`${data.id}`)} type="text" icon={<InfoCircleOutlined />} />
+      </Tooltip>
+
+    </>
+  );
 };

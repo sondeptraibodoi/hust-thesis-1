@@ -53,7 +53,7 @@ class DeThiSeeder extends Seeder
                         'updated_at' => now(),
                     ]);
 
-                    $diemMoiCau = round($diemToiDa / 5, 2);
+                    $diemMoiCau = 2;
 
                     foreach ($cauHoiList as $cauHoi) {
                         ChiTietDeThi::create([

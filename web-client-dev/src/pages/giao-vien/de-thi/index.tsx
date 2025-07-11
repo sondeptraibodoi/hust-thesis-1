@@ -1,14 +1,16 @@
-import deThiApi from '@/api/deThi/deThi.api';
-import monHocApi from '@/api/mon-hoc/monHoc.api';
-import BaseTable from '@/components/base-table';
-import DeleteDialog from '@/components/dialog/deleteDialog';
-import { ActionField } from '@/interface/common';
-import PageContainer from '@/Layout/PageContainer';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { ColDef } from 'ag-grid-community';
-import { Button, Tooltip } from 'antd';
-import { FC, useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom';
+import deThiApi from "@/api/deThi/deThi.api";
+import monHocApi from "@/api/mon-hoc/monHoc.api";
+import BaseTable from "@/components/base-table";
+import DeleteDialog from "@/components/dialog/deleteDialog";
+import { ActionField } from "@/interface/common";
+import PageContainer from "@/Layout/PageContainer";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { ColDef } from "ag-grid-community";
+import { Button, Tooltip } from "antd";
+import { FC, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { level } from "./form";
+import CreateNEditDialog from "@/components/createNEditDialog";
 
 const DethiPage = () => {
   const navigator = useNavigate();
@@ -17,6 +19,7 @@ const DethiPage = () => {
   const [data, setData] = useState<any>();
   const [keyRender, setKeyRender] = useState(1);
   const [isModalDelete, setIsModalDelete] = useState(false);
+    const [modalEditor, setModalEditor] = useState<boolean>(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -26,10 +29,25 @@ const DethiPage = () => {
     getData();
   }, [id]);
 
+  const option = [
+    {
+          required: true,
+          type: "select",
+          name: "do_kho",
+          label: "Độ khó",
+          placeholder: "Vui lòng nhập độ khó",
+          children: level.map((x) => {
+            return {
+              value: x.value,
+              title: x.label
+            };
+          })
+        }
+  ];
+
   const breadcrumbs = useMemo(() => {
     return [{ router: "../", text: "Danh sách môn học" }];
   }, [id]);
-
 
   const [columnDefs] = useState<ColDef<any & ActionField>[]>([
     {
@@ -40,7 +58,7 @@ const DethiPage = () => {
       headerName: "Thời gian làm bài (phút)",
       field: "thoi_gian_thi",
       filter: "agNumberColumnFilter",
-      floatingFilter: true,
+      floatingFilter: true
     },
     {
       headerName: "Độ khó",
@@ -48,8 +66,8 @@ const DethiPage = () => {
       filter: "agNumberColumnFilter",
       floatingFilter: true,
       valueFormatter: (params) => {
-        if(!params || !params.data) return '';
-        return  'Mức độ ' + params.data.diem_toi_da;
+        if (!params || !params.data) return "";
+        return "Mức độ " + params.data.diem_toi_da;
       }
       // hide: currentUser?.vai_tro === "sinh_vien"
     },
@@ -59,8 +77,8 @@ const DethiPage = () => {
       filter: "agNumberColumnFilter",
       floatingFilter: true,
       valueFormatter: (params) => {
-        if(!params || !params.data) return '';
-        return  params.data.tong_so_cau_hoi + ' câu hỏi';
+        if (!params || !params.data) return "";
+        return params.data.tong_so_cau_hoi + " câu hỏi";
       }
       // hide: currentUser?.vai_tro === "sinh_vien"
     },
@@ -89,15 +107,24 @@ const DethiPage = () => {
     <PageContainer
       title={"Danh sách đề thi môn " + title}
       extraTitle={
-        <Button
-          onClick={() => {
-            navigator(`tao-moi`); // Navigate to create new question
-          }}
-          type="primary"
-          style={{ float: "right", marginTop: "20px" }}
-        >
-          Thêm mới
-        </Button>
+        <div className="float-right flex gap-3">
+          <Button
+            onClick={() => {
+              setModalEditor(true)
+            }}
+            type="primary"
+          >
+            Thêm mới tự động
+          </Button>
+          <Button
+            onClick={() => {
+              navigator(`tao-moi`); // Navigate to create new question
+            }}
+            type="primary"
+          >
+            Thêm mới
+          </Button>
+        </div>
       }
       breadcrumbs={breadcrumbs}
     >
@@ -115,11 +142,21 @@ const DethiPage = () => {
           }
         }}
       />
+      <CreateNEditDialog
+        data={data}
+        disableSubTitle
+        setKeyRender={setKeyRender}
+        isEdit={false}
+        apiCreate={(data: any) => deThiApi.createRandom({ ...data, mon_hoc_id: id })}
+        options={option}
+        openModal={modalEditor}
+        closeModal={setModalEditor}
+      />
       {isModalDelete && (
         <DeleteDialog
           openModal={isModalDelete}
           closeModal={setIsModalDelete}
-          name={`Đề thi ${data?.code}` }
+          name={`Đề thi ${data?.code}`}
           apiDelete={() => data && deThiApi.delete(data)}
           setKeyRender={setKeyRender}
         />
@@ -131,7 +168,7 @@ const DethiPage = () => {
 export default DethiPage;
 
 const ActionRender: FC<any> = ({ onDeleteItem, data }) => {
-    const navigator = useNavigate();
+  const navigator = useNavigate();
   if (!data) return;
   return (
     <>

@@ -383,7 +383,7 @@ const CreateNEditDialog: FC<Props> = (props) => {
   return (
     <>
       {contextHolder}
-      <Modal open={openModal} onCancel={cancel} footer={<></>} width={570}>
+      <Modal open={openModal} centered onCancel={cancel} footer={<></>} width={570}>
         <div className="model-container">
           <div className="model-icon create-icon">
             <div>{icon ? icon : <SiMicrosoftexcel />}</div>
