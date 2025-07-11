@@ -82,7 +82,7 @@ class ThiController extends Controller
                 DB::table('level_mon_hoc')
                     ->updateOrInsert(
                         ['nguoi_dung_id' => $userId, 'mon_hoc_id' => $monHocId],
-                        ['level' => DB::raw('level + 1')]
+                        ['level' => DB::raw('CASE WHEN level < 10 THEN level + 1 ELSE level END')]
                     );
             }
         } elseif ($type === 'danh-gia') {
