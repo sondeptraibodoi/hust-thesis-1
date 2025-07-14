@@ -5,11 +5,12 @@ namespace Database\Seeders;
 use App\Constants\RoleCode;
 use App\Models\Auth\User;
 use App\Models\CauHoi;
+use App\Models\DapAn;
 use App\Models\MonHoc;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
-class MonHocSeeder extends Seeder
+class CreateMonHocSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -36,9 +37,12 @@ class MonHocSeeder extends Seeder
                 "ten_mon_hoc" => "Hóa",
             ],
         ];
-        // foreach ($mons as $mon) {
-        //     MonHoc::create($mon);
-        // }
+        foreach ($mons as $mon) {
+            MonHoc::create([
+                'ten_mon_hoc' => $mon['ten_mon_hoc'],
+                'ma' => str_pad(mt_rand(0, 99999999), 8, '0', STR_PAD_LEFT)
+            ]);
+        }
 
         $monToan = MonHoc::where('ten_mon_hoc', 'Toán')->first();
         $monVan = MonHoc::where('ten_mon_hoc', 'Văn')->first();
@@ -46,13 +50,13 @@ class MonHocSeeder extends Seeder
 
         $cauHoiVan = [
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Vợ nhặt là của tác giả nào?',
                     'a' => 'Nam Cao',
                     'b' => 'Kim Lân',
                     'c' => 'Nguyễn Huy Tưởng',
                     'd' => 'Nguyễn Minh Châu',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => $monVan->id,
                 'do_kho' => 2,
@@ -60,13 +64,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của bài thơ Tây Tiế là ai?',
                     'a' => 'Quang Dũng',
                     'b' => 'Huy Cận',
                     'c' => 'Chế Lan Viên',
                     'd' => 'Tố Hữu',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => $monVan->id,
                 'do_kho' => 2,
@@ -74,13 +78,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => $now,
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Việt Bắc là ai?',
                     'a' => 'Nguyễn Khoa Điềm',
                     'b' => 'Huy Cận',
                     'c' => 'Xuân Quỳnh',
                     'd' => 'Hoàng Phủ Ngọc Tường',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -88,13 +92,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Tây Tiến là ai?',
                     'a' => 'Nguyễn Khoa Điềm',
                     'b' => 'Nguyễn Huy Tưởng',
                     'c' => 'Chế Lan Viên',
                     'd' => 'Hoàng Phủ Ngọc Tường',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -102,13 +106,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đồng chí là ai?',
                     'a' => 'Nguyễn Khoa Điềm',
                     'b' => 'Hoàng Phủ Ngọc Tường',
                     'c' => 'Xuân Quỳnh',
                     'd' => 'Nguyễn Huy Tưởng',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -116,13 +120,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Việt Bắc là ai?',
                     'a' => 'Xuân Quỳnh',
                     'b' => 'Nam Cao',
                     'c' => 'Nguyễn Huy Tưởng',
                     'd' => 'Chế Lan Viên',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -130,13 +134,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Người lái đò sông Đà là ai?',
                     'a' => 'Huy Cận',
                     'b' => 'Nguyễn Tuân',
                     'c' => 'Tố Hữu',
                     'd' => 'Kim Lân',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -144,13 +148,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Vợ nhặt là ai?',
                     'a' => 'Chế Lan Viên',
                     'b' => 'Nguyễn Tuân',
                     'c' => 'Nam Cao',
                     'd' => 'Phạm Tiến Duật',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -158,13 +162,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Việt Bắc là ai?',
                     'a' => 'Hoàng Phủ Ngọc Tường',
                     'b' => 'Xuân Quỳnh',
                     'c' => 'Phạm Tiến Duật',
                     'd' => 'Nam Cao',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -172,13 +176,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Nguyễn Minh Châu',
                     'b' => 'Xuân Quỳnh',
                     'c' => 'Nguyễn Khoa Điềm',
                     'd' => 'Huy Cận',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -186,13 +190,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Tràng giang là ai?',
                     'a' => 'Kim Lân',
                     'b' => 'Nguyễn Minh Châu',
                     'c' => 'Phạm Tiến Duật',
                     'd' => 'Xuân Quỳnh',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -200,13 +204,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đồng chí là ai?',
                     'a' => 'Nguyễn Huy Tưởng',
                     'b' => 'Chế Lan Viên',
                     'c' => 'Huy Cận',
                     'd' => 'Tố Hữu',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -214,13 +218,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Sóng là ai?',
                     'a' => 'Nguyễn Huy Tưởng',
                     'b' => 'Xuân Quỳnh',
                     'c' => 'Tố Hữu',
                     'd' => 'Chế Lan Viên',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -228,13 +232,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Người lái đò sông Đà là ai?',
                     'a' => 'Nguyễn Tuân',
                     'b' => 'Tố Hữu',
                     'c' => 'Hoàng Phủ Ngọc Tường',
                     'd' => 'Phạm Tiến Duật',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -242,13 +246,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Xuân Quỳnh',
                     'b' => 'Phạm Tiến Duật',
                     'c' => 'Nguyễn Tuân',
                     'd' => 'Huy Cận',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -256,13 +260,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Xuân Quỳnh',
                     'b' => 'Nam Cao',
                     'c' => 'Huy Cận',
                     'd' => 'Tố Hữu',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -270,13 +274,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Tây Tiến là ai?',
                     'a' => 'Nam Cao',
                     'b' => 'Kim Lân',
                     'c' => 'Hoàng Phủ Ngọc Tường',
                     'd' => 'Nguyễn Huy Tưởng',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -284,13 +288,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Sóng là ai?',
                     'a' => 'Nam Cao',
                     'b' => 'Huy Cận',
                     'c' => 'Nguyễn Huy Tưởng',
                     'd' => 'Tố Hữu',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -298,13 +302,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Huy Cận',
                     'b' => 'Xuân Quỳnh',
                     'c' => 'Nguyễn Tuân',
                     'd' => 'Kim Lân',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -312,13 +316,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Sóng là ai?',
                     'a' => 'Nam Cao',
                     'b' => 'Huy Cận',
                     'c' => 'Xuân Quỳnh',
                     'd' => 'Kim Lân',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -326,13 +330,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Tố Hữu',
                     'b' => 'Huy Cận',
                     'c' => 'Nguyễn Khoa Điềm',
                     'd' => 'Nguyễn Minh Châu',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -340,13 +344,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Sóng là ai?',
                     'a' => 'Chế Lan Viên',
                     'b' => 'Huy Cận',
                     'c' => 'Nam Cao',
                     'd' => 'Xuân Quỳnh',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -354,13 +358,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Chiếc thuyền ngoài xa là ai?',
                     'a' => 'Nguyễn Tuân',
                     'b' => 'Nguyễn Minh Châu',
                     'c' => 'Nguyễn Huy Tưởng',
                     'd' => 'Chế Lan Viên',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -368,13 +372,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Tràng giang là ai?',
                     'a' => 'Chế Lan Viên',
                     'b' => 'Nguyễn Tuân',
                     'c' => 'Tố Hữu',
                     'd' => 'Kim Lân',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -382,13 +386,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Tràng giang là ai?',
                     'a' => 'Hoàng Phủ Ngọc Tường',
                     'b' => 'Nguyễn Huy Tưởng',
                     'c' => 'Kim Lân',
                     'd' => 'Huy Cận',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -396,13 +400,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Tây Tiến là ai?',
                     'a' => 'Kim Lân',
                     'b' => 'Phạm Tiến Duật',
                     'c' => 'Nguyễn Minh Châu',
                     'd' => 'Nguyễn Huy Tưởng',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -410,13 +414,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Người lái đò sông Đà là ai?',
                     'a' => 'Tố Hữu',
                     'b' => 'Chế Lan Viên',
                     'c' => 'Nguyễn Huy Tưởng',
                     'd' => 'Nam Cao',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -424,13 +428,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Việt Bắc là ai?',
                     'a' => 'Nam Cao',
                     'b' => 'Nguyễn Khoa Điềm',
                     'c' => 'Tố Hữu',
                     'd' => 'Chế Lan Viên',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -438,13 +442,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Tràng giang là ai?',
                     'a' => 'Hoàng Phủ Ngọc Tường',
                     'b' => 'Chế Lan Viên',
                     'c' => 'Huy Cận',
                     'd' => 'Nguyễn Minh Châu',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -452,13 +456,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Chế Lan Viên',
                     'b' => 'Nguyễn Huy Tưởng',
                     'c' => 'Hoàng Phủ Ngọc Tường',
                     'd' => 'Kim Lân',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -466,13 +470,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Chiếc thuyền ngoài xa là ai?',
                     'a' => 'Nguyễn Tuân',
                     'b' => 'Phạm Tiến Duật',
                     'c' => 'Nguyễn Minh Châu',
                     'd' => 'Xuân Quỳnh',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -480,13 +484,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Người lái đò sông Đà là ai?',
                     'a' => 'Xuân Quỳnh',
                     'b' => 'Nguyễn Khoa Điềm',
                     'c' => 'Nguyễn Minh Châu',
                     'd' => 'Tố Hữu',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -494,13 +498,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Lặng lẽ Sa Pa là ai?',
                     'a' => 'Nguyễn Minh Châu',
                     'b' => 'Xuân Quỳnh',
                     'c' => 'Phạm Tiến Duật',
                     'd' => 'Hoàng Phủ Ngọc Tường',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -508,13 +512,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Việt Bắc là ai?',
                     'a' => 'Hoàng Phủ Ngọc Tường',
                     'b' => 'Kim Lân',
                     'c' => 'Nam Cao',
                     'd' => 'Phạm Tiến Duật',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -522,13 +526,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Vợ nhặt là ai?',
                     'a' => 'Huy Cận',
                     'b' => 'Nguyễn Huy Tưởng',
                     'c' => 'Nguyễn Minh Châu',
                     'd' => 'Nguyễn Tuân',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -536,13 +540,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đồng chí là ai?',
                     'a' => 'Nguyễn Huy Tưởng',
                     'b' => 'Huy Cận',
                     'c' => 'Nguyễn Khoa Điềm',
                     'd' => 'Kim Lân',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -550,13 +554,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Việt Bắc là ai?',
                     'a' => 'Nam Cao',
                     'b' => 'Nguyễn Huy Tưởng',
                     'c' => 'Phạm Tiến Duật',
                     'd' => 'Hoàng Phủ Ngọc Tường',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -564,13 +568,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Chế Lan Viên',
                     'b' => 'Nguyễn Tuân',
                     'c' => 'Nguyễn Huy Tưởng',
                     'd' => 'Nguyễn Khoa Điềm',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -578,13 +582,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đồng chí là ai?',
                     'a' => 'Hoàng Phủ Ngọc Tường',
                     'b' => 'Phạm Tiến Duật',
                     'c' => 'Huy Cận',
                     'd' => 'Nguyễn Tuân',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -592,13 +596,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Kim Lân',
                     'b' => 'Nguyễn Huy Tưởng',
                     'c' => 'Tố Hữu',
                     'd' => 'Nam Cao',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -606,13 +610,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Sóng là ai?',
                     'a' => 'Nguyễn Tuân',
                     'b' => 'Nguyễn Minh Châu',
                     'c' => 'Hoàng Phủ Ngọc Tường',
                     'd' => 'Tố Hữu',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -620,13 +624,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Lặng lẽ Sa Pa là ai?',
                     'a' => 'Nguyễn Tuân',
                     'b' => 'Nguyễn Huy Tưởng',
                     'c' => 'Nguyễn Minh Châu',
                     'd' => 'Xuân Quỳnh',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -634,13 +638,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Việt Bắc là ai?',
                     'a' => 'Phạm Tiến Duật',
                     'b' => 'Nguyễn Tuân',
                     'c' => 'Tố Hữu',
                     'd' => 'Nam Cao',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -648,13 +652,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Nguyễn Khoa Điềm',
                     'b' => 'Nguyễn Tuân',
                     'c' => 'Hoàng Phủ Ngọc Tường',
                     'd' => 'Xuân Quỳnh',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -662,13 +666,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Người lái đò sông Đà là ai?',
                     'a' => 'Nguyễn Minh Châu',
                     'b' => 'Hoàng Phủ Ngọc Tường',
                     'c' => 'Phạm Tiến Duật',
                     'd' => 'Nguyễn Khoa Điềm',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -676,13 +680,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Lặng lẽ Sa Pa là ai?',
                     'a' => 'Nguyễn Tuân',
                     'b' => 'Nguyễn Huy Tưởng',
                     'c' => 'Kim Lân',
                     'd' => 'Chế Lan Viên',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -690,13 +694,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Tây Tiến là ai?',
                     'a' => 'Phạm Tiến Duật',
                     'b' => 'Nguyễn Huy Tưởng',
                     'c' => 'Xuân Quỳnh',
                     'd' => 'Nam Cao',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -704,13 +708,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Lặng lẽ Sa Pa là ai?',
                     'a' => 'Nguyễn Huy Tưởng',
                     'b' => 'Chế Lan Viên',
                     'c' => 'Nguyễn Minh Châu',
                     'd' => 'Nguyễn Khoa Điềm',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -718,13 +722,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Đất nước là ai?',
                     'a' => 'Chế Lan Viên',
                     'b' => 'Phạm Tiến Duật',
                     'c' => 'Nguyễn Minh Châu',
                     'd' => 'Nguyễn Tuân',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -732,13 +736,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Lặng lẽ Sa Pa là ai?',
                     'a' => 'Kim Lân',
                     'b' => 'Huy Cận',
                     'c' => 'Tố Hữu',
                     'd' => 'Nguyễn Tuân',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -746,13 +750,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Sóng là ai?',
                     'a' => 'Xuân Quỳnh',
                     'b' => 'Nguyễn Minh Châu',
                     'c' => 'Tố Hữu',
                     'd' => 'Huy Cận',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -760,13 +764,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác giả của tác phẩm Chiếc thuyền ngoài xa là ai?',
                     'a' => 'Kim Lân',
                     'b' => 'Nguyễn Tuân',
                     'c' => 'Huy Cận',
                     'd' => 'Nguyễn Huy Tưởng',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -774,13 +778,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Lặng lẽ Sa Pa là gì?',
                     'a' => 'Ca ngợi vẻ đẹp con người',
                     'b' => 'Khát vọng tự do',
                     'c' => 'Phê phán chiến tranh',
                     'd' => 'Tình yêu quê hương',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 5,
@@ -788,13 +792,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Đồng chí là gì?',
                     'a' => 'Khát vọng tự do',
                     'b' => 'Phê phán chiến tranh',
                     'c' => 'Tình yêu quê hương',
                     'd' => 'Ca ngợi vẻ đẹp con người',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -802,13 +806,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Tràng giang thuộc thể loại nào?',
                     'a' => 'Thơ trữ tình',
                     'b' => 'Bút ký',
                     'c' => 'Truyện ngắn',
                     'd' => 'Tùy bút',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 7,
@@ -816,13 +820,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Đất nước là ai?',
                     'a' => 'Người lính',
                     'b' => 'Ông lái đò',
                     'c' => 'Người vợ nhặt',
                     'd' => 'Anh thanh niên',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 7,
@@ -830,13 +834,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Tràng giang thuộc thể loại nào?',
                     'a' => 'Truyện ngắn',
                     'b' => 'Bút ký',
                     'c' => 'Tùy bút',
                     'd' => 'Thơ trữ tình',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 7,
@@ -844,13 +848,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Lặng lẽ Sa Pa?',
                     'a' => 'Đồng chí',
                     'b' => 'Tây Tiến',
                     'c' => 'Sóng',
                     'd' => 'Việt Bắc',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 5,
@@ -858,13 +862,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Chiếc thuyền ngoài xa?',
                     'a' => 'Việt Bắc',
                     'b' => 'Tây Tiến',
                     'c' => 'Sóng',
                     'd' => 'Đồng chí',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 4,
@@ -872,13 +876,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Đất nước thuộc thể loại nào?',
                     'a' => 'Bút ký',
                     'b' => 'Truyện ngắn',
                     'c' => 'Tùy bút',
                     'd' => 'Thơ trữ tình',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -886,13 +890,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Người lái đò sông Đà?',
                     'a' => 'Sóng',
                     'b' => 'Việt Bắc',
                     'c' => 'Đồng chí',
                     'd' => 'Tây Tiến',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 10,
@@ -900,13 +904,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Đất nước là ai?',
                     'a' => 'Anh thanh niên',
                     'b' => 'Ông lái đò',
                     'c' => 'Người lính',
                     'd' => 'Người vợ nhặt',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 10,
@@ -914,13 +918,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Người lái đò sông Đà thuộc thể loại nào?',
                     'a' => 'Bút ký',
                     'b' => 'Thơ trữ tình',
                     'c' => 'Tùy bút',
                     'd' => 'Truyện ngắn',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -928,13 +932,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Đất nước là ai?',
                     'a' => 'Người vợ nhặt',
                     'b' => 'Anh thanh niên',
                     'c' => 'Ông lái đò',
                     'd' => 'Người lính',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 4,
@@ -942,13 +946,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Tây Tiến?',
                     'a' => 'Đồng chí',
                     'b' => 'Việt Bắc',
                     'c' => 'Tây Tiến',
                     'd' => 'Sóng',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 7,
@@ -956,13 +960,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Người lái đò sông Đà là gì?',
                     'a' => 'Tình yêu quê hương',
                     'b' => 'Khát vọng tự do',
                     'c' => 'Ca ngợi vẻ đẹp con người',
                     'd' => 'Phê phán chiến tranh',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 6,
@@ -970,13 +974,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Đất nước thuộc thể loại nào?',
                     'a' => 'Truyện ngắn',
                     'b' => 'Bút ký',
                     'c' => 'Thơ trữ tình',
                     'd' => 'Tùy bút',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 10,
@@ -984,13 +988,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Phong cách nghệ thuật nổi bật trong tác phẩm Chiếc thuyền ngoài xa là gì?',
                     'a' => 'Lãng mạn',
                     'b' => 'Hiện thực',
                     'c' => 'Trào phúng',
                     'd' => 'Trữ tình',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 4,
@@ -998,13 +1002,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Tây Tiến là ai?',
                     'a' => 'Người lính',
                     'b' => 'Người vợ nhặt',
                     'c' => 'Ông lái đò',
                     'd' => 'Anh thanh niên',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -1012,13 +1016,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Lặng lẽ Sa Pa là ai?',
                     'a' => 'Ông lái đò',
                     'b' => 'Người lính',
                     'c' => 'Anh thanh niên',
                     'd' => 'Người vợ nhặt',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -1026,13 +1030,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Phong cách nghệ thuật nổi bật trong tác phẩm Chiếc thuyền ngoài xa là gì?',
                     'a' => 'Lãng mạn',
                     'b' => 'Trào phúng',
                     'c' => 'Trữ tình',
                     'd' => 'Hiện thực',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 10,
@@ -1040,13 +1044,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Việt Bắc thuộc thể loại nào?',
                     'a' => 'Thơ trữ tình',
                     'b' => 'Truyện ngắn',
                     'c' => 'Bút ký',
                     'd' => 'Tùy bút',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 10,
@@ -1054,13 +1058,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Tây Tiến?',
                     'a' => 'Tây Tiến',
                     'b' => 'Đồng chí',
                     'c' => 'Sóng',
                     'd' => 'Việt Bắc',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 7,
@@ -1068,13 +1072,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Phong cách nghệ thuật nổi bật trong tác phẩm Tràng giang là gì?',
                     'a' => 'Lãng mạn',
                     'b' => 'Trữ tình',
                     'c' => 'Hiện thực',
                     'd' => 'Trào phúng',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 8,
@@ -1082,13 +1086,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Đất nước?',
                     'a' => 'Đồng chí',
                     'b' => 'Sóng',
                     'c' => 'Tây Tiến',
                     'd' => 'Việt Bắc',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 8,
@@ -1096,13 +1100,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Đồng chí thuộc thể loại nào?',
                     'a' => 'Thơ trữ tình',
                     'b' => 'Tùy bút',
                     'c' => 'Truyện ngắn',
                     'd' => 'Bút ký',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 4,
@@ -1110,13 +1114,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Phong cách nghệ thuật nổi bật trong tác phẩm Việt Bắc là gì?',
                     'a' => 'Hiện thực',
                     'b' => 'Lãng mạn',
                     'c' => 'Trữ tình',
                     'd' => 'Trào phúng',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -1124,13 +1128,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Đồng chí là gì?',
                     'a' => 'Ca ngợi vẻ đẹp con người',
                     'b' => 'Khát vọng tự do',
                     'c' => 'Phê phán chiến tranh',
                     'd' => 'Tình yêu quê hương',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 9,
@@ -1138,13 +1142,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Chiếc thuyền ngoài xa là ai?',
                     'a' => 'Anh thanh niên',
                     'b' => 'Người vợ nhặt',
                     'c' => 'Ông lái đò',
                     'd' => 'Người lính',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 7,
@@ -1152,13 +1156,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Tây Tiến thuộc thể loại nào?',
                     'a' => 'Truyện ngắn',
                     'b' => 'Tùy bút',
                     'c' => 'Thơ trữ tình',
                     'd' => 'Bút ký',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 5,
@@ -1166,13 +1170,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Đất nước là gì?',
                     'a' => 'Tình yêu quê hương',
                     'b' => 'Ca ngợi vẻ đẹp con người',
                     'c' => 'Phê phán chiến tranh',
                     'd' => 'Khát vọng tự do',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 9,
@@ -1180,13 +1184,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Người lái đò sông Đà là gì?',
                     'a' => 'Phê phán chiến tranh',
                     'b' => 'Ca ngợi vẻ đẹp con người',
                     'c' => 'Tình yêu quê hương',
                     'd' => 'Khát vọng tự do',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -1194,13 +1198,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Sóng là gì?',
                     'a' => 'Ca ngợi vẻ đẹp con người',
                     'b' => 'Khát vọng tự do',
                     'c' => 'Phê phán chiến tranh',
                     'd' => 'Tình yêu quê hương',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 7,
@@ -1208,13 +1212,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Đất nước?',
                     'a' => 'Tây Tiến',
                     'b' => 'Sóng',
                     'c' => 'Việt Bắc',
                     'd' => 'Đồng chí',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 6,
@@ -1222,13 +1226,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Vợ nhặt?',
                     'a' => 'Sóng',
                     'b' => 'Đồng chí',
                     'c' => 'Tây Tiến',
                     'd' => 'Việt Bắc',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 9,
@@ -1236,13 +1240,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Vợ nhặt là ai?',
                     'a' => 'Anh thanh niên',
                     'b' => 'Ông lái đò',
                     'c' => 'Người vợ nhặt',
                     'd' => 'Người lính',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 10,
@@ -1250,13 +1254,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Tràng giang là gì?',
                     'a' => 'Khát vọng tự do',
                     'b' => 'Tình yêu quê hương',
                     'c' => 'Ca ngợi vẻ đẹp con người',
                     'd' => 'Phê phán chiến tranh',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -1264,13 +1268,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Lặng lẽ Sa Pa?',
                     'a' => 'Tây Tiến',
                     'b' => 'Việt Bắc',
                     'c' => 'Đồng chí',
                     'd' => 'Sóng',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -1278,13 +1282,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Đồng chí là ai?',
                     'a' => 'Người vợ nhặt',
                     'b' => 'Ông lái đò',
                     'c' => 'Người lính',
                     'd' => 'Anh thanh niên',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -1292,13 +1296,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Việt Bắc thuộc thể loại nào?',
                     'a' => 'Tùy bút',
                     'b' => 'Truyện ngắn',
                     'c' => 'Bút ký',
                     'd' => 'Thơ trữ tình',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -1306,13 +1310,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Sóng là ai?',
                     'a' => 'Anh thanh niên',
                     'b' => 'Người lính',
                     'c' => 'Người vợ nhặt',
                     'd' => 'Ông lái đò',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 6,
@@ -1320,13 +1324,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Sóng là gì?',
                     'a' => 'Khát vọng tự do',
                     'b' => 'Ca ngợi vẻ đẹp con người',
                     'c' => 'Phê phán chiến tranh',
                     'd' => 'Tình yêu quê hương',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -1334,13 +1338,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Ý nghĩa chính của tác phẩm Tràng giang là gì?',
                     'a' => 'Phê phán chiến tranh',
                     'b' => 'Ca ngợi vẻ đẹp con người',
                     'c' => 'Tình yêu quê hương',
                     'd' => 'Khát vọng tự do',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 3,
@@ -1348,13 +1352,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Phong cách nghệ thuật nổi bật trong tác phẩm Tràng giang là gì?',
                     'a' => 'Hiện thực',
                     'b' => 'Trữ tình',
                     'c' => 'Trào phúng',
                     'd' => 'Lãng mạn',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 10,
@@ -1362,13 +1366,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Tràng giang là ai?',
                     'a' => 'Người vợ nhặt',
                     'b' => 'Ông lái đò',
                     'c' => 'Người lính',
                     'd' => 'Anh thanh niên',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 2,
                 'do_kho' => 1,
@@ -1376,13 +1380,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Người lái đò sông Đà là ai?',
                     'a' => 'Ông lái đò',
                     'b' => 'Người lính',
                     'c' => 'Người vợ nhặt',
                     'd' => 'Anh thanh niên',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 5,
@@ -1390,13 +1394,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Phong cách nghệ thuật nổi bật trong tác phẩm Lặng lẽ Sa Pa là gì?',
                     'a' => 'Lãng mạn',
                     'b' => 'Hiện thực',
                     'c' => 'Trữ tình',
                     'd' => 'Trào phúng',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 9,
@@ -1404,13 +1408,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhân vật chính trong tác phẩm Chiếc thuyền ngoài xa là ai?',
                     'a' => 'Anh thanh niên',
                     'b' => 'Người lính',
                     'c' => 'Người vợ nhặt',
                     'd' => 'Ông lái đò',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 4,
@@ -1418,13 +1422,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Đoạn trích nào sau đây nằm trong tác phẩm Đồng chí?',
                     'a' => 'Đồng chí',
                     'b' => 'Sóng',
                     'c' => 'Việt Bắc',
                     'd' => 'Tây Tiến',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 2,
                 'do_kho' => 7,
@@ -1432,13 +1436,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Vợ nhặt thuộc thể loại nào?',
                     'a' => 'Tùy bút',
                     'b' => 'Bút ký',
                     'c' => 'Thơ trữ tình',
                     'd' => 'Truyện ngắn',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 2,
                 'do_kho' => 10,
@@ -1446,13 +1450,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Phong cách nghệ thuật nổi bật trong tác phẩm Sóng là gì?',
                     'a' => 'Lãng mạn',
                     'b' => 'Hiện thực',
                     'c' => 'Trào phúng',
                     'd' => 'Trữ tình',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 4,
@@ -1460,13 +1464,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tác phẩm Việt Bắc thuộc thể loại nào?',
                     'a' => 'Tùy bút',
                     'b' => 'Truyện ngắn',
                     'c' => 'Thơ trữ tình',
                     'd' => 'Bút ký',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 2,
                 'do_kho' => 2,
@@ -1478,13 +1482,13 @@ class MonHocSeeder extends Seeder
 
         $cauHoiToan = [
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 44² + 10² là bao nhiêu?',
                     'a' => '44',
                     'b' => '2036',
                     'c' => '124',
                     'd' => '17',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -1492,13 +1496,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 99 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '9.95',
                     'b' => '168.22',
                     'c' => '129.83',
                     'd' => '67.91',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -1506,13 +1510,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 73 và 6 là bao nhiêu?',
                     'a' => '197',
                     'b' => '138',
                     'c' => '438',
                     'd' => '124',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 1,
@@ -1520,13 +1524,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 74 và 16 là bao nhiêu?',
                     'a' => '64',
                     'b' => '102',
                     'c' => '11',
                     'd' => '58',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -1534,13 +1538,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 97 và 4 là bao nhiêu?',
                     'a' => '120',
                     'b' => '388',
                     'c' => '105',
                     'd' => '8',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -1548,13 +1552,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 100 chia 18 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '109.10',
                     'b' => '5.56',
                     'c' => '107.29',
                     'd' => '167.88',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 4,
@@ -1562,13 +1566,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 37 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '142.07',
                     'b' => '6.08',
                     'c' => '59.37',
                     'd' => '79.93',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 4,
@@ -1576,13 +1580,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 51 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '71.04',
                     'b' => '16.08',
                     'c' => '147.36',
                     'd' => '7.14',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -1590,13 +1594,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 86 và 20 là bao nhiêu?',
                     'a' => '77',
                     'b' => '191',
                     'c' => '39',
                     'd' => '66',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -1604,13 +1608,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 43 chia 20 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '156.49',
                     'b' => '2.15',
                     'c' => '46.31',
                     'd' => '96.87',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -1618,13 +1622,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 89² + 10² là bao nhiêu?',
                     'a' => '8021',
                     'b' => '170',
                     'c' => '179',
                     'd' => '28',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -1632,13 +1636,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 24 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '96.57',
                     'b' => '4.90',
                     'c' => '28.87',
                     'd' => '153.98',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -1646,13 +1650,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 82 chia 19 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '4.32',
                     'b' => '114.93',
                     'c' => '185.32',
                     'd' => '42.59',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -1660,13 +1664,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 32 chia 4 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '36.39',
                     'b' => '32.37',
                     'c' => '8.00',
                     'd' => '118.11',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -1674,13 +1678,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 55 và 14 là bao nhiêu?',
                     'a' => '770',
                     'b' => '183',
                     'c' => '134',
                     'd' => '82',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 1,
@@ -1688,13 +1692,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 61² + 1² là bao nhiêu?',
                     'a' => '181',
                     'b' => '5',
                     'c' => '117',
                     'd' => '3722',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -1702,13 +1706,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 5 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '34.68',
                     'b' => '2.24',
                     'c' => '84.33',
                     'd' => '179.50',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 2,
@@ -1716,13 +1720,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 23 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '157.69',
                     'b' => '4.80',
                     'c' => '48.99',
                     'd' => '15.81',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -1730,13 +1734,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 56 chia 11 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '5.09',
                     'b' => '63.88',
                     'c' => '91.89',
                     'd' => '101.48',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -1744,13 +1748,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 38 chia 1 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '74.97',
                     'b' => '22.21',
                     'c' => '38.00',
                     'd' => '160.24',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 3,
@@ -1758,13 +1762,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 39² + 15² là bao nhiêu?',
                     'a' => '112',
                     'b' => '1746',
                     'c' => '34',
                     'd' => '172',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 3,
@@ -1772,13 +1776,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 86² + 8² là bao nhiêu?',
                     'a' => '138',
                     'b' => '129',
                     'c' => '7460',
                     'd' => '46',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 1,
@@ -1786,13 +1790,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 11 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '18.02',
                     'b' => '160.38',
                     'c' => '3.32',
                     'd' => '36.10',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -1800,13 +1804,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 34 chia 15 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '2.27',
                     'b' => '144.81',
                     'c' => '183.34',
                     'd' => '36.00',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -1814,13 +1818,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 3² + 5² là bao nhiêu?',
                     'a' => '170',
                     'b' => '162',
                     'c' => '34',
                     'd' => '41',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -1828,13 +1832,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 36² + 4² là bao nhiêu?',
                     'a' => '188',
                     'b' => '45',
                     'c' => '1312',
                     'd' => '189',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 4,
@@ -1842,13 +1846,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 58 chia 1 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '58.00',
                     'b' => '10.07',
                     'c' => '73.68',
                     'd' => '173.94',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -1856,13 +1860,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 99² + 9² là bao nhiêu?',
                     'a' => '113',
                     'b' => '49',
                     'c' => '9882',
                     'd' => '65',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -1870,13 +1874,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 87 và 16 là bao nhiêu?',
                     'a' => '188',
                     'b' => '103',
                     'c' => '80',
                     'd' => '149',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -1884,13 +1888,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 25 và 11 là bao nhiêu?',
                     'a' => '154',
                     'b' => '170',
                     'c' => '36',
                     'd' => '59',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -1898,13 +1902,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 47 và 13 là bao nhiêu?',
                     'a' => '60',
                     'b' => '4',
                     'c' => '159',
                     'd' => '117',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -1912,13 +1916,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 31² + 12² là bao nhiêu?',
                     'a' => '1105',
                     'b' => '52',
                     'c' => '77',
                     'd' => '27',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -1926,13 +1930,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 59² + 13² là bao nhiêu?',
                     'a' => '3650',
                     'b' => '159',
                     'c' => '106',
                     'd' => '57',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -1940,13 +1944,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 65 và 1 là bao nhiêu?',
                     'a' => '43',
                     'b' => '75',
                     'c' => '4',
                     'd' => '64',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 4,
@@ -1954,13 +1958,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 3 và 7 là bao nhiêu?',
                     'a' => '124',
                     'b' => '29',
                     'c' => '-4',
                     'd' => '110',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 3,
@@ -1968,13 +1972,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 60 chia 6 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '32.35',
                     'b' => '15.83',
                     'c' => '147.57',
                     'd' => '10.00',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -1982,13 +1986,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 69 chia 9 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '135.12',
                     'b' => '7.67',
                     'c' => '151.10',
                     'd' => '44.41',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -1996,13 +2000,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 34 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '5.83',
                     'b' => '153.00',
                     'c' => '3.67',
                     'd' => '187.96',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -2010,13 +2014,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 51² + 12² là bao nhiêu?',
                     'a' => '2745',
                     'b' => '57',
                     'c' => '104',
                     'd' => '142',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2024,13 +2028,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 76 và 13 là bao nhiêu?',
                     'a' => '163',
                     'b' => '81',
                     'c' => '988',
                     'd' => '4',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2038,13 +2042,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 29² + 9² là bao nhiêu?',
                     'a' => '25',
                     'b' => '155',
                     'c' => '102',
                     'd' => '922',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -2052,13 +2056,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 43 và 18 là bao nhiêu?',
                     'a' => '141',
                     'b' => '179',
                     'c' => '61',
                     'd' => '127',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -2066,13 +2070,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 90 và 17 là bao nhiêu?',
                     'a' => '107',
                     'b' => '5',
                     'c' => '78',
                     'd' => '170',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -2080,13 +2084,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 41 và 17 là bao nhiêu?',
                     'a' => '18',
                     'b' => '62',
                     'c' => '697',
                     'd' => '38',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 4,
@@ -2094,13 +2098,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 83 và 18 là bao nhiêu?',
                     'a' => '85',
                     'b' => '65',
                     'c' => '54',
                     'd' => '75',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -2108,13 +2112,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 7 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '39.98',
                     'b' => '2.65',
                     'c' => '198.45',
                     'd' => '114.87',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2122,13 +2126,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 68 và 1 là bao nhiêu?',
                     'a' => '52',
                     'b' => '65',
                     'c' => '179',
                     'd' => '69',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 1,
@@ -2136,13 +2140,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 48 và 11 là bao nhiêu?',
                     'a' => '59',
                     'b' => '26',
                     'c' => '46',
                     'd' => '150',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 1,
@@ -2150,13 +2154,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 16² + 20² là bao nhiêu?',
                     'a' => '656',
                     'b' => '154',
                     'c' => '199',
                     'd' => '153',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2164,13 +2168,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 57² + 20² là bao nhiêu?',
                     'a' => '20',
                     'b' => '3649',
                     'c' => '123',
                     'd' => '4',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2178,13 +2182,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 28 chia 20 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '110.97',
                     'b' => '1.40',
                     'c' => '188.53',
                     'd' => '12.46',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -2192,13 +2196,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 6 và 19 là bao nhiêu?',
                     'a' => '25',
                     'b' => '110',
                     'c' => '120',
                     'd' => '179',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -2206,13 +2210,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 94 và 16 là bao nhiêu?',
                     'a' => '64',
                     'b' => '1504',
                     'c' => '19',
                     'd' => '54',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -2220,13 +2224,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 88² + 17² là bao nhiêu?',
                     'a' => '17',
                     'b' => '8033',
                     'c' => '11',
                     'd' => '94',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 2,
@@ -2234,13 +2238,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 85 và 10 là bao nhiêu?',
                     'a' => '153',
                     'b' => '139',
                     'c' => '81',
                     'd' => '75',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2248,13 +2252,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 82 và 15 là bao nhiêu?',
                     'a' => '121',
                     'b' => '99',
                     'c' => '126',
                     'd' => '97',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -2262,13 +2266,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 33 và 2 là bao nhiêu?',
                     'a' => '168',
                     'b' => '45',
                     'c' => '176',
                     'd' => '31',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -2276,13 +2280,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 84 chia 1 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '139.90',
                     'b' => '16.81',
                     'c' => '137.80',
                     'd' => '84.00',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 1,
@@ -2290,13 +2294,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 44² + 10² là bao nhiêu?',
                     'a' => '160',
                     'b' => '2036',
                     'c' => '193',
                     'd' => '93',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2304,13 +2308,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 68 và 15 là bao nhiêu?',
                     'a' => '1020',
                     'b' => '24',
                     'c' => '156',
                     'd' => '96',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2318,13 +2322,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 89 chia 19 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '7.60',
                     'b' => '108.35',
                     'c' => '4.68',
                     'd' => '113.55',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -2332,13 +2336,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 18 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '152.61',
                     'b' => '4.24',
                     'c' => '22.93',
                     'd' => '116.11',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 3,
@@ -2346,13 +2350,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 20 và 9 là bao nhiêu?',
                     'a' => '29',
                     'b' => '114',
                     'c' => '38',
                     'd' => '62',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 1,
@@ -2360,13 +2364,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 73 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '8.54',
                     'b' => '128.17',
                     'c' => '196.09',
                     'd' => '157.88',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2374,13 +2378,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 90 và 17 là bao nhiêu?',
                     'a' => '99',
                     'b' => '162',
                     'c' => '73',
                     'd' => '70',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 7,
@@ -2388,13 +2392,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 30 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '28.74',
                     'b' => '5.48',
                     'c' => '102.85',
                     'd' => '132.15',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -2402,13 +2406,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 18 và 5 là bao nhiêu?',
                     'a' => '23',
                     'b' => '155',
                     'c' => '67',
                     'd' => '96',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 4,
@@ -2416,13 +2420,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 19 và 7 là bao nhiêu?',
                     'a' => '100',
                     'b' => '26',
                     'c' => '27',
                     'd' => '192',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2430,13 +2434,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 42 chia 8 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '136.56',
                     'b' => '156.61',
                     'c' => '11.88',
                     'd' => '5.25',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -2444,13 +2448,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 32 và 11 là bao nhiêu?',
                     'a' => '13',
                     'b' => '168',
                     'c' => '182',
                     'd' => '352',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2458,13 +2462,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 32² + 11² là bao nhiêu?',
                     'a' => '48',
                     'b' => '59',
                     'c' => '1145',
                     'd' => '11',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2472,13 +2476,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 37 và 11 là bao nhiêu?',
                     'a' => '407',
                     'b' => '155',
                     'c' => '29',
                     'd' => '198',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 1,
@@ -2486,13 +2490,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 88 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '12.27',
                     'b' => '81.79',
                     'c' => '9.38',
                     'd' => '115.75',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 1,
@@ -2500,13 +2504,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 18 và 17 là bao nhiêu?',
                     'a' => '1',
                     'b' => '69',
                     'c' => '43',
                     'd' => '119',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -2514,13 +2518,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 83² + 11² là bao nhiêu?',
                     'a' => '56',
                     'b' => '23',
                     'c' => '7010',
                     'd' => '104',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2528,13 +2532,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 16 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '4.00',
                     'b' => '22.22',
                     'c' => '183.47',
                     'd' => '79.87',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2542,13 +2546,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Giá trị của biểu thức 19² + 9² là bao nhiêu?',
                     'a' => '192',
                     'b' => '140',
                     'c' => '197',
                     'd' => '442',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2556,13 +2560,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 87 và 18 là bao nhiêu?',
                     'a' => '25',
                     'b' => '105',
                     'c' => '30',
                     'd' => '50',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 3,
@@ -2570,13 +2574,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 35 và 6 là bao nhiêu?',
                     'a' => '66',
                     'b' => '41',
                     'c' => '69',
                     'd' => '42',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2584,13 +2588,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 23 chia 16 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '90.38',
                     'b' => '126.34',
                     'c' => '161.26',
                     'd' => '1.44',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 2,
@@ -2598,13 +2602,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 92 chia 3 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '11.43',
                     'b' => '30.67',
                     'c' => '155.30',
                     'd' => '154.22',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2612,13 +2616,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 44 và 20 là bao nhiêu?',
                     'a' => '64',
                     'b' => '137',
                     'c' => '184',
                     'd' => '83',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 4,
@@ -2626,13 +2630,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 58 và 2 là bao nhiêu?',
                     'a' => '150',
                     'b' => '60',
                     'c' => '173',
                     'd' => '66',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2640,13 +2644,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 66 chia 5 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '13.20',
                     'b' => '28.26',
                     'c' => '53.05',
                     'd' => '74.21',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 4,
@@ -2654,13 +2658,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 34 và 5 là bao nhiêu?',
                     'a' => '178',
                     'b' => '142',
                     'c' => '29',
                     'd' => '42',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 3,
@@ -2668,13 +2672,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 81 chia 4 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '27.80',
                     'b' => '48.46',
                     'c' => '53.27',
                     'd' => '20.25',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -2682,13 +2686,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tích của 33 và 15 là bao nhiêu?',
                     'a' => '104',
                     'b' => '180',
                     'c' => '495',
                     'd' => '20',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 7,
@@ -2696,13 +2700,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 67 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '107.81',
                     'b' => '47.68',
                     'c' => '163.68',
                     'd' => '8.19',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2710,13 +2714,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 13 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '152.32',
                     'b' => '151.41',
                     'c' => '57.55',
                     'd' => '3.61',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -2724,13 +2728,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 59 chia 15 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '3.93',
                     'b' => '146.10',
                     'c' => '64.40',
                     'd' => '181.14',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 3,
@@ -2738,13 +2742,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 89 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '9.43',
                     'b' => '89.58',
                     'c' => '168.94',
                     'd' => '22.60',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 5,
@@ -2752,13 +2756,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 81 chia 13 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '199.62',
                     'b' => '22.40',
                     'c' => '6.23',
                     'd' => '40.53',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 9,
@@ -2766,13 +2770,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 9 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '161.38',
                     'b' => '154.66',
                     'c' => '186.17',
                     'd' => '3.00',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -2780,13 +2784,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Thương của 88 chia 20 (làm tròn đến 2 chữ số) là bao nhiêu?',
                     'a' => '95.45',
                     'b' => '4.40',
                     'c' => '53.37',
                     'd' => '38.93',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 3,
@@ -2794,13 +2798,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 66 và 15 là bao nhiêu?',
                     'a' => '4',
                     'b' => '51',
                     'c' => '170',
                     'd' => '21',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 6,
@@ -2808,13 +2812,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 74 và 11 là bao nhiêu?',
                     'a' => '125',
                     'b' => '150',
                     'c' => '85',
                     'd' => '117',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 7,
@@ -2822,13 +2826,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 65 và 20 là bao nhiêu?',
                     'a' => '42',
                     'b' => '85',
                     'c' => '1',
                     'd' => '129',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 1,
                 'do_kho' => 2,
@@ -2836,13 +2840,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Căn bậc hai của 50 là bao nhiêu (làm tròn đến 2 chữ số)?',
                     'a' => '39.48',
                     'b' => '39.43',
                     'c' => '7.07',
                     'd' => '137.33',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 1,
                 'do_kho' => 10,
@@ -2850,13 +2854,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hiệu của 24 và 18 là bao nhiêu?',
                     'a' => '6',
                     'b' => '148',
                     'c' => '171',
                     'd' => '91',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 8,
@@ -2864,13 +2868,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Tổng của 9 và 20 là bao nhiêu?',
                     'a' => '29',
                     'b' => '4',
                     'c' => '7',
                     'd' => '56',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 1,
                 'do_kho' => 4,
@@ -2881,13 +2885,13 @@ class MonHocSeeder extends Seeder
 
         $cauhoiHoa = [
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Lưu huỳnh là bao nhiêu?',
                     'a' => '12',
                     'b' => '32',
                     'c' => '24',
                     'd' => '23',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -2895,13 +2899,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Magie là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Kim loại',
                     'c' => 'Không rõ',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -2909,13 +2913,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Hydro là gì?',
                     'a' => 'Li',
                     'b' => 'H',
                     'c' => 'Cl',
                     'd' => 'Ag',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 5,
@@ -2923,13 +2927,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Lưu huỳnh là gì?',
                     'a' => 'H',
                     'b' => 'Zn',
                     'c' => 'S',
                     'd' => 'Cl',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -2937,13 +2941,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Nhôm là gì?',
                     'a' => 'Ag',
                     'b' => 'Na',
                     'c' => 'Al',
                     'd' => 'K',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 5,
@@ -2951,13 +2955,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Heli là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Kim loại',
                     'c' => 'Không rõ',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 5,
@@ -2965,13 +2969,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Magie là bao nhiêu?',
                     'a' => '24',
                     'b' => '32',
                     'c' => '16',
                     'd' => '35.5',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -2979,13 +2983,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Liti là gì?',
                     'a' => 'Fe',
                     'b' => 'Mg',
                     'c' => 'Al',
                     'd' => 'Li',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 3,
@@ -2993,13 +2997,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Sắt là gì?',
                     'a' => 'Fe',
                     'b' => 'He',
                     'c' => 'Cl',
                     'd' => 'Zn',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -3007,13 +3011,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Nhôm là gì?',
                     'a' => 'Ag',
                     'b' => 'S',
                     'c' => 'Al',
                     'd' => 'Au',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 9,
@@ -3021,13 +3025,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Sắt thuộc nhóm chất nào?',
                     'a' => 'IIIA',
                     'b' => 'IIB',
                     'c' => 'VIIA',
                     'd' => 'VIIIB',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -3035,13 +3039,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Heli là kim loại hay phi kim?',
                     'a' => 'Phi kim',
                     'b' => 'Không rõ',
                     'c' => 'Kim loại',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 5,
@@ -3049,13 +3053,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Magie là gì?',
                     'a' => 'Au',
                     'b' => 'H',
                     'c' => 'Mg',
                     'd' => 'Zn',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -3063,13 +3067,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Natri thuộc nhóm chất nào?',
                     'a' => 'IVA',
                     'b' => 'IA',
                     'c' => 'IIB',
                     'd' => 'IIA',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 2,
@@ -3077,13 +3081,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kẽm thuộc nhóm chất nào?',
                     'a' => 'VIIIB',
                     'b' => 'IIA',
                     'c' => 'IIB',
                     'd' => 'VIIIA',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -3091,13 +3095,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hydro là kim loại hay phi kim?',
                     'a' => 'Kim loại',
                     'b' => 'Không rõ',
                     'c' => 'Không rõ',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -3105,13 +3109,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Oxy thuộc nhóm chất nào?',
                     'a' => 'IA',
                     'b' => 'VIIIA',
                     'c' => 'VIA',
                     'd' => 'IIA',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 2,
@@ -3119,13 +3123,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hydro thuộc nhóm chất nào?',
                     'a' => 'IA',
                     'b' => 'VIIIB',
                     'c' => 'IB',
                     'd' => 'IIA',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -3133,13 +3137,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Liti là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Không rõ',
                     'c' => 'Phi kim',
                     'd' => 'Kim loại',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -3147,13 +3151,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Natri là gì?',
                     'a' => 'Li',
                     'b' => 'Cl',
                     'c' => 'Na',
                     'd' => 'Al',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 3,
@@ -3161,13 +3165,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Liti là gì?',
                     'a' => 'Li',
                     'b' => 'S',
                     'c' => 'Zn',
                     'd' => 'Cl',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3175,13 +3179,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Bạc thuộc nhóm chất nào?',
                     'a' => 'IB',
                     'b' => 'VIIIB',
                     'c' => 'IIB',
                     'd' => 'IA',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -3189,13 +3193,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Magie là gì?',
                     'a' => 'Mg',
                     'b' => 'H',
                     'c' => 'Ag',
                     'd' => 'K',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3203,13 +3207,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kẽm thuộc nhóm chất nào?',
                     'a' => 'IIB',
                     'b' => 'VIIIA',
                     'c' => 'IIA',
                     'd' => 'VIIA',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 2,
@@ -3217,13 +3221,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Cacbon là bao nhiêu?',
                     'a' => '108',
                     'b' => '12',
                     'c' => '65',
                     'd' => '16',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -3231,13 +3235,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Bạc là kim loại hay phi kim?',
                     'a' => 'Kim loại',
                     'b' => 'Phi kim',
                     'c' => 'Không rõ',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -3245,13 +3249,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Vàng là kim loại hay phi kim?',
                     'a' => 'Phi kim',
                     'b' => 'Không rõ',
                     'c' => 'Không rõ',
                     'd' => 'Kim loại',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -3259,13 +3263,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Natri là kim loại hay phi kim?',
                     'a' => 'Kim loại',
                     'b' => 'Phi kim',
                     'c' => 'Không rõ',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 2,
@@ -3273,13 +3277,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Oxy là bao nhiêu?',
                     'a' => '39',
                     'b' => '4',
                     'c' => '16',
                     'd' => '12',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 5,
@@ -3287,13 +3291,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Vàng thuộc nhóm chất nào?',
                     'a' => 'IVA',
                     'b' => 'VIIA',
                     'c' => 'IB',
                     'd' => 'IA',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -3301,13 +3305,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Natri là kim loại hay phi kim?',
                     'a' => 'Phi kim',
                     'b' => 'Kim loại',
                     'c' => 'Không rõ',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -3315,13 +3319,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Sắt thuộc nhóm chất nào?',
                     'a' => 'VIA',
                     'b' => 'IB',
                     'c' => 'VIIIB',
                     'd' => 'IA',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -3329,13 +3333,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Vàng là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Phi kim',
                     'c' => 'Kim loại',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -3343,13 +3347,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Cacbon là bao nhiêu?',
                     'a' => '65',
                     'b' => '12',
                     'c' => '23',
                     'd' => '197',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3357,13 +3361,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Sắt là gì?',
                     'a' => 'C',
                     'b' => 'Fe',
                     'c' => 'O',
                     'd' => 'Au',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -3371,13 +3375,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Hydro là bao nhiêu?',
                     'a' => '1',
                     'b' => '12',
                     'c' => '39',
                     'd' => '35.5',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 3,
@@ -3385,13 +3389,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hydro là kim loại hay phi kim?',
                     'a' => 'Phi kim',
                     'b' => 'Không rõ',
                     'c' => 'Kim loại',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -3399,13 +3403,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Cacbon là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Không rõ',
                     'c' => 'Phi kim',
                     'd' => 'Kim loại',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -3413,13 +3417,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhôm thuộc nhóm chất nào?',
                     'a' => 'IIB',
                     'b' => 'VIIA',
                     'c' => 'IA',
                     'd' => 'IIIA',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3427,13 +3431,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Sắt là gì?',
                     'a' => 'O',
                     'b' => 'Zn',
                     'c' => 'S',
                     'd' => 'Fe',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3441,13 +3445,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Vàng là gì?',
                     'a' => 'Fe',
                     'b' => 'Au',
                     'c' => 'Zn',
                     'd' => 'Na',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -3455,13 +3459,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Sắt là gì?',
                     'a' => 'He',
                     'b' => 'Fe',
                     'c' => 'S',
                     'd' => 'Au',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 9,
@@ -3469,13 +3473,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Vàng là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Không rõ',
                     'c' => 'Kim loại',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 5,
@@ -3483,13 +3487,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Magie là gì?',
                     'a' => 'Mg',
                     'b' => 'He',
                     'c' => 'C',
                     'd' => 'Li',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 9,
@@ -3497,13 +3501,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Vàng thuộc nhóm chất nào?',
                     'a' => 'VIIIB',
                     'b' => 'IIA',
                     'c' => 'IB',
                     'd' => 'IA',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 2,
@@ -3511,13 +3515,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kali thuộc nhóm chất nào?',
                     'a' => 'VIIIB',
                     'b' => 'VIIIA',
                     'c' => 'VIA',
                     'd' => 'IA',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3525,13 +3529,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kali thuộc nhóm chất nào?',
                     'a' => 'IIA',
                     'b' => 'VIIIB',
                     'c' => 'VIIIA',
                     'd' => 'IA',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -3539,13 +3543,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Cacbon là bao nhiêu?',
                     'a' => '12',
                     'b' => '197',
                     'c' => '27',
                     'd' => '108',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -3553,13 +3557,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Liti là gì?',
                     'a' => 'Na',
                     'b' => 'Au',
                     'c' => 'Li',
                     'd' => 'K',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3567,13 +3571,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Oxy là bao nhiêu?',
                     'a' => '197',
                     'b' => '35.5',
                     'c' => '65',
                     'd' => '16',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -3581,13 +3585,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhôm là kim loại hay phi kim?',
                     'a' => 'Kim loại',
                     'b' => 'Không rõ',
                     'c' => 'Không rõ',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 5,
@@ -3595,13 +3599,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhôm thuộc nhóm chất nào?',
                     'a' => 'VIIIA',
                     'b' => 'IIIA',
                     'c' => 'IVA',
                     'd' => 'IA',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 9,
@@ -3609,13 +3613,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Natri là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Không rõ',
                     'c' => 'Kim loại',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 3,
@@ -3623,13 +3627,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Heli thuộc nhóm chất nào?',
                     'a' => 'IIA',
                     'b' => 'IB',
                     'c' => 'VIIIA',
                     'd' => 'VIIA',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 2,
@@ -3637,13 +3641,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kẽm thuộc nhóm chất nào?',
                     'a' => 'VIIIB',
                     'b' => 'IVA',
                     'c' => 'VIIIA',
                     'd' => 'IIB',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 9,
@@ -3651,13 +3655,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Natri là gì?',
                     'a' => 'Cl',
                     'b' => 'Fe',
                     'c' => 'Na',
                     'd' => 'Zn',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -3665,13 +3669,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Natri là kim loại hay phi kim?',
                     'a' => 'Phi kim',
                     'b' => 'Không rõ',
                     'c' => 'Kim loại',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -3679,13 +3683,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Clo là bao nhiêu?',
                     'a' => '35.5',
                     'b' => '56',
                     'c' => '24',
                     'd' => '23',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -3693,13 +3697,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Lưu huỳnh là bao nhiêu?',
                     'a' => '24',
                     'b' => '32',
                     'c' => '7',
                     'd' => '27',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -3707,13 +3711,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Magie thuộc nhóm chất nào?',
                     'a' => 'IIB',
                     'b' => 'IVA',
                     'c' => 'IIIA',
                     'd' => 'IIA',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 5,
@@ -3721,13 +3725,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhôm là kim loại hay phi kim?',
                     'a' => 'Phi kim',
                     'b' => 'Không rõ',
                     'c' => 'Kim loại',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3735,13 +3739,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Oxy là gì?',
                     'a' => 'Fe',
                     'b' => 'Au',
                     'c' => 'Na',
                     'd' => 'O',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -3749,13 +3753,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Oxy là gì?',
                     'a' => 'O',
                     'b' => 'Au',
                     'c' => 'C',
                     'd' => 'Al',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -3763,13 +3767,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Heli là gì?',
                     'a' => 'He',
                     'b' => 'Al',
                     'c' => 'Fe',
                     'd' => 'Ag',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3777,13 +3781,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Oxy là gì?',
                     'a' => 'H',
                     'b' => 'O',
                     'c' => 'Fe',
                     'd' => 'Zn',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -3791,13 +3795,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Nhôm là gì?',
                     'a' => 'Al',
                     'b' => 'C',
                     'c' => 'Zn',
                     'd' => 'Au',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 9,
@@ -3805,13 +3809,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Sắt là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Kim loại',
                     'c' => 'Phi kim',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 2,
@@ -3819,13 +3823,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Liti là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Không rõ',
                     'c' => 'Phi kim',
                     'd' => 'Kim loại',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -3833,13 +3837,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Vàng là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Kim loại',
                     'c' => 'Không rõ',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -3847,13 +3851,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Cacbon là gì?',
                     'a' => 'S',
                     'b' => 'Na',
                     'c' => 'C',
                     'd' => 'Mg',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -3861,13 +3865,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Heli là gì?',
                     'a' => 'O',
                     'b' => 'Zn',
                     'c' => 'He',
                     'd' => 'Mg',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -3875,13 +3879,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Natri thuộc nhóm chất nào?',
                     'a' => 'IIIA',
                     'b' => 'IIA',
                     'c' => 'IB',
                     'd' => 'IA',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -3889,13 +3893,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Clo là gì?',
                     'a' => 'Mg',
                     'b' => 'Au',
                     'c' => 'Zn',
                     'd' => 'Cl',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -3903,13 +3907,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Bạc thuộc nhóm chất nào?',
                     'a' => 'IA',
                     'b' => 'VIIA',
                     'c' => 'IB',
                     'd' => 'VIA',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -3917,13 +3921,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Bạc là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Không rõ',
                     'c' => 'Kim loại',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -3931,13 +3935,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Lưu huỳnh là gì?',
                     'a' => 'Na',
                     'b' => 'S',
                     'c' => 'Li',
                     'd' => 'Ag',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -3945,13 +3949,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Bạc là gì?',
                     'a' => 'Fe',
                     'b' => 'Au',
                     'c' => 'Al',
                     'd' => 'Ag',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -3959,13 +3963,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhôm thuộc nhóm chất nào?',
                     'a' => 'VIA',
                     'b' => 'IIA',
                     'c' => 'VIIIA',
                     'd' => 'IIIA',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -3973,13 +3977,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Hydro là bao nhiêu?',
                     'a' => '1',
                     'b' => '35.5',
                     'c' => '27',
                     'd' => '56',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -3987,13 +3991,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Heli là bao nhiêu?',
                     'a' => '197',
                     'b' => '16',
                     'c' => '4',
                     'd' => '35.5',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -4001,13 +4005,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Vàng là kim loại hay phi kim?',
                     'a' => 'Phi kim',
                     'b' => 'Không rõ',
                     'c' => 'Kim loại',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 3,
@@ -4015,13 +4019,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Sắt là bao nhiêu?',
                     'a' => '56',
                     'b' => '108',
                     'c' => '39',
                     'd' => '12',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -4029,13 +4033,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Sắt là kim loại hay phi kim?',
                     'a' => 'Kim loại',
                     'b' => 'Không rõ',
                     'c' => 'Phi kim',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -4043,13 +4047,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Oxy thuộc nhóm chất nào?',
                     'a' => 'IA',
                     'b' => 'IIIA',
                     'c' => 'IIB',
                     'd' => 'VIA',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -4057,13 +4061,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Clo là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Phi kim',
                     'c' => 'Kim loại',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 3,
@@ -4071,13 +4075,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Sắt là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Kim loại',
                     'c' => 'Phi kim',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -4085,13 +4089,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Cacbon thuộc nhóm chất nào?',
                     'a' => 'IVA',
                     'b' => 'VIIA',
                     'c' => 'IIIA',
                     'd' => 'VIIIA',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 5,
@@ -4099,13 +4103,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Sắt là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Phi kim',
                     'c' => 'Kim loại',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -4113,13 +4117,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Magie là kim loại hay phi kim?',
                     'a' => 'Kim loại',
                     'b' => 'Không rõ',
                     'c' => 'Phi kim',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -4127,13 +4131,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Kẽm là gì?',
                     'a' => 'C',
                     'b' => 'Zn',
                     'c' => 'Mg',
                     'd' => 'S',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 10,
@@ -4141,13 +4145,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kí hiệu hoá học của Nhôm là gì?',
                     'a' => 'H',
                     'b' => 'K',
                     'c' => 'Al',
                     'd' => 'Na',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -4155,13 +4159,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Kali thuộc nhóm chất nào?',
                     'a' => 'IVA',
                     'b' => 'IA',
                     'c' => 'IIIA',
                     'd' => 'VIA',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 3,
@@ -4169,13 +4173,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Clo là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Kim loại',
                     'c' => 'Phi kim',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 5,
                 'do_kho' => 6,
@@ -4183,13 +4187,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Liti là kim loại hay phi kim?',
                     'a' => 'Phi kim',
                     'b' => 'Không rõ',
                     'c' => 'Không rõ',
                     'd' => 'Kim loại',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 2,
@@ -4197,13 +4201,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hydro là kim loại hay phi kim?',
                     'a' => 'Kim loại',
                     'b' => 'Không rõ',
                     'c' => 'Không rõ',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 5,
                 'do_kho' => 3,
@@ -4211,13 +4215,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Bạc là bao nhiêu?',
                     'a' => '16',
                     'b' => '108',
                     'c' => '12',
                     'd' => '7',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 1,
@@ -4225,13 +4229,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nguyên tử khối của Heli là bao nhiêu?',
                     'a' => '4',
                     'b' => '39',
                     'c' => '35.5',
                     'd' => '23',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 7,
@@ -4239,13 +4243,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Sắt là kim loại hay phi kim?',
                     'a' => 'Kim loại',
                     'b' => 'Không rõ',
                     'c' => 'Phi kim',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 4,
@@ -4253,13 +4257,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Nhôm là kim loại hay phi kim?',
                     'a' => 'Không rõ',
                     'b' => 'Kim loại',
                     'c' => 'Không rõ',
                     'd' => 'Phi kim',
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 5,
                 'do_kho' => 2,
@@ -4267,13 +4271,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Hydro là kim loại hay phi kim?',
                     'a' => 'Phi kim',
                     'b' => 'Kim loại',
                     'c' => 'Không rõ',
                     'd' => 'Không rõ',
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 5,
                 'do_kho' => 8,
@@ -4284,13 +4288,13 @@ class MonHocSeeder extends Seeder
 
         $cauHoiAnh = [
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -4298,13 +4302,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -4312,13 +4316,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -4326,13 +4330,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -4340,13 +4344,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -4354,13 +4358,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -4368,13 +4372,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 4,
@@ -4382,13 +4386,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 10,
@@ -4396,13 +4400,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 10,
@@ -4410,13 +4414,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -4424,13 +4428,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -4438,13 +4442,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 8,
@@ -4452,13 +4456,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 10,
@@ -4466,13 +4470,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 8,
@@ -4480,13 +4484,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -4494,13 +4498,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 4,
@@ -4508,13 +4512,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -4522,13 +4526,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 10,
@@ -4536,13 +4540,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -4550,13 +4554,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 6,
@@ -4564,13 +4568,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 6,
@@ -4578,13 +4582,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Which sentence is grammatically correct?',
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -4592,13 +4596,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 8,
@@ -4606,13 +4610,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -4620,13 +4624,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -4634,13 +4638,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Which sentence is grammatically correct?',
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -4648,13 +4652,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 10,
@@ -4662,13 +4666,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -4676,13 +4680,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -4690,13 +4694,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -4704,13 +4708,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -4718,13 +4722,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -4732,13 +4736,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -4746,13 +4750,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -4760,13 +4764,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -4774,13 +4778,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -4788,13 +4792,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 8,
@@ -4802,13 +4806,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -4816,13 +4820,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -4830,13 +4834,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Which sentence is grammatically correct?',
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 6,
@@ -4844,13 +4848,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Which sentence is grammatically correct?',
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -4858,13 +4862,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Which sentence is grammatically correct?',
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -4872,13 +4876,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Which sentence is grammatically correct?',
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 10,
@@ -4886,13 +4890,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -4900,13 +4904,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -4914,13 +4918,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 6,
@@ -4928,13 +4932,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn từ đúng để hoàn thành câu: "She ___ to school every day."',
                     'a' => "go",
                     'b' => "goes",
                     'c' => "going",
                     'd' => "gone",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 6,
@@ -4942,13 +4946,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -4956,13 +4960,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 8,
@@ -4970,13 +4974,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -4984,13 +4988,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -4998,13 +5002,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -5012,13 +5016,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 4,
@@ -5026,13 +5030,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -5040,13 +5044,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -5054,13 +5058,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -5068,13 +5072,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Which sentence is grammatically correct?",
                     'a' => "He go to school.",
                     'b' => "He goes to school.",
                     'c' => "He going to school.",
                     'd' => "He gone to school.",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -5082,13 +5086,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -5096,13 +5100,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn thì đúng của câu: "They have ___ their homework."',
                     'a' => "did",
                     'b' => "done",
                     'c' => "do",
                     'd' => "doing",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 4,
@@ -5110,13 +5114,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Chọn giới từ đúng: "I’m interested ___ music."',
                     'a' => "on",
                     'b' => "at",
                     'c' => "in",
                     'd' => "for",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -5124,13 +5128,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "fast" là gì?',
                     'a' => "tiny",
                     'b' => "sad",
                     'c' => "feeble",
                     'd' => "lazy",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -5138,13 +5142,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "happy" là gì?',
                     'a' => "cheerful",
                     'b' => "content",
                     'c' => "intelligent",
                     'd' => "large",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -5152,13 +5156,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "happy" là gì?',
                     'a' => "sluggish",
                     'b' => "sad",
                     'c' => "slow",
                     'd' => "dumb",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -5166,13 +5170,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "smart" là gì?',
                     'a' => "foolish",
                     'b' => "feeble",
                     'c' => "miserable",
                     'd' => "sluggish",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -5180,13 +5184,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "strong" là gì?',
                     'a' => "little",
                     'b' => "fragile",
                     'c' => "weak",
                     'd' => "lazy",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -5194,13 +5198,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "big" là gì?',
                     'a' => "powerful",
                     'b' => "enormous",
                     'c' => "joyful",
                     'd' => "intelligent",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -5208,13 +5212,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "strong" là gì?',
                     'a' => "stupid",
                     'b' => "weak",
                     'c' => "foolish",
                     'd' => "fragile",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -5222,13 +5226,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "happy" là gì?',
                     'a' => "quick",
                     'b' => "enormous",
                     'c' => "intelligent",
                     'd' => "cheerful",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 3,
                 'do_kho' => 8,
@@ -5236,13 +5240,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "strong" là gì?',
                     'a' => "powerful",
                     'b' => "cheerful",
                     'c' => "joyful",
                     'd' => "large",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 10,
@@ -5250,13 +5254,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "strong" là gì?',
                     'a' => "weak",
                     'b' => "unhappy",
                     'c' => "dumb",
                     'd' => "stupid",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -5264,13 +5268,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "big" là gì?',
                     'a' => "unhappy",
                     'b' => "small",
                     'c' => "sad",
                     'd' => "dumb",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -5278,13 +5282,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "smart" là gì?',
                     'a' => "intelligent",
                     'b' => "rapid",
                     'c' => "content",
                     'd' => "cheerful",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 10,
@@ -5292,13 +5296,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' =>  'Từ trái nghĩa với "strong" là gì?',
                     'a' => "little",
                     'b' => "foolish",
                     'c' => "weak",
                     'd' => "feeble",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -5306,13 +5310,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "smart" là gì?',
                     'a' => "slow",
                     'b' => "little",
                     'c' => "tiny",
                     'd' => "dumb",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 3,
                 'do_kho' => 10,
@@ -5320,13 +5324,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "happy" là gì?',
                     'a' => "weak",
                     'b' => "foolish",
                     'c' => "stupid",
                     'd' => "sad",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -5334,13 +5338,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "fast" là gì?',
                     'a' => "lazy",
                     'b' => "miserable",
                     'c' => "dumb",
                     'd' => "slow",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -5348,13 +5352,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "happy" là gì?',
                     'a' => "content",
                     'b' => "joyful",
                     'c' => "large",
                     'd' => "powerful",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -5362,13 +5366,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "happy" là gì?',
                     'a' => "huge",
                     'b' => "cheerful",
                     'c' => "joyful",
                     'd' => "content",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 4,
@@ -5376,13 +5380,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "big" là gì?',
                     'a' => "unhappy",
                     'b' => "tiny",
                     'c' => "small",
                     'd' => "sluggish",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -5390,13 +5394,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "strong" là gì?',
                     'a' => "sturdy",
                     'b' => "large",
                     'c' => "robust",
                     'd' => "intelligent",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 8,
@@ -5404,13 +5408,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "smart" là gì?',
                     'a' => "foolish",
                     'b' => "weak",
                     'c' => "stupid",
                     'd' => "slow",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 4,
@@ -5418,13 +5422,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "strong" là gì?',
                     'a' => "small",
                     'b' => "fragile",
                     'c' => "tiny",
                     'd' => "dumb",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -5432,13 +5436,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "fast" là gì?',
                     'a' => "miserable",
                     'b' => "lazy",
                     'c' => "sluggish",
                     'd' => "feeble",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -5446,13 +5450,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "big" là gì?',
                     'a' => "foolish",
                     'b' => "feeble",
                     'c' => "little",
                     'd' => "stupid",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -5460,13 +5464,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "strong" là gì?',
                     'a' => "foolish",
                     'b' => "feeble",
                     'c' => "fragile",
                     'd' => "unhappy",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -5474,13 +5478,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "fast" là gì?',
                     'a' => "speedy",
                     'b' => "cheerful",
                     'c' => "robust",
                     'd' => "powerful",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 9,
@@ -5488,13 +5492,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "big" là gì?',
                     'a' => "clever",
                     'b' => "cheerful",
                     'c' => "huge",
                     'd' => "speedy",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -5502,13 +5506,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "strong" là gì?',
                     'a' => "bright",
                     'b' => "huge",
                     'c' => "sturdy",
                     'd' => "intelligent",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -5516,13 +5520,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "fast" là gì?',
                     'a' => "unhappy",
                     'b' => "stupid",
                     'c' => "feeble",
                     'd' => "lazy",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -5530,13 +5534,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "strong" là gì?',
                     'a' => "clever",
                     'b' => "sturdy",
                     'c' => "content",
                     'd' => "large",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 6,
@@ -5544,13 +5548,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "smart" là gì?',
                     'a' => "fragile",
                     'b' => "dumb",
                     'c' => "foolish",
                     'd' => "little",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -5558,13 +5562,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "smart" là gì?',
                     'a' => "intelligent",
                     'b' => "bright",
                     'c' => "clever",
                     'd' => "rapid",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 4,
@@ -5572,13 +5576,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "fast" là gì?',
                     'a' => "feeble",
                     'b' => "sad",
                     'c' => "weak",
                     'd' => "slow",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 3,
                 'do_kho' => 7,
@@ -5586,13 +5590,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "happy" là gì?',
                     'a' => "miserable",
                     'b' => "small",
                     'c' => "stupid",
                     'd' => "foolish",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 4,
@@ -5600,13 +5604,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "smart" là gì?',
                     'a' => "feeble",
                     'b' => "dumb",
                     'c' => "unhappy",
                     'd' => "small",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 8,
@@ -5614,13 +5618,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "smart" là gì?',
                     'a' => "enormous",
                     'b' => "speedy",
                     'c' => "robust",
                     'd' => "clever",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 3,
                 'do_kho' => 3,
@@ -5628,13 +5632,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "strong" là gì?',
                     'a' => "huge",
                     'b' => "powerful",
                     'c' => "cheerful",
                     'd' => "sturdy",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 3,
                 'do_kho' => 2,
@@ -5642,13 +5646,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "strong" là gì?',
                     'a' => "robust",
                     'b' => "cheerful",
                     'c' => "rapid",
                     'd' => "sturdy",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 3,
                 'do_kho' => 5,
@@ -5656,13 +5660,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ trái nghĩa với "big" là gì?',
                     'a' => "small",
                     'b' => "little",
                     'c' => "lazy",
                     'd' => "dumb",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 3,
                 'do_kho' => 6,
@@ -5670,13 +5674,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => 'Từ đồng nghĩa với "fast" là gì?',
                     'a' => "intelligent",
                     'b' => "content",
                     'c' => "rapid",
                     'd' => "sturdy",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 3,
                 'do_kho' => 1,
@@ -5687,13 +5691,13 @@ class MonHocSeeder extends Seeder
 
         $cauHoiLy = [
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Ký hiệu của điện tích là gì?",
                     'a' => "Q",
                     'b' => "I",
                     'c' => "R",
                     'd' => "U",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -5701,13 +5705,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -5715,13 +5719,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -5729,13 +5733,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -5743,13 +5747,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 7,
@@ -5757,13 +5761,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -5771,13 +5775,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Ký hiệu của điện tích là gì?",
                     'a' => "Q",
                     'b' => "I",
                     'c' => "R",
                     'd' => "U",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 3,
@@ -5785,13 +5789,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Định luật Ohm được viết như thế nào?",
                     'a' => "I = U / R",
                     'b' => "U = I * R",
                     'c' => "R = U / I",
                     'd' => "Cả 3 đáp án trên",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -5799,13 +5803,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -5813,13 +5817,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 5,
@@ -5827,13 +5831,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -5841,13 +5845,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -5855,13 +5859,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Ký hiệu của điện tích là gì?",
                     'a' => "Q",
                     'b' => "I",
                     'c' => "R",
                     'd' => "U",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -5869,13 +5873,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -5883,13 +5887,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 3,
@@ -5897,13 +5901,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 5,
@@ -5911,13 +5915,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -5925,13 +5929,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính công cơ học là gì?",
                     'a' => "A = F * s",
                     'b' => "A = F / s",
                     'c' => "A = s / F",
                     'd' => "A = F + s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -5939,13 +5943,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính công cơ học là gì?",
                     'a' => "A = F * s",
                     'b' => "A = F / s",
                     'c' => "A = s / F",
                     'd' => "A = F + s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -5953,13 +5957,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -5967,13 +5971,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính công cơ học là gì?",
                     'a' => "A = F * s",
                     'b' => "A = F / s",
                     'c' => "A = s / F",
                     'd' => "A = F + s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -5981,13 +5985,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Tốc độ ánh sáng trong chân không xấp xỉ là bao nhiêu?",
                     'a' => "3×10⁸ m/s",
                     'b' => "3×10⁶ m/s",
                     'c' => "3×10⁵ m/s",
                     'd' => "3×10⁴ m/s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -5995,13 +5999,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Tốc độ ánh sáng trong chân không xấp xỉ là bao nhiêu?",
                     'a' => "3×10⁸ m/s",
                     'b' => "3×10⁶ m/s",
                     'c' => "3×10⁵ m/s",
                     'd' => "3×10⁴ m/s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 3,
@@ -6009,13 +6013,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -6023,13 +6027,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 3,
@@ -6037,13 +6041,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Định luật Ohm được viết như thế nào?",
                     'a' => "I = U / R",
                     'b' => "U = I * R",
                     'c' => "R = U / I",
                     'd' => "Cả 3 đáp án trên",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -6051,13 +6055,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Gia tốc trọng trường trên Trái Đất xấp xỉ bằng bao nhiêu?",
                     'a' => "10 m/s²",
                     'b' => "9.8 m/s²",
                     'c' => "9 m/s²",
                     'd' => "8.9 m/s²",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6065,13 +6069,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 5,
@@ -6079,13 +6083,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 7,
@@ -6093,13 +6097,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Gia tốc trọng trường trên Trái Đất xấp xỉ bằng bao nhiêu?",
                     'a' => "10 m/s²",
                     'b' => "9.8 m/s²",
                     'c' => "9 m/s²",
                     'd' => "8.9 m/s²",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -6107,13 +6111,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6121,13 +6125,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 3,
@@ -6135,13 +6139,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Định luật Ohm được viết như thế nào?",
                     'a' => "I = U / R",
                     'b' => "U = I * R",
                     'c' => "R = U / I",
                     'd' => "Cả 3 đáp án trên",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6149,13 +6153,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính vận tốc là gì?",
                     'a' => "v = s / t",
                     'b' => "v = t / s",
                     'c' => "v = s * t",
                     'd' => "v = s + t",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6163,13 +6167,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính vận tốc là gì?",
                     'a' => "v = s / t",
                     'b' => "v = t / s",
                     'c' => "v = s * t",
                     'd' => "v = s + t",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -6177,13 +6181,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Gia tốc trọng trường trên Trái Đất xấp xỉ bằng bao nhiêu?",
                     'a' => "10 m/s²",
                     'b' => "9.8 m/s²",
                     'c' => "9 m/s²",
                     'd' => "8.9 m/s²",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 8,
@@ -6191,13 +6195,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Gia tốc trọng trường trên Trái Đất xấp xỉ bằng bao nhiêu?",
                     'a' => "10 m/s²",
                     'b' => "9.8 m/s²",
                     'c' => "9 m/s²",
                     'd' => "8.9 m/s²",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6205,13 +6209,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -6219,13 +6223,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Ký hiệu của điện tích là gì?",
                     'a' => "Q",
                     'b' => "I",
                     'c' => "R",
                     'd' => "U",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 8,
@@ -6233,13 +6237,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -6247,13 +6251,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính vận tốc là gì?",
                     'a' => "v = s / t",
                     'b' => "v = t / s",
                     'c' => "v = s * t",
                     'd' => "v = s + t",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -6261,13 +6265,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -6275,13 +6279,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 8,
@@ -6289,13 +6293,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Ký hiệu của điện tích là gì?",
                     'a' => "Q",
                     'b' => "I",
                     'c' => "R",
                     'd' => "U",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -6303,13 +6307,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -6317,13 +6321,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -6331,13 +6335,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 8,
@@ -6345,13 +6349,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính công cơ học là gì?",
                     'a' => "A = F * s",
                     'b' => "A = F / s",
                     'c' => "A = s / F",
                     'd' => "A = F + s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6359,13 +6363,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -6373,13 +6377,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6387,13 +6391,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6401,13 +6405,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính vận tốc là gì?",
                     'a' => "v = s / t",
                     'b' => "v = t / s",
                     'c' => "v = s * t",
                     'd' => "v = s + t",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6415,13 +6419,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 8,
@@ -6429,13 +6433,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6443,13 +6447,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Ký hiệu của điện tích là gì?",
                     'a' => "Q",
                     'b' => "I",
                     'c' => "R",
                     'd' => "U",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -6457,13 +6461,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Tốc độ ánh sáng trong chân không xấp xỉ là bao nhiêu?",
                     'a' => "3×10⁸ m/s",
                     'b' => "3×10⁶ m/s",
                     'c' => "3×10⁵ m/s",
                     'd' => "3×10⁴ m/s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 5,
@@ -6471,13 +6475,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Gia tốc trọng trường trên Trái Đất xấp xỉ bằng bao nhiêu?",
                     'a' => "10 m/s²",
                     'b' => "9.8 m/s²",
                     'c' => "9 m/s²",
                     'd' => "8.9 m/s²",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6485,13 +6489,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6499,13 +6503,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính công cơ học là gì?",
                     'a' => "A = F * s",
                     'b' => "A = F / s",
                     'c' => "A = s / F",
                     'd' => "A = F + s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 5,
@@ -6513,13 +6517,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 8,
@@ -6527,13 +6531,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính vận tốc là gì?",
                     'a' => "v = s / t",
                     'b' => "v = t / s",
                     'c' => "v = s * t",
                     'd' => "v = s + t",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 7,
@@ -6541,13 +6545,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Tốc độ ánh sáng trong chân không xấp xỉ là bao nhiêu?",
                     'a' => "3×10⁸ m/s",
                     'b' => "3×10⁶ m/s",
                     'c' => "3×10⁵ m/s",
                     'd' => "3×10⁴ m/s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6555,13 +6559,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Gia tốc trọng trường trên Trái Đất xấp xỉ bằng bao nhiêu?",
                     'a' => "10 m/s²",
                     'b' => "9.8 m/s²",
                     'c' => "9 m/s²",
                     'd' => "8.9 m/s²",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -6569,13 +6573,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính công cơ học là gì?",
                     'a' => "A = F * s",
                     'b' => "A = F / s",
                     'c' => "A = s / F",
                     'd' => "A = F + s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -6583,13 +6587,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6597,13 +6601,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6611,13 +6615,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -6625,13 +6629,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 3,
@@ -6639,13 +6643,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Ký hiệu của điện tích là gì?",
                     'a' => "Q",
                     'b' => "I",
                     'c' => "R",
                     'd' => "U",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -6653,13 +6657,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -6667,13 +6671,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính vận tốc là gì?",
                     'a' => "v = s / t",
                     'b' => "v = t / s",
                     'c' => "v = s * t",
                     'd' => "v = s + t",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -6681,13 +6685,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6695,13 +6699,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -6709,13 +6713,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính công cơ học là gì?",
                     'a' => "A = F * s",
                     'b' => "A = F / s",
                     'c' => "A = s / F",
                     'd' => "A = F + s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 5,
@@ -6723,13 +6727,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -6737,13 +6741,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Gia tốc trọng trường trên Trái Đất xấp xỉ bằng bao nhiêu?",
                     'a' => "10 m/s²",
                     'b' => "9.8 m/s²",
                     'c' => "9 m/s²",
                     'd' => "8.9 m/s²",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6751,13 +6755,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Ký hiệu của điện tích là gì?",
                     'a' => "Q",
                     'b' => "I",
                     'c' => "R",
                     'd' => "U",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -6765,13 +6769,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Tốc độ ánh sáng trong chân không xấp xỉ là bao nhiêu?",
                     'a' => "3×10⁸ m/s",
                     'b' => "3×10⁶ m/s",
                     'c' => "3×10⁵ m/s",
                     'd' => "3×10⁴ m/s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6779,13 +6783,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 6,
@@ -6793,13 +6797,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính vận tốc là gì?",
                     'a' => "v = s / t",
                     'b' => "v = t / s",
                     'c' => "v = s * t",
                     'd' => "v = s + t",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6807,13 +6811,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -6821,13 +6825,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính vận tốc là gì?",
                     'a' => "v = s / t",
                     'b' => "v = t / s",
                     'c' => "v = s * t",
                     'd' => "v = s + t",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6835,13 +6839,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Định luật Ohm được viết như thế nào?",
                     'a' => "I = U / R",
                     'b' => "U = I * R",
                     'c' => "R = U / I",
                     'd' => "Cả 3 đáp án trên",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -6849,13 +6853,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Công thức tính vận tốc là gì?",
                     'a' => "v = s / t",
                     'b' => "v = t / s",
                     'c' => "v = s * t",
                     'd' => "v = s + t",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -6863,13 +6867,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Tốc độ ánh sáng trong chân không xấp xỉ là bao nhiêu?",
                     'a' => "3×10⁸ m/s",
                     'b' => "3×10⁶ m/s",
                     'c' => "3×10⁵ m/s",
                     'd' => "3×10⁴ m/s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 7,
@@ -6877,13 +6881,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 7,
@@ -6891,13 +6895,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Ký hiệu của điện tích là gì?",
                     'a' => "Q",
                     'b' => "I",
                     'c' => "R",
                     'd' => "U",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 5,
@@ -6905,13 +6909,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 10,
@@ -6919,13 +6923,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 8,
@@ -6933,13 +6937,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -6947,13 +6951,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của công suất là gì?",
                     'a' => "Joule",
                     'b' => "Newton",
                     'c' => "Watt",
                     'd' => "Ampere",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -6961,13 +6965,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Điện tích được đo bằng đơn vị nào?",
                     'a' => "Ampe",
                     'b' => "Volt",
                     'c' => "Coulomb",
                     'd' => "Joule",
-                ]),
+                ],
                 'dap_an' => 'C',
                 'mon_hoc_id' => 4,
                 'do_kho' => 5,
@@ -6975,13 +6979,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Định luật Ohm được viết như thế nào?",
                     'a' => "I = U / R",
                     'b' => "U = I * R",
                     'c' => "R = U / I",
                     'd' => "Cả 3 đáp án trên",
-                ]),
+                ],
                 'dap_an' => 'D',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -6989,13 +6993,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị điện trở là gì?",
                     'a' => "W",
                     'b' => "Ω",
                     'c' => "V",
                     'd' => "A",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -7003,13 +7007,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Tốc độ ánh sáng trong chân không xấp xỉ là bao nhiêu?",
                     'a' => "3×10⁸ m/s",
                     'b' => "3×10⁶ m/s",
                     'c' => "3×10⁵ m/s",
                     'd' => "3×10⁴ m/s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 2,
@@ -7017,13 +7021,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Tốc độ ánh sáng trong chân không xấp xỉ là bao nhiêu?",
                     'a' => "3×10⁸ m/s",
                     'b' => "3×10⁶ m/s",
                     'c' => "3×10⁵ m/s",
                     'd' => "3×10⁴ m/s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 7,
@@ -7031,13 +7035,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Tốc độ ánh sáng trong chân không xấp xỉ là bao nhiêu?",
                     'a' => "3×10⁸ m/s",
                     'b' => "3×10⁶ m/s",
                     'c' => "3×10⁵ m/s",
                     'd' => "3×10⁴ m/s",
-                ]),
+                ],
                 'dap_an' => 'A',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -7045,13 +7049,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 1,
@@ -7059,13 +7063,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 4,
@@ -7073,13 +7077,13 @@ class MonHocSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'de_bai' => json_encode([
+                'de_bai' => [
                     'de_bai' => "Đơn vị của lực trong hệ SI là gì?",
                     'a' => "kg",
                     'b' => "N",
                     'c' => "J",
                     'd' => "W",
-                ]),
+                ],
                 'dap_an' => 'B',
                 'mon_hoc_id' => 4,
                 'do_kho' => 9,
@@ -7089,23 +7093,68 @@ class MonHocSeeder extends Seeder
         ];
 
         foreach ($cauHoiVan as $cauHoi) {
-            CauHoi::create($cauHoi);
+            $cauhoi = CauHoi::create(array_merge($cauHoi, [
+                'de_bai' => $cauHoi['de_bai']['de_bai'],
+            ]));
+            foreach (['a', 'b', 'c', 'd'] as $key) {
+                DapAn::create([
+                    'cau_hoi_id' => $cauhoi->id,
+                    'name' => $key,
+                    'context' => $cauHoi['de_bai'][$key],
+                ]);
+            }
         }
 
         foreach ($cauHoiToan as $cauHoi) {
-            CauHoi::create($cauHoi);
+             $cauhoi = CauHoi::create(array_merge($cauHoi, [
+                'de_bai' => $cauHoi['de_bai']['de_bai'],
+            ]));
+            foreach (['a', 'b', 'c', 'd'] as $key) {
+                DapAn::create([
+                    'cau_hoi_id' => $cauhoi->id,
+                    'name' => $key,
+                    'context' => $cauHoi['de_bai'][$key],
+                ]);
+            }
         }
 
         foreach ($cauHoiAnh as $cauHoi) {
-            CauHoi::create($cauHoi);
+             $cauhoi = CauHoi::create(array_merge($cauHoi, [
+                'de_bai' => $cauHoi['de_bai']['de_bai'],
+            ]));
+            foreach (['a', 'b', 'c', 'd'] as $key) {
+                DapAn::create([
+                    'cau_hoi_id' => $cauhoi->id,
+                    'name' => $key,
+                    'context' => $cauHoi['de_bai'][$key],
+                ]);
+            }
         }
 
         foreach ($cauHoiLy as $cauHoi) {
-            CauHoi::create($cauHoi);
+             $cauhoi = CauHoi::create(array_merge($cauHoi, [
+                'de_bai' => $cauHoi['de_bai']['de_bai'],
+            ]));
+            foreach (['a', 'b', 'c', 'd'] as $key) {
+                DapAn::create([
+                    'cau_hoi_id' => $cauhoi->id,
+                    'name' => $key,
+                    'context' => $cauHoi['de_bai'][$key],
+                ]);
+            }
         }
 
         foreach ($cauhoiHoa as $cauHoi) {
-            CauHoi::create($cauHoi);
+             $cauhoi = CauHoi::create(array_merge($cauHoi, [
+                'de_bai' => $cauHoi['de_bai']['de_bai'],
+            ]));
+            foreach (['a', 'b', 'c', 'd'] as $key) {
+                DapAn::create([
+                    'cau_hoi_id' => $cauhoi->id,
+                    'name' => $key,
+                    'context' => $cauHoi['de_bai'][$key],
+                ]);
+            }
         }
     }
 }

@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class DapAn extends Model
 {
-    protected $table = 'dap_an';
+    protected $table = 'dap_ans';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
-        'cau_hoi_id', 'noi_dung', 'la_dap_an_dung', 'thu_tu'
+        'cau_hoi_id', 'name', 'context'
     ];
 
     public function cauHoi()

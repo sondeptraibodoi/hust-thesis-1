@@ -3,10 +3,11 @@
 namespace App\Models\Auth;
 
 use App\Constants\RoleCode;
-use App\Models\User\GiaoVien;
-use App\Models\User\SinhVien;
+use App\Models\GiaoVien;
 use App\Models\HocPhan\HocPhanUser;
+use App\Models\SinhVien;
 use App\Traits\Auth\RoleTrait;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Notifications\Notifiable;
@@ -17,7 +18,7 @@ class User extends Authenticatable
     use Notifiable;
     use RoleTrait;
     use Notifiable, HasApiTokens;
-    protected $table = 'nguoi_dung';
+    protected $table = 'nguoi_dungs';
     protected static $ignoreChangedAttributes = ["mat_khau", "updated_at", "created_at"];
     /**
      * The attributes that are mass assignable.
@@ -46,7 +47,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    // protected $appends = ["roles"];
+    protected $appends = ['info'];
     public static function boot()
     {
         parent::boot();
@@ -59,4 +60,30 @@ class User extends Authenticatable
     {
         return $this->username == "administrator";
     }
+
+    public function sinhVien()
+    {
+        return $this->belongsTo(SinhVien::class, 'id');
+    }
+
+    public function giaoVien()
+    {
+        return $this->belongsTo(GiaoVien::class, 'id');
+    }
+
+    protected function info(): Attribute
+    {
+        return Attribute::get(function () {
+            if ($this->vai_tro === RoleCode::STUDENT) {
+                return $this->sinhVien;
+            }
+
+            if ($this->vai_tro === RoleCode::TEACHER) {
+                return $this->giaoVien;
+            }
+
+            return null;
+        });
+    }
+
 }

@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class CauHoi extends Model
 {
-    protected $table = 'cau_hoi';
+    protected $table = 'cau_hois';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
-        'de_bai', 'do_kho', 'mon_hoc_id', 'dap_an'
+        'de_bai', 'do_kho', 'mon_hoc_id', 'dap_an', 'chu_thich', 'image_url', 'loai'
     ];
 
     public function monHoc()

@@ -3,6 +3,8 @@ namespace Database\Seeders;
 
 use App\Constants\RoleCode;
 use App\Models\Auth\User;
+use App\Models\GiaoVien;
+use App\Models\SinhVien;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
@@ -83,9 +85,38 @@ class CreateTestDataSeeder extends Seeder
         foreach ($users as $user) {
             $check = User::where("username", $user["username"])->first();
             if (!empty($check)) {
-                $check->update($user);
+                $check->update([
+                    'username' => $user['username'],
+                    'email' => $user['email'],
+                    'mat_khau' => $user['mat_khau'],
+                    'vai_tro' => $user['vai_tro'],
+                    'updated_at' => $user['updated_at'],
+                    'created_at' => $user['created_at'],
+                ]);
             } else {
-                $check = User::create($user);
+                $check = User::create([
+                    'username' => $user['username'],
+                    'email' => $user['email'],
+                    'mat_khau' => $user['mat_khau'],
+                    'vai_tro' => $user['vai_tro'],
+                    'updated_at' => $user['updated_at'],
+                    'created_at' => $user['created_at'],
+                ]);
+                if($user['vai_tro'] === RoleCode::STUDENT) {
+                    SinhVien::create([
+                        'mssv' => (string) mt_rand(10000000, 99999999),
+                        'nguoi_dung_id' => $check->id,
+                        'ho_ten' => $user['ho_ten'],
+                        'email' => $user['email'],
+                    ]);
+                }
+                if($user['vai_tro'] === RoleCode::TEACHER) {
+                    GiaoVien::create([
+                        'nguoi_dung_id' => $check->id,
+                        'ho_ten' => $user['ho_ten'],
+                        'email' => $user['email'],
+                    ]);
+                }
             }
         }
 

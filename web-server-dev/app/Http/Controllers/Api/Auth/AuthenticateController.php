@@ -7,6 +7,8 @@ use App\Helpers\GraphHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\WebAuthRequest;
 use App\Models\Auth\User;
+use App\Models\GiaoVien as ModelsGiaoVien;
+use App\Models\SinhVien as ModelsSinhVien;
 use App\Models\User\GiaoVien;
 use App\Models\User\SinhVien;
 use Illuminate\Http\Request;
@@ -101,12 +103,26 @@ class AuthenticateController extends Controller
         if(empty($user)) {
             $user = User::create([
                 'username' => $mail,
-                'ho_ten' => $name,
                 'email' => $mail,
                 'mat_khau' => Hash::make(Str::random(8)),
                 'vai_tro' => $role,
                 'active' => true
             ]);
+            if($role = RoleCode::STUDENT) {
+                ModelsSinhVien::create([
+                    'nguoi_dung_id' => $user->id,
+                    'mssv' => substr($userProfile->getDisplayName(), strrpos($userProfile->getDisplayName(), ' ') + 1),
+                    'ho_ten' => $name,
+                    'email' => $mail,
+                ]);
+            }
+            if($role = RoleCode::TEACHER) {
+                ModelsGiaoVien::create([
+                    'ho_ten' => $name,
+                    'email' => $mail,
+                    'nguoi_dung_id' => $user->id,
+                ]);
+            }
         }
         $user = User::find($user->id);
         if (!$user->isActive()) {

@@ -7,17 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeThi extends Model
 {
-    protected $table = 'de_thi';
+    protected $table = 'de_this';
     protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [
-        'code', 'mon_hoc_id', 'da_lam', 'tong_so_cau_hoi', 'thoi_gian_thi', 'nguoi_tao_id', 'diem_toi_da', 'diem_dat', 'ghi_chu'
+        'code', 'mon_hoc_id', 'da_lam', 'tong_so_cau_hoi', 'thoi_gian_thi', 'nguoi_tao_id', 'do_kho', 'diem_dat', 'ghi_chu', 'loai_thi_id'
     ];
 
     public function nguoiTao()
     {
-        return $this->belongsTo(NguoiDung::class, 'nguoi_tao_id');
+        return $this->belongsTo(User::class, 'nguoi_tao_id');
     }
 
     public function chiTietDeThis()

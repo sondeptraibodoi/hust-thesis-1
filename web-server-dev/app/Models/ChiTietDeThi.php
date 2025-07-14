@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChiTietDeThi extends Model
 {
-    protected $table = 'de_thi_bai_kiem_tra';
+    protected $table = 'cau_hoi_de_thi';
     public $timestamps = false;
 
     protected $fillable = [

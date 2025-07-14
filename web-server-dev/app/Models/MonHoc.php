@@ -10,11 +10,11 @@ use Request;
 class MonHoc extends Model
 {
     use HasFactory;
-    protected $table = 'mon_hoc';
+    protected $table = 'mon_hocs';
     protected $primaryKey = 'id';
     public $timestamps = true;
 
-    protected $fillable = ['ten_mon_hoc', 'created_at'];
+    protected $fillable = ['ten_mon_hoc', 'ma','created_at'];
 
     // Nếu muốn định nghĩa mối quan hệ:
     public function level()
