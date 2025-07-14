@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // CreateTestDataSeeder::class,
-            // MonHocSeeder::class,
+            CreateTestDataSeeder::class,
+            MonHocSeeder::class,
             DeThiSeeder::class
         ]);
     }
