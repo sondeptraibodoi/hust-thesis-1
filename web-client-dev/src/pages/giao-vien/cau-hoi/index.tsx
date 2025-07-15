@@ -14,6 +14,8 @@ import { level } from "../de-thi/form";
 
 const answer = ["A", "B", "C", "D"];
 
+export const questionType = ['Dễ','Trung bình', 'Khó']
+
 const CauHoiPage = () => {
   const { id } = useParams();
   const [title, setTitle] = useState("");
@@ -96,6 +98,20 @@ const CauHoiPage = () => {
           title: x.label
         };
       })
+    },
+    {
+      required: true,
+      type: "select",
+      name: "loai",
+      label: "Loại câu hỏi",
+      placeholder: "Vui lòng nhập loại câu hỏi",
+      defaultValue: 'Trung bình',
+      children: questionType.map((x) => {
+        return {
+          value: x,
+          title: x
+        };
+      }),
     }
   ];
 
@@ -108,12 +124,7 @@ const CauHoiPage = () => {
       headerName: "Đề bài",
       field: "de_bai",
       filter: "agTextColumnFilter",
-      floatingFilter: true,
-      valueFormatter: ({ data }) => {
-        if (!data) return;
-        const render = JSON.parse(data.de_bai);
-        return render.de_bai;
-      }
+      floatingFilter: true
     },
     {
       headerName: "Đáp án A",
@@ -122,8 +133,8 @@ const CauHoiPage = () => {
       floatingFilter: true,
       valueFormatter: ({ data }) => {
         if (!data) return;
-        const render = JSON.parse(data.de_bai);
-        return render.a;
+        const answerA = data.dap_ans.find((ans: any) => ans.name === "a");
+        return answerA ? answerA.context : "";
       }
     },
     {
@@ -133,8 +144,8 @@ const CauHoiPage = () => {
       floatingFilter: true,
       valueFormatter: ({ data }) => {
         if (!data) return;
-        const render = JSON.parse(data.de_bai);
-        return render.b;
+        const answerA = data.dap_ans.find((ans: any) => ans.name === "b");
+        return answerA ? answerA.context : "";
       }
     },
     {
@@ -144,8 +155,8 @@ const CauHoiPage = () => {
       floatingFilter: true,
       valueFormatter: ({ data }) => {
         if (!data) return;
-        const render = JSON.parse(data.de_bai);
-        return render.c;
+        const answerA = data.dap_ans.find((ans: any) => ans.name === "c");
+        return answerA ? answerA.context : "";
       }
     },
     {
@@ -155,8 +166,8 @@ const CauHoiPage = () => {
       floatingFilter: true,
       valueFormatter: ({ data }) => {
         if (!data) return;
-        const render = JSON.parse(data.de_bai);
-        return render.d;
+        const answerA = data.dap_ans.find((ans: any) => ans.name === "d");
+        return answerA ? answerA.context : "";
       }
     },
     {
@@ -174,14 +185,26 @@ const CauHoiPage = () => {
       // hide: currentUser?.vai_tro === "sinh_vien"
     },
     {
+      headerName: "Loại câu hỏi",
+      field: "loai",
+      filter: "agTextColumnFilter",
+      floatingFilter: true
+    },
+    {
       headerName: "Hành động",
       field: "#",
       pinned: "right",
       cellRenderer: ActionRender,
       cellRendererParams: {
         onUpdateItem: (item: any) => {
-          const result = JSON.parse(item.de_bai);
-          setData({ ...item, ...result, de_bai: result.de_bai });
+          const mapped = item.dap_ans.reduce((acc: any, curr: any) => {
+            acc[curr.name] = `${curr.context}`;
+            acc.id = curr.id
+            return acc;
+          }, {});
+          // const result = JSON.parse(item.de_bai);
+
+          setData({ ...item, ...mapped, id: item.id });
           setIsEdit(true);
           setModalEditor(true);
         },
@@ -208,7 +231,6 @@ const CauHoiPage = () => {
         </Button>
       }
       breadcrumbs={breadcrumbs}
-
     >
       <BaseTable
         key={keyRender}

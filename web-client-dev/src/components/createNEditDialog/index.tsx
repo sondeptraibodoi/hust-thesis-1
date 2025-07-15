@@ -64,7 +64,7 @@ export interface Option {
   timeFomat?: string;
   initialValue?: any | null;
   placeholder?: string;
-  defaultValue?: object[];
+  defaultValue?: object[] | string;
   uploadfileType?: string;
   min?: number;
   disabled?: boolean;

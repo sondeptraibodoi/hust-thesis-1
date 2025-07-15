@@ -55,6 +55,17 @@ const DethiPage = () => {
       field: "id"
     },
     {
+      headerName: "Loại bài thi",
+      field: "loai_thi",
+      filter: "agNumberColumnFilter",
+      floatingFilter: true,
+      valueFormatter: (params) => {
+        if (!params || !params.data) return "";
+        return params.data.loai_thi.ten_loai;
+      }
+      // hide: currentUser?.vai_tro === "sinh_vien"
+    },
+    {
       headerName: "Thời gian làm bài (phút)",
       field: "thoi_gian_thi",
       filter: "agNumberColumnFilter",
@@ -62,12 +73,12 @@ const DethiPage = () => {
     },
     {
       headerName: "Độ khó",
-      field: "diem_toi_da",
+      field: "do_kho",
       filter: "agNumberColumnFilter",
       floatingFilter: true,
       valueFormatter: (params) => {
         if (!params || !params.data) return "";
-        return "Mức độ " + params.data.diem_toi_da;
+        return "Mức độ " + params.data.do_kho;
       }
       // hide: currentUser?.vai_tro === "sinh_vien"
     },

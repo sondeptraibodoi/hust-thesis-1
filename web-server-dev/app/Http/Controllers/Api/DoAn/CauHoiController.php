@@ -7,18 +7,19 @@ use App\Library\QueryBuilder\QueryBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CauHoi;
+use App\Models\DapAn;
 use Illuminate\Support\Facades\DB;
 
 class CauHoiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = CauHoi::query()->where('mon_hoc_id', $request->get('mon_hoc_id'));
+        $query = CauHoi::query()->with(['dapAns'])->where('mon_hoc_id', $request->get('mon_hoc_id'));
         $query = QueryBuilder::for($query, $request)
             ->allowedAgGrid([])
-            ->defaultSort("id")
-            ->allowedSearch(["do_kho", "de_bai", 'dap_an'])
-            ->allowedFilters(["do_kho", "de_bai", 'dap_an'])
+            ->defaultSort("-id")
+            ->allowedSearch(["do_kho", "de_bai", 'dap_an', 'loai'])
+            ->allowedFilters(["do_kho", "de_bai", 'dap_an', 'loai'])
             ->allowedPagination();
         return response()->json(new \App\Http\Resources\Items($query->get()), 200, []);
     }
@@ -26,24 +27,36 @@ class CauHoiController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $keys = ['de_bai', 'a', 'b', 'c', 'd'];
-        $debai = array_intersect_key($data, array_flip($keys));
-        CauHoi::create(array_merge($data, [
-            'de_bai' => json_encode($debai, JSON_UNESCAPED_UNICODE)
-        ]));
+        $cau_hoi = CauHoi::create(array_merge($data));
+        foreach (['a', 'b', 'c', 'd'] as $name) {
+            DapAn::create([
+                'name' => $name,
+                'cau_hoi_id' => $cau_hoi->id,
+                'context' => $data[$name] ?? '',
+            ]);
+        }
+
         return $this->responseSuccess();
     }
 
-    public function edit(Request $request,$id)
+    public function edit(Request $request, $id)
     {
         $cau_hoi = CauHoi::find($id);
         $data = $request->all();
-        $keys = ['de_bai', 'a', 'b', 'c', 'd'];
-        $debai = array_intersect_key($data, array_flip($keys));
-        $cau_hoi->update(array_merge($data, [
-            'de_bai' => json_encode($debai, JSON_UNESCAPED_UNICODE)
-        ]));
-        return $this->responseSuccess();
+        $cau_hoi->update(array_merge($data));
+        if ($request->has('dap_ans') && is_array($request->dap_ans)) {
+            foreach ($request->dap_ans as $dapAnData) {
+                $name = $dapAnData['name'];
+                $context = $request->input($name);
+                if (!empty($context)) {
+                    $dapan = DapAn::where('id', $dapAnData['id'])->first();
+                    $dapan->update([
+                        'context' => $context,
+                    ]);
+                }
+            }
+        }
+        return $this->responseSuccess($cau_hoi);
     }
 
     public function update(Request $request, $cau_hoi_id)
@@ -92,11 +105,10 @@ class CauHoiController extends Controller
         }
     }
 
-   public function destroy($id)
+    public function destroy($id)
     {
         $cau_hoi = CauHoi::find($id);
         $cau_hoi->delete();
         return $this->responseSuccess();
     }
-
 }

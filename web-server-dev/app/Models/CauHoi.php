@@ -22,7 +22,7 @@ class CauHoi extends Model
 
     public function dapAns()
     {
-        return $this->hasMany(DapAn::class, 'id');
+        return $this->hasMany(DapAn::class, 'cau_hoi_id');
     }
 
     public function chiTietDeThis()

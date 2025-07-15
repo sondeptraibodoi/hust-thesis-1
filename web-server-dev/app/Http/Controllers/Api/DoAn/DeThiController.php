@@ -15,7 +15,7 @@ class DeThiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DeThi::query()->where('mon_hoc_id', $request->get('mon_hoc_id'));
+        $query = DeThi::query()->with(['loaiThi'])->where('mon_hoc_id', $request->get('mon_hoc_id'));
         $query = QueryBuilder::for($query, $request)
             ->allowedAgGrid([])
             ->defaultSort("id")

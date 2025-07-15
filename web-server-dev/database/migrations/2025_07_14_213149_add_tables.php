@@ -40,6 +40,7 @@ class AddTables extends Migration
             $table->foreignId('chuong_id')->nullable()->constrained('chuongs')->onDelete('cascade');
             $table->text('chu_thich')->nullable();
             $table->text('image_url')->nullable();
+            $table->enum('loai', ['Dễ','Trung bình', 'Khó'])->default('Trung bình');
         });
 
     }

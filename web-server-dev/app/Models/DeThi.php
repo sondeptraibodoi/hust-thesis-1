@@ -35,4 +35,8 @@ class DeThi extends Model
         return $this->belongsTo(MonHoc::class, 'mon_hoc_id');
     }
 
+    public function loaiThi() {
+        return $this->belongsTo(LoaiDe::class, 'loai_thi_id');
+    }
+
 }
