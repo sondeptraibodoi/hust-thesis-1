@@ -24,16 +24,20 @@ const BaiThiPage = () => {
       setMon(res.data.data.mon_hoc.ten_mon_hoc);
       setDe(res.data.data);
       const questions = res.data.data.chi_tiet_de_this.map((item: any) => {
-        const deBai = JSON.parse(item.cau_hoi.de_bai);
-        return {
-          id: item.id,
-          question: deBai.de_bai,
-          options: {
-            A: deBai.a,
-            B: deBai.b,
-            C: deBai.c,
-            D: deBai.d
+        const cauHoi = item.cau_hoi;
+        const options: Record<string, string> = { A: "", B: "", C: "", D: "" };
+
+        cauHoi.dap_ans.forEach((ans: any) => {
+          const key = ans.name.toUpperCase(); // "a" → "A"
+          if (["A", "B", "C", "D"].includes(key)) {
+            options[key] = ans.context;
           }
+        });
+
+        return {
+          id: item.id, // id của chi_tiet_de_thi
+          question: cauHoi.de_bai,
+          options,
         };
       });
       setData(questions);
@@ -43,7 +47,7 @@ const BaiThiPage = () => {
   return (
     <PageContainer title={"Bài thi " + mon}>
       <Title level={5}>Mã đề thi: {de && de.code}</Title>
-      <QuizPage title={mon} questions={data} type="kiem-tra" time={time} mon_hoc_id={id} de_thi_id={de && de.id}/>
+      <QuizPage title={mon} questions={data} type="kiem-tra" time={time} mon_hoc_id={id} de_thi_id={de && de.id} />
     </PageContainer>
   );
 };

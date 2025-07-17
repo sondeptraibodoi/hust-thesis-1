@@ -111,13 +111,13 @@ class ThiController extends Controller
             );
         }
 
-        return $this->responseSuccess();
+        return $this->responseSuccess($baiThi);
     }
 
     public function cauHoiDanhGia(Request $request)
     {
         $monHocId = $request->input('mon_hoc_id');
-        $list = CauHoi::where('mon_hoc_id', $monHocId)->inRandomOrder()->limit(5)->get();
+        $list = CauHoi::where('mon_hoc_id', $monHocId)->with(['dapAns'])->inRandomOrder()->limit(5)->get();
         return $this->responseSuccess($list);
     }
 }

@@ -107,7 +107,7 @@ class ThongKeController extends Controller
         // level theo môn học
 
         $query = DB::table('level_mon_hoc')
-        ->join('nguoi_dung', 'nguoi_dung.id', '=', 'level_mon_hoc.nguoi_dung_id')
+        ->join('nguoi_dungs', 'nguoi_dung.id', '=', 'level_mon_hoc.nguoi_dung_id')
         ->select('nguoi_dung.ho_ten', 'level_mon_hoc.level');
 
     if ($monHocId) {

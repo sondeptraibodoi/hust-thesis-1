@@ -78,12 +78,13 @@ export const QuizPage: FC<Props> = (props) => {
   const handleSubmit = async (auto = false) => {
     if (isSubmitted) return;
     try {
-        await baiThiApi.nopBai({
+        const res = await baiThiApi.nopBai({
         type: type,
         answers: answers,
         mon_hoc_id: mon_hoc_id,
         de_thi_id: de_thi_id
       })
+        console.log("🚀 ~ handleSubmit ~ res:", res)
       const endTime = new Date();
       const elapsedSeconds = Math.floor((endTime.getTime() - startTime.getTime()) / 1000);
 
@@ -93,10 +94,7 @@ export const QuizPage: FC<Props> = (props) => {
           numAnswered
         }/${questions.length} câu. Thời gian làm bài: ${formatDuration(elapsedSeconds)}.`
       );
-      navigator && navigator(`/sohoa/sinh-vien/mon-hoc/kiem-tra/${mon_hoc_id}`)
-
-      console.log("Đáp án của bạn:", answers);
-      console.log("Thời gian làm bài (giây):", elapsedSeconds);
+      navigator && navigator(`/sohoa/diem-sinh-vien/${mon_hoc_id}`)
     } catch (error) {
       message.error("Nộp bài thất bại");
     } finally {

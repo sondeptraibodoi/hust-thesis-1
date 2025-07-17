@@ -17,7 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $table = 'nguoi_dung';
+    protected $table = 'nguoi_dungs';
     protected $primaryKey = 'id';
     public $timestamps = false;
 

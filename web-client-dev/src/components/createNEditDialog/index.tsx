@@ -165,7 +165,7 @@ const CreateNEditDialog: FC<Props> = (props) => {
         if (!is_handle) {
           api.error({
             message: "Thất bại",
-            description: "tạo mới thất bại"
+            description: err.message.errors || "Sửa mới thất bại"
           });
         }
       } finally {

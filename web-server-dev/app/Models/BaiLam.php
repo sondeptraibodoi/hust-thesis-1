@@ -17,7 +17,7 @@ class BaiLam extends Model
 
     public function nguoiDung()
     {
-        return $this->belongsTo(NguoiDung::class, 'nguoi_dung_id');
+        return $this->belongsTo(User::class, 'nguoi_dung_id');
     }
 
     public function deThi()

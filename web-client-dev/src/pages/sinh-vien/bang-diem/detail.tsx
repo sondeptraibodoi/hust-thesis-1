@@ -66,15 +66,30 @@ const DetailBaiLamPage = () => {
     <div style={{ padding: 24 }}>
       <Title level={3}>Chi tiết bài làm</Title>
       <Card style={{ marginBottom: 24 }}>
-        <p>
-          <b>Sinh viên:</b> {data.sinh_vien}
-        </p>
-        <p>
-          <b>Mã đề thi:</b> {data.de_thi}
-        </p>
-        <p>
-          <b>Điểm:</b> {data.diem}
-        </p>
+        <div className="grid grid-cols-2 gap-y-2 gap-x-4">
+          <div className="flex">
+            <b className="w-32">Sinh viên:</b>
+            <span>{data.sinh_vien}</span>
+          </div>
+          <div className="flex">
+            <b className="w-32">Điểm đạt:</b>
+            <span>{data.de_thi?.diem_dat}</span>
+          </div>
+
+          <div className="flex">
+            <b className="w-32">Mã đề thi:</b>
+            <span>{data.de_thi?.code}</span>
+          </div>
+          <div className="flex">
+            <b className="w-32">Thời gian thi:</b>
+            <span>{data.de_thi?.thoi_gian_thi} phút</span>
+          </div>
+
+          <div className="flex">
+            <b className="w-32">Điểm:</b>
+            <span>{data.diem}</span>
+          </div>
+        </div>
       </Card>
 
       <Table columns={columns} dataSource={data.chi_tiet_cau_hoi} rowKey={(idx) => idx} pagination={false} />

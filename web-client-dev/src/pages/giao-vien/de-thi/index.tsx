@@ -10,7 +10,8 @@ import { Button, Tooltip } from "antd";
 import { FC, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { level } from "./form";
-import CreateNEditDialog from "@/components/createNEditDialog";
+import CreateNEditDialog, { Option } from "@/components/createNEditDialog";
+import loaiThiApi from "@/api/loaiThi/loaiThi.api";
 
 const DethiPage = () => {
   const navigator = useNavigate();
@@ -19,30 +20,84 @@ const DethiPage = () => {
   const [data, setData] = useState<any>();
   const [keyRender, setKeyRender] = useState(1);
   const [isModalDelete, setIsModalDelete] = useState(false);
-    const [modalEditor, setModalEditor] = useState<boolean>(false);
+  const [modalEditor, setModalEditor] = useState<boolean>(false);
+  const [loaiThi, setLoaiThi] = useState<any>([]);
+  const [isDanhGia, setIsDanhGia] = useState(false)
 
   useEffect(() => {
     const getData = async () => {
       const res = await monHocApi.show(Number(id));
       setTitle(res.data.data.ten_mon_hoc);
     };
+    const getLoai = async () => {
+      const res = await loaiThiApi.list();
+      setLoaiThi(res.data);
+    };
+    getLoai();
     getData();
   }, [id]);
 
-  const option = [
+  const option: Option[] = [
     {
-          required: true,
-          type: "select",
-          name: "do_kho",
-          label: "Độ khó",
-          placeholder: "Vui lòng nhập độ khó",
-          children: level.map((x) => {
-            return {
-              value: x.value,
-              title: x.label
-            };
-          })
-        }
+      rule: [{required: true}],
+      type: "select",
+      name: "loai_thi_id",
+      label: "Loại đề thi",
+      placeholder: "Vui lòng nhập loại đề",
+      children: loaiThi.map((x: any) => {
+        return {
+          value: x.id,
+          title: x.ten_loai
+        };
+      })
+    },
+    {
+      rule: [{required: true}],
+      type: "inputNumber",
+      name: "so_cau",
+      label: "Số câu",
+      placeholder: "Vui lòng nhập số câu",
+      min: 1
+    },
+    {
+      rule: [{required: true}],
+      type: "select",
+      name: "do_kho",
+      label: "Độ khó đề thi",
+      placeholder: "Vui lòng nhập độ khó",
+      children: level.map((x) => {
+        return {
+          value: x.value,
+          title: x.label
+        };
+      }),
+    },
+    {
+      rule: [{required: true}],
+      type: "select",
+      name: "do_kho_min",
+      label: "Câu hỏi độ khó thấp nhất",
+      placeholder: "Vui lòng nhập độ khó",
+      children: level.map((x) => {
+        return {
+          value: x.value,
+          title: x.label
+        };
+      }),
+    },
+    {
+      rule: [{required: true}],
+      type: "select",
+      name: "do_kho_max",
+      label: "Câu hỏi độ khó cao nhất",
+      placeholder: "Vui lòng nhập độ khó",
+      children: level.map((x) => {
+        return {
+          value: x.value,
+          title: x.label
+        };
+      }),
+    },
   ];
 
   const breadcrumbs = useMemo(() => {
@@ -78,6 +133,7 @@ const DethiPage = () => {
       floatingFilter: true,
       valueFormatter: (params) => {
         if (!params || !params.data) return "";
+        if(!params.data.do_kho) return "";
         return "Mức độ " + params.data.do_kho;
       }
       // hide: currentUser?.vai_tro === "sinh_vien"
@@ -121,7 +177,7 @@ const DethiPage = () => {
         <div className="float-right flex gap-3">
           <Button
             onClick={() => {
-              setModalEditor(true)
+              setModalEditor(true);
             }}
             type="primary"
           >

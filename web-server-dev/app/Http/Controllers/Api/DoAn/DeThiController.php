@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\CauHoi;
 use App\Models\DeThi;
 use App\Models\ChiTietDeThi;
+use App\Models\LoaiDe;
 use App\Models\MonHoc;
 
 class DeThiController extends Controller
@@ -43,7 +44,7 @@ class DeThiController extends Controller
             $cauhoi = ChiTietDeThi::create([
                 'de_thi_id' => $dethi->id,
                 'cau_hoi_id' => $cau_hoi['id'],
-                'diem' => round(10 / count($cau_hois),2) ?? 0,
+                'diem' => round(10 / count($cau_hois), 2) ?? 0,
                 'ghi_chu' => $cau_hoi['ghi_chu'] ?? null,
             ]);
         }
@@ -86,7 +87,7 @@ class DeThiController extends Controller
             ChiTietDeThi::create([
                 'de_thi_id' => $dethi->id,
                 'cau_hoi_id' => $cau_hoi['id'],
-                'diem' => round(10 / count($cau_hois),2) ?? 0,
+                'diem' => round(10 / count($cau_hois), 2) ?? 0,
                 'ghi_chu' => $cau_hoi['ghi_chu'] ?? null,
             ]);
         }
@@ -114,46 +115,63 @@ class DeThiController extends Controller
     {
         $mon = MonHoc::find($id);
         $level = $mon->level();
-        $deThi = DeThi::where('diem_toi_da', $level)
-    ->with([
-        'monHoc',
-        'nguoiTao',
-        'chiTietDeThis.cauHoi' => function ($query) {
-            $query->select('id', 'de_bai');
-        }
-    ])
-    ->inRandomOrder()
-    ->first();
+        $deThi = DeThi::where('do_kho', $level)
+            ->with([
+                'monHoc',
+                'nguoiTao',
+                'chiTietDeThis.cauHoi.dapAns',
+                'chiTietDeThis.cauHoi' => function ($query) {
+                    $query->select('id', 'de_bai');
+                }
+            ])
+            ->inRandomOrder()
+            ->first();
         return $this->responseSuccess($deThi);
-
     }
 
     public function taoDeThiRandom(Request $request)
     {
-
         $request->validate([
-            'mon_hoc_id' => 'required|integer|exists:mon_hoc,id',
-            'do_kho' => 'required|integer|min:1|max:10',
+            'mon_hoc_id' => 'required|integer|exists:mon_hocs,id',
+            'so_cau' => 'required|integer|min:1',
+            'do_kho_min' => 'required|integer|min:1',
+            'do_kho_max' => 'required|integer|min:1|max:10|gte:do_kho_min',
+            'loai_thi_id' => 'required|integer|exists:loai_this,id',
+
+        ], [
+            'do_kho_max.gte' =>  'Độ khó cao nhất phải lớn hơn giá trị độ khó thấp nhất'
         ]);
 
         $monHocId = $request->input('mon_hoc_id');
-        $doKho = $request->input('do_kho');
-        $soLuongCauHoi = 5;
+        $soCau = $request->input('so_cau');
+        $loai_thi_id = $request->input('loai_thi_id');
         $nguoiTaoId = auth()->id();
+        $loaiThi = LoaiDe::find($loai_thi_id);
+        $min = $request->do_kho_min;
+        $max = $request->do_kho_max;
+        $range = $max - $min + 1;
+        $chunk = (int) floor($range / 3);
+        $deMax = $min + $chunk - 1;
+        $tbMin = $deMax + 1;
+        $tbMax = $tbMin + $chunk - 1;
+        $khoMin = $tbMax + 1;
+        $khoMax = $max;
+        $tbMax = min($tbMax, $max);
+        $khoMin = min($khoMin, $max);
+        $soCauDe = floor($soCau * 0.3);
+        $soCauTB = floor($soCau * 0.5);
+        $soCauKho = $soCau - $soCauDe - $soCauTB;
 
-        $cauHoiList = CauHoi::where('mon_hoc_id', $monHocId)
-            ->where('do_kho', $doKho)
-            ->inRandomOrder()
-            ->limit($soLuongCauHoi)
-            ->get();
+        $dsDe  = $this->getCauHoiChiaDeuVaFallback($monHocId, $soCauDe, ['Dễ', 'Trung bình', 'Khó'], [$min, $deMax]);
+        $dsTB  = $this->getCauHoiChiaDeuVaFallback($monHocId, $soCauTB, ['Trung bình', 'Dễ', 'Khó'], [$tbMin, $tbMax]);
+        $dsKho = $this->getCauHoiChiaDeuVaFallback($monHocId, $soCauKho, ['Khó', 'Trung bình', 'Dễ'], [$khoMin, $khoMax]);
 
-        if ($cauHoiList->count() < $soLuongCauHoi) {
+        $cauHoiList = $dsDe->concat($dsTB)->concat($dsKho)->shuffle();
+        if ($cauHoiList->count() < $soCau) {
             return response()->json([
-                'message' => "Không đủ câu hỏi cho môn {$monHocId} - độ khó {$doKho}, không thể tạo đề."
+                'message' => "Không đủ câu hỏi cho môn, không thể tạo đề."
             ], 400);
         }
-
-        // Tạo mã đề thi duy nhất
         do {
             $code = now()->format('Ymd') . str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
         } while (DeThi::where('code', $code)->exists());
@@ -161,18 +179,18 @@ class DeThiController extends Controller
         DB::beginTransaction();
         try {
             $deThi = DeThi::create([
+                'loai_thi_id' => $loai_thi_id,
                 'mon_hoc_id' => $monHocId,
-                'da_lam' => false,
-                'tong_so_cau_hoi' => $soLuongCauHoi,
-                'thoi_gian_thi' => 30,
+                'tong_so_cau_hoi' => $soCau,
+                'thoi_gian_thi' => $loaiThi->thoi_gian_thi,
                 'nguoi_tao_id' => $nguoiTaoId,
-                'diem_toi_da' => $doKho,
-                'diem_dat' => 8,
+                'do_kho' => $request->do_kho,
+                'diem_dat' => $loaiThi->diem_dat,
                 'ghi_chu' => null,
                 'code' => $code,
             ]);
 
-            $diemMoiCau = 2;
+            $diemMoiCau = 10 / $soCau;
 
             foreach ($cauHoiList as $cauHoi) {
                 ChiTietDeThi::create([
@@ -183,7 +201,6 @@ class DeThiController extends Controller
             }
 
             DB::commit();
-
             return $this->responseSuccess();
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -192,6 +209,57 @@ class DeThiController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
 
+    function getCauHoiChiaDeuVaFallback($monHocId, $soLuong, array $loaiUuTien, array $doKhoRange)
+    {
+        $ketQua = collect();
+        $tongLoai = count($loaiUuTien);
+        $moiLoaiSoLuong = intdiv($soLuong, $tongLoai);
+        $du = $soLuong % $tongLoai;
+        $soLuongTheoLoai = [];
+        foreach ($loaiUuTien as $i => $loai) {
+            $soLuongTheoLoai[$loai] = $moiLoaiSoLuong + ($i < $du ? 1 : 0);
+        }
+        $loaiDaLay = [];
+
+        foreach ($loaiUuTien as $loai) {
+            $canLay = $soLuongTheoLoai[$loai] ?? 0;
+            if ($canLay <= 0) continue;
+
+            $cauHoi = CauHoi::where('mon_hoc_id', $monHocId)
+                ->whereBetween('do_kho', $doKhoRange)
+                ->where('loai', $loai)
+                ->inRandomOrder()
+                ->limit($canLay)
+                ->get();
+
+            $daLay = $cauHoi->count();
+            $ketQua = $ketQua->concat($cauHoi);
+            $loaiDaLay[$loai] = $daLay;
+            if ($daLay < $canLay) {
+                $conThieu = $canLay - $daLay;
+                foreach ($loaiUuTien as $fallbackLoai) {
+                    if ($fallbackLoai === $loai) continue;
+                    $daLayTruoc = $loaiDaLay[$fallbackLoai] ?? 0;
+
+                    $fallbackCauHoi = CauHoi::where('mon_hoc_id', $monHocId)
+                        ->whereBetween('do_kho', $doKhoRange)
+                        ->where('loai', $fallbackLoai)
+                        ->inRandomOrder()
+                        ->limit($conThieu)
+                        ->get();
+
+                    $soLay = $fallbackCauHoi->count();
+                    $ketQua = $ketQua->concat($fallbackCauHoi);
+                    $loaiDaLay[$fallbackLoai] = $daLayTruoc + $soLay;
+                    $conThieu -= $soLay;
+
+                    if ($conThieu <= 0) break;
+                }
+            }
+        }
+
+        return $ketQua;
     }
 }

@@ -28,40 +28,41 @@ class BaiLamController extends Controller
     //Xem bài làm của sinh viên đối với vai trò là admin/super_admin
     public function show($id)
     {
-    $baiLam = BaiLam::with([
-        'nguoiDung',
-        'deThi',
-        'chiTietBaiLams.cauHoi',
-    ])->findOrFail($id);
+        $baiLam = BaiLam::with([
+            'deThi',
+            'nguoiDung',
+            'deThi',
+            'chiTietBaiLams.cauHoi.dapAns', // load thêm dap_ans
+        ])->findOrFail($id);
 
-    $chiTiet = $baiLam->chiTietBaiLams->map(function ($ct) {
-        $cauHoi = $ct->cauHoi;
+        $chiTiet = $baiLam->chiTietBaiLams->map(function ($ct) {
+            $cauHoi = $ct->cauHoi;
+            $dapAnDung = strtoupper($cauHoi->dap_an);       // A/B/C/D
+            $dapAnChon = strtoupper($ct->cau_tra_loi);      // A/B/C/D
 
-        $noiDung = json_decode($cauHoi->de_bai, true);
-        $dapAnDung = strtoupper($cauHoi->dap_an); // A/B/C/D
-        $dapAnChon = strtoupper($ct->cau_tra_loi); // từ chi_tiet_bai_lam
+            // Tạo map đáp án: A => nội dung
+            $dapAnMap = [];
+            foreach ($cauHoi->dapAns as $ans) {
+                $key = strtoupper($ans->name); // "a" → "A"
+                $dapAnMap[$key] = $ans->context;
+            }
 
-        return [
-            'cau_hoi' => $noiDung['de_bai'] ?? '',
-            'cac_dap_an' => [
-                'A' => $noiDung['a'] ?? '',
-                'B' => $noiDung['b'] ?? '',
-                'C' => $noiDung['c'] ?? '',
-                'D' => $noiDung['d'] ?? '',
-            ],
-            'dap_an_sinh_vien_chon' => $dapAnChon,
-            'noi_dung_sv_chon' => $noiDung[strtolower($dapAnChon)] ?? null,
-            'dap_an_dung' => $dapAnDung,
-            'noi_dung_dung' => $noiDung[strtolower($dapAnDung)] ?? null,
-            'dung_hay_sai' => $dapAnChon === $dapAnDung ? 'Đúng' : 'Sai',
-        ];
-    });
+            return [
+                'cau_hoi' => $cauHoi->de_bai,
+                'cac_dap_an' => $dapAnMap,
+                'dap_an_sinh_vien_chon' => $dapAnChon,
+                'noi_dung_sv_chon' => $dapAnMap[$dapAnChon] ?? null,
+                'dap_an_dung' => $dapAnDung,
+                'noi_dung_dung' => $dapAnMap[$dapAnDung] ?? null,
+                'dung_hay_sai' => $dapAnChon === $dapAnDung ? 'Đúng' : 'Sai',
+            ];
+        });
 
-    return response()->json([
-        'sinh_vien' => $baiLam->nguoiDung->ho_ten ?? 'Không rõ',
-        'de_thi' => $baiLam->deThi->code ?? '',
-        'diem' => $baiLam->diem ?? 0,
-        'chi_tiet_cau_hoi' => $chiTiet,
-    ]);
-}
+        return response()->json([
+            'sinh_vien' => $baiLam->nguoiDung->ho_ten ?? 'Không rõ',
+            'de_thi' => $baiLam->deThi,
+            'diem' => $baiLam->diem ?? 0,
+            'chi_tiet_cau_hoi' => $chiTiet,
+        ]);
+    }
 }

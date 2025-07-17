@@ -76,14 +76,18 @@ const DanhSachCauHoiDaChon: FC<any> = ({ selectedQuestions, onRemove }) => {
       <b>Các câu hỏi đã chọn:</b>
       <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 16 }}>
         {selectedQuestions.map((q: any, index: any) => (
+          <div className="flex w-full items-center gap-4">
           <Card
+            className="w-full"
             key={q.id}
             title={`Câu ${index + 1}: ` + (q.de_bai || q.content)}
             size="small"
-            extra={<Button icon={<DeleteOutlined />} onClick={() => onRemove(q.id)} style={{ color: "red" }}></Button>}
+            extra={<div className="flex gap-4"><Tag color="blue" className="w-[80px] text-center">{q.loai}</Tag><Tag>Độ khó {q.do_kho}</Tag> </div>}
           >
             {renderAnswerList(q.dap_ans || [], q.dap_an || q.dapAnDung)}
           </Card>
+          <Button type="primary" icon={<DeleteOutlined />} onClick={() => onRemove(q.id)}></Button>
+          </div>
         ))}
       </div>
     </div>
@@ -99,7 +103,7 @@ const DeThiFormPage:FC<Props> = ({type}) => {
   const [keyword, setKeyword] = useState("");
   const [initialData, setInittialData] = useState([]);
   const [form] = Form.useForm();
-  const levelValue = Form.useWatch("do_kho", form);
+  const levelValue = Form.useWatch("do_kho_search", form);
   const mucDo = Form.useWatch("loai_cau", form);
   const search = Form.useWatch("search", form);
   const getCauHoi = async () => {
@@ -281,7 +285,7 @@ const DeThiFormPage:FC<Props> = ({type}) => {
                 }}
               />
             </Form.Item>
-            <Form.Item name="do_kho" label="Độ khó" rules={[{ required: true, message: "Vui lòng chọn độ khó" }]}>
+            <Form.Item name="do_kho" label="Độ khó đề thi" rules={[{ required: true, message: "Vui lòng chọn độ khó" }]}>
               <Select className="w-full" placeholder="Chọn độ khó">
                 {level.map((lvl: any) => (
                   <Select.Option key={lvl.value} value={lvl.value}>
@@ -299,6 +303,15 @@ const DeThiFormPage:FC<Props> = ({type}) => {
           <div className="flex gap-2 mb-4">
             <Form.Item className="w-full" name="search">
             <Input allowClear placeholder="Từ khóa" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+            </Form.Item>
+            <Form.Item name="do_kho_search">
+              <Select className="w-full" placeholder="Chọn độ khó câu hỏi">
+                {level.map((lvl: any) => (
+                  <Select.Option key={lvl.value} value={lvl.value}>
+                    {lvl.label}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
             <Form.Item name="loai_cau">
             <Select allowClear placeholder="Mức độ" style={{ minWidth: 120 }}>
