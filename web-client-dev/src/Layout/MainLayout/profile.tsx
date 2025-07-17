@@ -55,14 +55,16 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (activeTab && authUser) {
-      form.setFieldsValue(authUser);
-    }
-  }, [activeTab, authUser, form]);
-
-  useEffect(() => {
-    if (activeTab && authUser) {
-      form.setFieldsValue(authUser);
+    if (activeTab && authUser && authUser.vai_tro !== 'admin') {
+      form.setFieldsValue({
+        ho_ten: authUser.info.ho_ten,
+        email: authUser.info.email,
+        mssv: authUser.info?.mssv || null
+      });
+    } else if (activeTab && authUser && authUser.vai_tro === 'admin') {
+      form.setFieldsValue({
+        username: authUser.username
+      });
     }
   }, [activeTab, authUser, form]);
 
@@ -300,7 +302,7 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
                 }
               ]}
             >
-              <Input type="text" />
+              <Input type="text" disabled/>
             </Form.Item>
           </div>
           <div> {buttonChange()}</div>
@@ -333,6 +335,9 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
                 ]}
               >
                 <Input type="text" />
+              </Form.Item>
+              <Form.Item label="MSSV" name={"mssv"}>
+                <Input type="text" disabled />
               </Form.Item>
               <Form.Item label="Địa chỉ Email" name={"email"}>
                 <Input type="text" disabled />

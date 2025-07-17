@@ -63,12 +63,12 @@ class User extends Authenticatable
 
     public function sinhVien()
     {
-        return $this->belongsTo(SinhVien::class, 'id');
+        return $this->hasOne(SinhVien::class, 'nguoi_dung_id');
     }
 
     public function giaoVien()
     {
-        return $this->belongsTo(GiaoVien::class, 'id');
+        return $this->hasOne(GiaoVien::class, 'nguoi_dung_id');
     }
 
     protected function info(): Attribute

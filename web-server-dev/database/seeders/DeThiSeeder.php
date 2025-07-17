@@ -33,10 +33,10 @@ class DeThiSeeder extends Seeder
             ],
         ];
 
-        // foreach ($loais as $key => $value) {
-        //     # code...
-        //     LoaiDe::create($value);
-        // }
+        foreach ($loais as $key => $value) {
+            # code...
+            LoaiDe::create($value);
+        }
 
         foreach ($monHocIds as $monHocId) {
         $doKhoList = array_merge(

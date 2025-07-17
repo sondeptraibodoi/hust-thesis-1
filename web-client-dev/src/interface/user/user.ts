@@ -8,6 +8,7 @@ export interface User {
   created_at: string;
   updated_at: string;
   hoc_phan_quan_ly?: any;
+  info?: any
 }
 
 export interface SinhVien {

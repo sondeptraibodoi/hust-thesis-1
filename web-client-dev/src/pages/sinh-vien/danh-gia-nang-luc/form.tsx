@@ -99,7 +99,6 @@ export const QuizPage: FC<Props> = (props) => {
       message.error("Nộp bài thất bại");
     } finally {
       setIsSubmitted(true);
-
     }
   };
 
