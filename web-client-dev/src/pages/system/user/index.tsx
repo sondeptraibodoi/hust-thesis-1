@@ -64,7 +64,12 @@ const UserPage: React.FC = () => {
       headerName: "Họ tên",
       field: "ho_ten",
       filter: "agTextColumnFilter",
-      floatingFilter: true
+      floatingFilter: true,
+      valueGetter: ({data}) => {
+        console.log("🚀 ~ data:", data)
+        if(!data || !data.info) return;
+        return data.info.ho_ten;
+      }
     },
     {
       headerName: "Email",
@@ -122,18 +127,6 @@ const UserPage: React.FC = () => {
   const optionsCreate = [
     {
       type: "input",
-      name: "ho_ten",
-      placeholder: "Vui lòng nhập họ và tên",
-      label: "Họ tên",
-      rule: [
-        {
-          required: true,
-          message: "Họ và tên không được để trống"
-        }
-      ]
-    },
-    {
-      type: "input",
       name: "email",
       placeholder: "Vui lòng nhập email",
       label: "Email",
@@ -145,6 +138,22 @@ const UserPage: React.FC = () => {
         {
           type: "email",
           message: "Email không hợp lệ"
+        }
+      ]
+    },
+    {
+      type: "input",
+      name: "ho_ten",
+      placeholder: "Vui lòng nhập họ tên",
+      label: "Họ tên",
+      rule: [
+        {
+          required: true,
+          message: "Họ tên không được để trống"
+        },
+        {
+          type: "text",
+          message: "Họ tên không hợp lệ"
         }
       ]
     },
@@ -201,37 +210,6 @@ const UserPage: React.FC = () => {
     }
   ];
 
-  const optionsEdit = [
-    {
-      type: "input",
-      name: "ho_ten",
-      placeholder: "Vui lòng nhập họ và tên",
-      label: "Họ tên",
-      rule: [
-        {
-          required: true,
-          message: "Họ và tên không được để trống"
-        }
-      ]
-    },
-    {
-      type: "input",
-      name: "email",
-      placeholder: "Vui lòng nhập email",
-      label: "Email",
-      rule: [
-        {
-          required: true,
-          message: "Email không được để trống"
-        },
-        {
-          type: "email",
-          message: "Email không hợp lệ"
-        }
-      ]
-    }
-  ];
-
   return (
     <PageContainer
       title="Danh sách tài khoản"
@@ -252,7 +230,7 @@ const UserPage: React.FC = () => {
       <CreateNEditDialog
         apiCreate={userApi.create}
         apiEdit={userApi.edit}
-        options={isEdit == true ? optionsEdit : optionsCreate}
+        options={isEdit == true ? optionsCreate : optionsCreate}
         data={data}
         isEdit={isEdit}
         setIsEdit={setIsEdit}
