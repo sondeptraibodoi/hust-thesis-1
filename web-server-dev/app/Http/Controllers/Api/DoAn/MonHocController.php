@@ -43,10 +43,12 @@ class MonHocController extends Controller
     {
         $request->validate([
             'ten_mon_hoc' => 'required|string|max:255',
+            'ma' => 'required|string|max:255|unique:mon_hocs,ma',
         ]);
 
         try {
-            DB::table('mon_hoc')->insert([
+            DB::table('mon_hocs')->insert([
+                'ma' => $request->ma,
                 'ten_mon_hoc' => $request->ten_mon_hoc,
                 'created_at' => now(),
                 'updated_at' => null
@@ -78,10 +80,11 @@ class MonHocController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, $mon_hoc_id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'ten_mon_hoc' => 'required|string|max:255',
+            'ma' => 'required|string|max:255|unique:mon_hocs,ma,' . $id,
         ]);
 
         try {
@@ -89,8 +92,9 @@ class MonHocController extends Controller
             DB::beginTransaction();
 
             // Cập nhật môn học
-            $updated = DB::table('mon_hoc')->where('mon_hoc_id', $mon_hoc_id)->update([
+            $updated = DB::table('mon_hocs')->where('id', $id)->update([
                 'ten_mon_hoc' => $request->ten_mon_hoc,
+                'ma' => $request->ma,
             ]);
 
             DB::commit();
@@ -116,13 +120,13 @@ class MonHocController extends Controller
         }
     }
 
-    public function destroy($mon_hoc_id)
+    public function destroy($id)
     {
         DB::beginTransaction();
 
         try {
             // Xóa môn học
-            $deleted = DB::table('mon_hoc')->where('mon_hoc_id', $mon_hoc_id)->delete();
+            $deleted = DB::table('mon_hocs')->where('id', $id)->delete();
 
             DB::commit();
 

@@ -3,6 +3,7 @@
 use App\Constants\RoleCode;
 use App\Http\Controllers\Api\DoAn\CauHoiController;
 use App\Http\Controllers\Api\DoAn\DeThiController;
+use App\Http\Controllers\Api\DoAn\LoaiThiController;
 use App\Http\Controllers\Api\DoAn\MonHocController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,5 +32,9 @@ Route::group(
         Route::put('de-thi/{id}', [DeThiController::class, 'update']);
         Route::delete('de-thi/{id}', [DeThiController::class, 'destroy']);
         Route::post('de-thi-random', [DeThiController::class, 'taoDeThiRandom']);
+        Route::put('mon/{id}', [MonHocController::class, 'update']);
+        Route::delete('mon/{id}', [MonHocController::class, 'destroy']);
+        Route::post('mon', [MonHocController::class, 'store']);
+        Route::get('loai-thi', [LoaiThiController::class, 'index']);
     }
 );

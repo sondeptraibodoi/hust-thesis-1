@@ -32,7 +32,7 @@ class AdminSinhVienController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'email' => 'required|email|unique:nguoi_dung,email',
+        'email' => 'required|email|unique:nguoi_dungs,email',
         'ho_ten' => 'required|string|max:255',
         'password' => 'required|min:6',
         'vai_tro' => 'required'
@@ -51,7 +51,7 @@ class AdminSinhVienController extends Controller
     public function edit(Request $request, $id)
     {
         $request->validate([
-        'email' => 'required|email|unique:nguoi_dung,email,' . $id,
+        'email' => 'required|email|unique:nguoi_dungs,email,' . $id,
         'ho_ten' => 'required|string|max:255'
     ]);
         $query = $request->all();

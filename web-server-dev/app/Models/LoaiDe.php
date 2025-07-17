@@ -12,5 +12,5 @@ class LoaiDe extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['ten_loai', 'thoi_gian_thi'];
+    protected $fillable = ['ten_loai', 'thoi_gian_thi', 'diem_dat'];
 }

@@ -17,6 +17,7 @@ class AddTables extends Migration
             $table->id();
             $table->string('ten_loai')->unique();
             $table->integer('thoi_gian_thi')->default(30);
+            $table->integer('diem_date')->default(4);
         });
 
         Schema::table('de_this', function (Blueprint $table) {

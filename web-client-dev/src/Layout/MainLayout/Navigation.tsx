@@ -21,6 +21,10 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
       key: "tai-khoan"
     },
     {
+      label: "Môn học",
+      key: "quan-ly-mon"
+    },
+    {
       label: "Thống kê",
       key: "thong-ke"
     },

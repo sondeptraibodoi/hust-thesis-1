@@ -29,6 +29,7 @@ class DeThiController extends Controller
         $data = $request->all();
         $cau_hois = $data['cau_hoi'] ?? [];
         $dethi = DeThi::create([
+            'loai_thi_id' => $data['loai_thi_id'],
             'mon_hoc_id' => $data['mon_hoc_id'],
             'thoi_gian_thi' => $data['thoi_gian'],
             'ghi_chu' => $data['ghi_chu'] ?? null,
@@ -55,7 +56,7 @@ class DeThiController extends Controller
 
     public function show($id)
     {
-        $dethi = DeThi::with(['chiTietDeThis', 'monHoc'])->find($id);
+        $dethi = DeThi::with(['chiTietDeThis.cauHoi.dapAns', 'monHoc'])->find($id);
         if (!$dethi) {
             return response()->json(['message' => 'Đề thi không tồn tại'], 404);
         }
