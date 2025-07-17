@@ -35,7 +35,7 @@ class DeThiController extends Controller
             'ghi_chu' => $data['ghi_chu'] ?? null,
             'nguoi_tao_id' => auth()->user()->id,
             'tong_so_cau_hoi' => count($cau_hois),
-            'diem_toi_da' => $data['diem_toi_da'] ?? 0,
+            'do_kho' => $data['do_kho'] ?? 0,
             'diem_dat' => $data['diem_dat'] ?? 0,
             'code' => now()->format('Ymd') . str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT),
         ]);
@@ -77,7 +77,7 @@ class DeThiController extends Controller
             'thoi_gian_thi' => $data['thoi_gian'],
             'ghi_chu' => $data['ghi_chu'] ?? null,
             'tong_so_cau_hoi' => count($cau_hois),
-            'diem_toi_da' => $data['diem_toi_da'] ?? 0,
+            'do_kho' => $data['do_kho'] ?? 0,
             'diem_dat' => $data['diem_dat'] ?? 0,
         ]);
 
