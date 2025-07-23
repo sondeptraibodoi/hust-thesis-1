@@ -94,7 +94,7 @@ export const QuizPage: FC<Props> = (props) => {
           numAnswered
         }/${questions.length} câu. Thời gian làm bài: ${formatDuration(elapsedSeconds)}.`
       );
-      navigator && navigator(`/sohoa/diem-sinh-vien/${mon_hoc_id}`)
+      navigator && navigator(`/sohoa/diem-sinh-vien/${res.data.data.id}`)
     } catch (error) {
       message.error("Nộp bài thất bại");
     } finally {

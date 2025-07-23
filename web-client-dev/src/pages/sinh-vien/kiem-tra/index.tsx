@@ -41,7 +41,7 @@ const KiemTraPage = () => {
         navigate(`/sohoa/danh-gia-nang-luc/${id}`);
       },
       onCancel: () => {
-        navigate('/sohoa/sinh-vien/mon-hoc');
+        window.history.back()
       }
     });
   };

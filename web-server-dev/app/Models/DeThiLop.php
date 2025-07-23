@@ -10,7 +10,7 @@ class DeThiLop extends Model
     use HasFactory;
     protected $table = 'de_thi_lop';
 
-    protected $fillable = ['lop_thi_id', 'de_thi_id', 'loai_thi_id', 'level', 'ca_thi', 'phong_thi'];
+    protected $fillable = ['lop_thi_id', 'de_thi_id', 'loai_thi_id', 'level'];
 
     public function lopThi()
     {

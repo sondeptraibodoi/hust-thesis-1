@@ -1,4 +1,5 @@
 import monHocApi from "@/api/mon-hoc/monHoc.api";
+import giaoVienApi from "@/api/giaoVien/giaoVien.api";
 import BaseTable from "@/components/base-table";
 import CreateNEditDialog from "@/components/createNEditDialog";
 import DeleteDialog from "@/components/dialog/deleteDialog";
@@ -10,38 +11,71 @@ import {
   DeleteOutlined,
   EditOutlined,
   ExceptionOutlined,
+  SettingOutlined,
   SignatureOutlined,
   TeamOutlined,
   UnorderedListOutlined
 } from "@ant-design/icons";
 import { ColDef } from "ag-grid-community";
 import { Button, Tooltip } from "antd";
-import { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import phanCongApi from "@/api/phanCong/phanCong.api";
+import lopApi from "@/api/lop/lop.api";
 
-const MonHocPage = () => {
+const LopPage = () => {
+  const {id} = useParams();
   const [data, setData] = useState();
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [modalEditor, setModalEditor] = useState<boolean>(false);
   const [keyRender, setKeyRender] = useState(1);
   const [isModalDelete, setIsModalDelete] = useState(false);
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
+  const [mon, setMon] = useState<any>([]);
+
+  useEffect(() => {
+      const getMon = async () => {
+        const res = await monHocApi.list();
+        if (res.status === 200) setMon(res.data.list);
+      };
+      getMon();
+    }, []);
 
   const option = [
     {
-      required: true,
+      rule: [{required: true}],
       type: "input",
-      name: "ma",
-      label: "Mã",
-      placeholder: "Vui lòng nhập mã môn"
+      name: "ten_lop",
+      label: "Mã lớp",
+      placeholder: "Vui lòng nhập mã lớp",
     },
     {
-      required: true,
+      rule: [{required: true}],
+      type: "select",
+      name: "mon_hoc_id",
+      label: "Môn học",
+      placeholder: "Vui lòng chọn môn",
+      children: mon.map((x:any) => {
+        return {
+          value: x.id,
+          title: x.ten_mon_hoc
+        };
+      })
+    },
+    {
+      rule: [{required: true}],
       type: "input",
-      name: "ten_mon_hoc",
-      label: "Tên môn học",
-      placeholder: "Vui lòng nhập tên môn"
-    }
+      name: "hoc_ky",
+      label: "Kỳ học",
+      placeholder: "Vui lòng nhập kỳ học",
+    },
+    {
+      rule: [{required: true}],
+      type: "input",
+      name: "nam_hoc",
+      label: "Năm học",
+      placeholder: "Vui lòng nhập kỳ học",
+    },
   ];
 
   const [columnDefs] = useState<ColDef<any & ActionField>[]>([
@@ -50,30 +84,34 @@ const MonHocPage = () => {
       field: "id"
     },
     {
+      headerName: "Mã lớp",
+      field: "ten_lop",
+      filter: "agTextColumnFilter",
+      floatingFilter: true
+    },
+    {
       headerName: "Mã môn",
-      field: "ma",
+      field: "mon_hoc.ma",
       filter: "agTextColumnFilter",
       floatingFilter: true
     },
     {
-      headerName: "Tên môn học",
-      field: "ten_mon_hoc",
+      headerName: "Tên môn",
+      field: "mon_hoc.ten_mon_hoc",
       filter: "agTextColumnFilter",
       floatingFilter: true
     },
     {
-      headerName: "Số câu hỏi",
-      field: "so_cau_hoi",
-      filter: "agNumberColumnFilter",
-      floatingFilter: true,
-      hide: currentUser?.vai_tro === "sinh_vien"
+      headerName: "Học kỳ",
+      field: "hoc_ky",
+      filter: "agTextColumnFilter",
+      floatingFilter: true
     },
     {
-      headerName: "Cấp độ",
-      field: "level",
-      filter: "agNumberColumnFilter",
+      headerName: "Năm học",
+      field: "nam_hoc",
+      filter: "agTextColumnFilter",
       floatingFilter: true,
-      hide: currentUser?.vai_tro !== "sinh_vien"
     },
     {
       headerName: "Hành động",
@@ -99,17 +137,21 @@ const MonHocPage = () => {
   ]);
   return (
     <PageContainer
-      title="Danh sách môn"
-      extraTitle={currentUser?.vai_tro === 'admin' ?
-        <Button
-          onClick={() => {
-            setIsEdit(false), setModalEditor(true);
-          }}
-          type="primary"
-          style={{ float: "right", marginTop: "20px" }}
-        >
-          Thêm mới
-        </Button> : <div></div>
+      title="Danh sách lớp"
+      extraTitle={
+        currentUser?.vai_tro === "admin" ? (
+          <Button
+            onClick={() => {
+              setIsEdit(false), setModalEditor(true);
+            }}
+            type="primary"
+            style={{ float: "right", marginTop: "20px" }}
+          >
+            Thêm mới
+          </Button>
+        ) : (
+          <div></div>
+        )
       }
     >
       <BaseTable
@@ -121,15 +163,15 @@ const MonHocPage = () => {
         }}
         key={keyRender}
         columns={columnDefs}
-        api={monHocApi.list}
+        api={() =>lopApi.list()}
       />
       <CreateNEditDialog
         data={data}
         disableSubTitle
         setKeyRender={setKeyRender}
         isEdit={isEdit}
-        apiCreate={(data: any) => monHocApi.create({ ...data })}
-        apiEdit={(data: any) => monHocApi.edit(data)}
+        apiCreate={(data: any) => lopApi.create(data)}
+        apiEdit={(data: any) => lopApi.edit(data)}
         options={option}
         openModal={modalEditor}
         closeModal={setModalEditor}
@@ -147,31 +189,25 @@ const MonHocPage = () => {
   );
 };
 
-export default MonHocPage;
+export default LopPage;
 
-const ActionRender: FC<any> = ({  onUpdateItem, onDeleteItem, data }) => {
+const ActionRender: FC<any> = ({ onUpdateItem, onDeleteItem, data }) => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
-  const navigate = useNavigate();
+  const nagative = useNavigate();
   if (!data) return;
   return (
     <>
-      <Tooltip className={currentUser?.vai_tro !== "admin" ? "hidden" : ""} title="Phân công giáo viên">
-        <Button onClick={() => navigate(`phan-cong/${data.id}`)} type="text" icon={<TeamOutlined />} />
+    <Tooltip className={currentUser?.vai_tro !== "sinh_vien" ? "hidden" : ""} title="Làm bài thi">
+        <Button onClick={() => nagative(`kiem-tra/${data.id}`)} type="text" icon={<SignatureOutlined />} />
       </Tooltip>
-      {/* <Tooltip className={currentUser?.vai_tro !== "sinh_vien" ? "hidden" : ""} title="Làm bài thi">
-        <Button onClick={() => navigate(`kiem-tra/${data.id}`)} type="text" icon={<SignatureOutlined />} />
-      </Tooltip> */}
-      <Tooltip className={currentUser?.vai_tro === "sinh_vien" ? "hidden" : ""} title="Danh sách đề thi">
-        <Button onClick={() => navigate(`${data.id}/de-thi`)} type="text" icon={<ExceptionOutlined />} />
-      </Tooltip>
-      <Tooltip className={currentUser?.vai_tro === "sinh_vien" ? "hidden" : ""} title="Danh sách câu hỏi">
-        <Button onClick={() => navigate(`${data.id}/cau-hoi`)} type="text" icon={<UnorderedListOutlined />} />
+    <Tooltip className={currentUser?.vai_tro === "sinh_vien" ? "hidden" : ""} title="Phân công lớp học">
+        <Button type="text" icon={<SettingOutlined />} onClick={() => nagative(`${data.id}`)} />
       </Tooltip>
       <Tooltip className={currentUser?.vai_tro !== "admin" ? "hidden" : ""} title="Sửa">
-        <Button type="text" icon={<EditOutlined />} onClick={() => onUpdateItem(data)}/>
+        <Button type="text" icon={<EditOutlined />} onClick={() => onUpdateItem(data)} />
       </Tooltip>
       <Tooltip className={currentUser?.vai_tro !== "admin" ? "hidden" : ""} title="Xóa">
-        <Button type="text" icon={<DeleteOutlined />} onClick={() => onDeleteItem(data)}/>
+        <Button type="text" icon={<DeleteOutlined />} onClick={() => onDeleteItem(data)} />
       </Tooltip>
     </>
   );

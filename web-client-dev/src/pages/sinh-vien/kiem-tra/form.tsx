@@ -1,9 +1,10 @@
 import PageContainer from "@/Layout/PageContainer";
 import { useEffect, useState } from "react";
 import { Question, QuizPage } from "../danh-gia-nang-luc/form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import deThiApi from "@/api/deThi/deThi.api";
 import Title from "antd/es/typography/Title";
+import { notification } from "antd";
 
 export type RawData = {
   id: number;
@@ -11,6 +12,7 @@ export type RawData = {
 };
 
 const BaiThiPage = () => {
+  const navigator = useNavigate();
   const [time, setTime] = useState(15);
   const [mon, setMon] = useState("");
   const { id } = useParams<{ id: string }>();
@@ -20,10 +22,11 @@ const BaiThiPage = () => {
     if (!id) return;
     const getQuiz = async () => {
       const res = await deThiApi.getDethi(id);
-      setTime(res.data.data.thoi_gian_thi);
-      setMon(res.data.data.mon_hoc.ten_mon_hoc);
+      if(res.data.data) {
+        setTime(res.data.data.de_thi.thoi_gian_thi);
+      setMon(res.data.data.de_thi.mon_hoc.ten_mon_hoc);
       setDe(res.data.data);
-      const questions = res.data.data.chi_tiet_de_this.map((item: any) => {
+      const questions = res.data.data.de_thi.chi_tiet_de_this.map((item: any) => {
         const cauHoi = item.cau_hoi;
         const options: Record<string, string> = { A: "", B: "", C: "", D: "" };
 
@@ -40,14 +43,22 @@ const BaiThiPage = () => {
           options,
         };
       });
-      setData(questions);
+      setData(questions)
+      } else {
+        notification.error({
+          message: "Không tìm thấy đề thi",
+          description: "Không tìm thấy đề thi. Vui lòng liên hệ với giáo viên phụ trách"
+        })
+        navigator('/sohoa/lop-hoc');
+      }
     };
     getQuiz();
   }, [id]);
+  if(!de) return;
   return (
     <PageContainer title={"Bài thi " + mon}>
-      <Title level={5}>Mã đề thi: {de && de.code}</Title>
-      <QuizPage title={mon} questions={data} type="kiem-tra" time={time} mon_hoc_id={id} de_thi_id={de && de.id} />
+      <Title level={5}>Mã đề thi: {de && de.de_thi.code}</Title>
+      <QuizPage title={mon} questions={data} type="kiem-tra" time={time} mon_hoc_id={de.de_thi.mon_hoc_id} de_thi_id={de && de.de_thi.id} />
     </PageContainer>
   );
 };

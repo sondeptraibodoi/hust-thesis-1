@@ -4,11 +4,14 @@ import { Navigate, RouteObject } from "react-router-dom";
 
 //nguoi dung
 const UserPage = lazy(() => import("@/pages/system/user"));
-const ChartPage = lazy(() => import('@/pages/system/thong-ke'))
+const ChartPage = lazy(() => import("@/pages/system/thong-ke"));
 const MonHocPage = lazy(() => import("@/pages/sinh-vien/mon-hoc"));
-const CauHoiPage = lazy(() => import("@/pages/giao-vien/cau-hoi"))
+const CauHoiPage = lazy(() => import("@/pages/giao-vien/cau-hoi"));
 const DethiPage = lazy(() => import("@/pages/giao-vien/de-thi"));
 const DeThiForm = lazy(() => import("@/pages/giao-vien/de-thi/form"));
+const PhanCongPage = lazy(() => import("@/pages/system/phan-cong"));
+const LopPage = lazy(() => import("@/pages/system/lop"));
+const LopForm = lazy(() => import("@/pages/system/lop/form"))
 //giao vien
 // admin đã bao gồm cả quyền trợ lý, nên không cần thêm router của trợ lý vào
 
@@ -57,7 +60,7 @@ export const AdminRoute: RouteObject[] = [
         element: (
           <>
             <PageTitle title="Đề thi" />
-            <DeThiForm type="create"/>
+            <DeThiForm type="create" />
           </>
         )
       },
@@ -66,9 +69,13 @@ export const AdminRoute: RouteObject[] = [
         element: (
           <>
             <PageTitle title="Đề thi" />
-            <DeThiForm type="update"/>
+            <DeThiForm type="update" />
           </>
         )
+      },
+      {
+        path: "phan-cong/:id",
+        element: <PhanCongPage />
       }
     ]
   },
@@ -76,5 +83,29 @@ export const AdminRoute: RouteObject[] = [
     path: "thong-ke",
     element: <ChartPage />
   },
-
+  {
+    path: "lop",
+    children: [
+      {
+        path: "",
+        index: true,
+        element: (
+          <>
+            <PageTitle title="Lớp học" />
+            <LopPage />
+          </>
+        )
+      },
+      {
+        path: ":id",
+        index: true,
+        element: (
+          <>
+            <PageTitle title="Chi tiết" />
+            <LopForm />
+          </>
+        )
+      },
+    ]
+  }
 ];

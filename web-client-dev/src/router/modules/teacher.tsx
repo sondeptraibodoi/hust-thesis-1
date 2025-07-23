@@ -6,6 +6,8 @@ const MonHocPage = lazy(() => import("@/pages/sinh-vien/mon-hoc"));
 const CauHoiPage = lazy(() => import("@/pages/giao-vien/cau-hoi"))
 const DethiPage = lazy(() => import("@/pages/giao-vien/de-thi"));
 const DeThiForm = lazy(() => import("@/pages/giao-vien/de-thi/form"));
+const LopPage = lazy(() => import("@/pages/system/lop"));
+const LopForm = lazy(() => import("@/pages/system/lop/form"))
 
 export const TeacherRoute: RouteObject[] = [
   {
@@ -63,6 +65,31 @@ export const TeacherRoute: RouteObject[] = [
       }
     ]
   },
+  {
+    path: "lop-phu-trach",
+    children: [
+      {
+        path: "",
+        index: true,
+        element: (
+          <>
+            <PageTitle title="Lớp học" />
+            <LopPage />
+          </>
+        )
+      },
+      {
+        path: ":id",
+        index: true,
+        element: (
+          <>
+            <PageTitle title="Chi tiết" />
+            <LopForm />
+          </>
+        )
+      },
+    ]
+  }
   // {
   //   path: "diem-sinh-vien",
   //   element: (

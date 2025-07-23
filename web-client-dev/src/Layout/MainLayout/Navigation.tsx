@@ -25,6 +25,10 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
       key: "quan-ly-mon"
     },
     {
+      label: "Lớp",
+      key: "lop"
+    },
+    {
       label: "Thống kê",
       key: "thong-ke"
     },
@@ -195,6 +199,10 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
         // }
       ]
     },
+    {
+      label: "Lớp",
+      key: "lop-phu-trach"
+    },
   ],
   [ROLE_CODE.STUDENT]: [
     {
@@ -205,6 +213,10 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
     {
       label: "Điểm thi",
       key: "diem-sinh-vien"
+    },
+    {
+      label: "Lớp",
+      key: "lop-hoc"
     },
   ]
 };

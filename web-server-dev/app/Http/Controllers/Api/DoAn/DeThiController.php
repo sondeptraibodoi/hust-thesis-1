@@ -9,14 +9,18 @@ use Illuminate\Support\Facades\DB;
 use App\Models\CauHoi;
 use App\Models\DeThi;
 use App\Models\ChiTietDeThi;
+use App\Models\DeThiLop;
 use App\Models\LoaiDe;
+use App\Models\LopThi;
 use App\Models\MonHoc;
 
 class DeThiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DeThi::query()->with(['loaiThi'])->where('mon_hoc_id', $request->get('mon_hoc_id'));
+        $query = DeThi::query()->with(['loaiThi'])->when($request->get('mon_hoc_id'), function ($q) use ($request) {
+            $q->where('mon_hoc_id', $request->get('mon_hoc_id'));
+        });
         $query = QueryBuilder::for($query, $request)
             ->allowedAgGrid([])
             ->defaultSort("id")
@@ -113,17 +117,13 @@ class DeThiController extends Controller
 
     public function getDeThiRandom(Request $request, $id)
     {
-        $mon = MonHoc::find($id);
+        $lop = LopThi::find($id);
+        $mon = MonHoc::find($lop->mon_hoc_id);
         $level = $mon->level();
-        $deThi = DeThi::where('do_kho', $level)
-            ->with([
-                'monHoc',
-                'nguoiTao',
-                'chiTietDeThis.cauHoi.dapAns',
-                'chiTietDeThis.cauHoi' => function ($query) {
-                    $query->select('id', 'de_bai');
-                }
-            ])
+        $deThi = DeThiLop::where('level', $level)->where('lop_thi_id', $id)
+            ->with(['deThi.nguoiTao','deThi.chiTietDeThis.cauHoi.dapAns', 'deThi.monHoc', 'deThi.chiTietDeThis.cauHoi' => function ($query) {
+            $query->select('id', 'de_bai');
+        }])
             ->inRandomOrder()
             ->first();
         return $this->responseSuccess($deThi);

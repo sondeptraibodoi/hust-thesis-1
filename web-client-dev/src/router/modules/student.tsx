@@ -10,6 +10,7 @@ const KiemTraPage = lazy(() => import("@/pages/sinh-vien/kiem-tra"));
 const DanhGiaPage = lazy(() => import("@/pages/sinh-vien/danh-gia-nang-luc"));
 const FormKiemTra = lazy(() => import("@/pages/sinh-vien/kiem-tra/form"));
 const FormDetailDiem = lazy(() => import("@/pages/sinh-vien/bang-diem/detail"))
+const LopPage = lazy(() => import("@/pages/system/lop"));
 
 export const StudentRoute = [
   {
@@ -78,6 +79,31 @@ export const StudentRoute = [
           <FormDetailDiem />
         )
       }
+    ]
+  },
+  {
+    path: "lop-hoc",
+    children: [
+      {
+        path: "",
+        index: true,
+        element: (
+          <>
+            <PageTitle title="Lớp học" />
+            <LopPage />
+          </>
+        )
+      },
+      {
+        path: "kiem-tra/:id",
+        element: (
+          <>
+            <PageTitle title="Chi tiết" />
+            <KiemTraPage />
+          </>
+        )
+      }
+
     ]
   }
 ];

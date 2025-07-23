@@ -3,14 +3,21 @@
 use App\Constants\RoleCode;
 use App\Http\Controllers\Api\DoAn\CauHoiController;
 use App\Http\Controllers\Api\DoAn\DeThiController;
+use App\Http\Controllers\Api\DoAn\GiaoVienController;
 use App\Http\Controllers\Api\DoAn\LoaiThiController;
+use App\Http\Controllers\Api\DoAn\LopController;
 use App\Http\Controllers\Api\DoAn\MonHocController;
+use App\Http\Controllers\Api\DoAn\SinhVienController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     // router dùng chung cho các route
     Route::get('danh-sach-mon',  [MonHocController::class, 'index']);
     Route::get('mon-hoc/{id}',  [MonHocController::class, 'show']);
+    Route::get('lop', [LopController::class, 'index']);
+    Route::post('lop', [LopController::class, 'store']);
+    Route::put('lop/{id}', [LopController::class, 'update']);
+    Route::delete('lop/{id}', [LopController::class, 'destroy']);
 });
 
 Route::group(
@@ -36,5 +43,9 @@ Route::group(
         Route::delete('mon/{id}', [MonHocController::class, 'destroy']);
         Route::post('mon', [MonHocController::class, 'store']);
         Route::get('loai-thi', [LoaiThiController::class, 'index']);
+        Route::get('giao-vien', [GiaoVienController::class, 'index']);
+        Route::get('sinh-vien', [SinhVienController::class, 'index']);
+        Route::put('phan-cong-lop/{id}', [LopController::class, 'phanCongLop']);
+        Route::get('lop/{id}', [LopController::class, 'show']);
     }
 );

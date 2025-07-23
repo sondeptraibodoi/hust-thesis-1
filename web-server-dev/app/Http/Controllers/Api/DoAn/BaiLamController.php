@@ -17,7 +17,7 @@ class BaiLamController extends Controller
         $query = BaiLam::query()->when($request->has('user_id'), function ($q) use ($request) {
             $q->where('nguoi_dung_id', $request->get('user_id'));
         })
-            ->with(['nguoiDung', 'deThi', 'monHoc']);
+            ->with(['nguoiDung', 'deThi.loaiThi', 'monHoc']);
         $query = QueryBuilder::for($query, $request)
             ->allowedAgGrid([])
             ->defaultSort("id")
@@ -59,7 +59,7 @@ class BaiLamController extends Controller
         });
 
         return response()->json([
-            'sinh_vien' => $baiLam->nguoiDung->ho_ten ?? 'Không rõ',
+            'sinh_vien' => $baiLam->nguoiDung->sinhVien->ho_ten ?? 'Không rõ',
             'de_thi' => $baiLam->deThi,
             'diem' => $baiLam->diem ?? 0,
             'chi_tiet_cau_hoi' => $chiTiet,

@@ -11,6 +11,7 @@ class GiaoVienMon extends Model
     protected $table = 'giao_vien_mon';
 
     protected $fillable = ['giao_vien_id', 'mon_hoc_id'];
+    public static $INCLUDE = ['giaoVien', 'monHoc'];
 
     public function giaoVien()
     {

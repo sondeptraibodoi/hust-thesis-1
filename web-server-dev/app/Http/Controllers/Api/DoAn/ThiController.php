@@ -11,6 +11,8 @@ use App\Models\ChiTietBaiLam;
 use App\Models\ChiTietDeThi;
 use App\Models\DapAn;
 use App\Models\DeThi;
+use App\Models\DeThiLop;
+use App\Models\LopThi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,7 +28,7 @@ class ThiController extends Controller
         $answers = $validated['answers'];
         $monHocId = $request->input('mon_hoc_id');
         $userId = auth()->id();
-
+        $baiThi = null;
         if ($type === 'kiem-tra' && $request->filled('de_thi_id')) {
             $deThi = DeThi::with('chiTietDeThis')->findOrFail($request->de_thi_id);
             $deChiTiet = $deThi->chiTietDeThis->keyBy('id');
@@ -85,39 +87,95 @@ class ThiController extends Controller
                         ['level' => DB::raw('CASE WHEN level < 10 THEN level + 1 ELSE level END')]
                     );
             }
-        } elseif ($type === 'danh-gia') {
-            $questionIds = array_keys($answers);
-            $questions = CauHoi::whereIn('id', $questionIds)->get();
-            $totalScore = 0;
-            $score = 0;
+        } elseif ($type === 'danh-gia' && $request->filled('de_thi_id')) {
+            $deThi = DeThi::with('chiTietDeThis')->findOrFail($request->de_thi_id);
+            $deChiTiet = $deThi->chiTietDeThis->keyBy('id');
+            $cauHoiIds = $deChiTiet->pluck('cau_hoi_id')->toArray();
 
-            foreach ($questions as $question) {
-                $correct = strtoupper($question->dap_an);
-                $userAnswer = strtoupper($answers[$question->id] ?? '');
-                $weight = (int)($question->do_kho ?: 1);
+            $baiThi = BaiLam::create([
+                'nguoi_dung_id' => $userId,
+                'mon_hoc_id' => $monHocId,
+                'de_thi_id' => $deThi->id,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
 
-                $totalScore += $weight;
-                if ($userAnswer === $correct) {
-                    $score += $weight;
+            $cauHoiList = CauHoi::whereIn('id', $cauHoiIds)->get()->keyBy('id');
+
+            $soCau = count($deChiTiet);
+            $diemMoiCau = $soCau > 0 ? 10 / $soCau : 0;
+
+            $diemBaiThi = 0;         // điểm hiển thị → 10 điểm
+            $tongDiemDungTrongSo = 0; // điểm thật → để tính level
+            $tongTrongSo = 0;
+
+            foreach ($answers as $deChiTietId => $dapAnNguoiDung) {
+                $deLine = $deChiTiet[$deChiTietId] ?? null;
+                if (!$deLine) continue;
+
+                $cauHoi = $cauHoiList[$deLine->cau_hoi_id] ?? null;
+                if (!$cauHoi) continue;
+
+                $trongSo = max(1, (int)round($cauHoi->do_kho));
+                $tongTrongSo += $trongSo;
+
+                $dung = strtoupper($cauHoi->dap_an) === strtoupper($dapAnNguoiDung);
+                if ($dung) {
+                    $diemBaiThi += $diemMoiCau;
+                    $tongDiemDungTrongSo += $trongSo;
                 }
+
+                ChiTietBaiLam::create([
+                    'bai_kiem_tra_id' => $baiThi->id,
+                    'cau_hoi_id' => $cauHoi->id,
+                    'cau_tra_loi' => $dapAnNguoiDung,
+                    'da_tra_loi' => true,
+                    'dap_an_dung' => $dung,
+                    'diem' => ceil($diemMoiCau), // điểm hiển thị thôi
+                ]);
             }
 
-            $correctRate = $totalScore > 0 ? $score / $totalScore : 0;
-            $level = max(1, ceil($correctRate * 10));
+            // Câu chưa trả lời
+            $cauTraLoiIds = array_keys($answers);
+            $chuaTraLoi = collect($deChiTiet)->except($cauTraLoiIds);
 
+            foreach ($chuaTraLoi as $deLine) {
+                $cauHoi = $cauHoiList[$deLine->cau_hoi_id] ?? null;
+                if (!$cauHoi) continue;
+
+                $trongSo = max(1, (int)round($cauHoi->do_kho));
+                $tongTrongSo += $trongSo;
+
+                ChiTietBaiLam::create([
+                    'bai_kiem_tra_id' => $baiThi->id,
+                    'cau_hoi_id' => $cauHoi->id,
+                    'cau_tra_loi' => null,
+                    'da_tra_loi' => false,
+                    'dap_an_dung' => false,
+                    'diem' => ceil($diemMoiCau),
+                ]);
+            }
+            $baiThi->diem = round($diemBaiThi, 2);
+            $baiThi->save();
+            $correctRateTrongSo = $tongTrongSo > 0 ? $tongDiemDungTrongSo / $tongTrongSo : 0;
+            $level = max(1, ceil($correctRateTrongSo * 10));
             DB::table('level_mon_hoc')->updateOrInsert(
                 ['nguoi_dung_id' => $userId, 'mon_hoc_id' => $monHocId],
                 ['level' => $level]
             );
         }
-
         return $this->responseSuccess($baiThi);
     }
 
     public function cauHoiDanhGia(Request $request)
     {
-        $monHocId = $request->input('mon_hoc_id');
-        $list = CauHoi::where('mon_hoc_id', $monHocId)->with(['dapAns'])->inRandomOrder()->limit(5)->get();
-        return $this->responseSuccess($list);
+        $deThi = DeThiLop::where('lop_thi_id', $request->lop_hoc_id)->where('level', 0)->first();
+        if (empty($deThi)) {
+            abort(400, 'Không có đề thi đánh giá nào. Vui lòng liên hệ với giáo viên phụ trách');
+        }
+        $deThi->load(['deThi.chiTietDeThis.cauHoi.dapAns', 'deThi.monHoc', 'deThi.chiTietDeThis.cauHoi' => function ($query) {
+            $query->select('id', 'de_bai');
+        }]);
+        return $this->responseSuccess($deThi);
     }
 }

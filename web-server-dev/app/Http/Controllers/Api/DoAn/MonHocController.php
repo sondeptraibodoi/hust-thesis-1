@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\DoAn;
 
+use App\Constants\RoleCode;
 use App\Http\Controllers\Controller;
 use App\Library\QueryBuilder\QueryBuilder;
+use App\Models\GiaoVienMon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MonHoc;
@@ -13,7 +15,12 @@ class MonHocController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
         $query = MonHoc::query();
+        if($user->vai_tro === RoleCode::TEACHER) {
+            $mon = GiaoVienMon::where('giao_vien_id', $user->giaoVien->id)->get()->pluck('mon_hoc_id');
+            $query->whereIn('id', $mon);
+        }
         $query = QueryBuilder::for($query, $request)
             ->allowedAgGrid([])
             ->defaultSort("id")

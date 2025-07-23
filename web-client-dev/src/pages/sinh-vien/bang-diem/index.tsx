@@ -33,6 +33,12 @@ const BangDiemPage = () => {
       floatingFilter: true
     },
     {
+      headerName: "Loại",
+      field: "de_thi.loai_thi.ten_loai",
+      filter: "agTextColumnFilter",
+      floatingFilter: true
+    },
+    {
       headerName: "Tên môn học",
       field: "mon_hoc.ten_mon_hoc",
       filter: "agTextColumnFilter",
@@ -63,7 +69,7 @@ const BangDiemPage = () => {
       floatingFilter: true,
       valueFormatter: (params) => {
         if (!params || !params.data) return "";
-        return "Mức độ " + params.data.de_thi.diem_toi_da;
+        return "Mức độ " + params.data.de_thi.do_kho;
       }
     },
     {

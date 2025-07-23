@@ -85,9 +85,10 @@ export type CallbackGetData<T = any> = (_params: CallbackParams) => Promise<Axio
 
 export type CallbackSuccess<T = any> = (data: ApiListReturn<T>, params?: IGetRowsParams) => void;
 export type CallbackParams = {
-  page: number;
-  itemsPerPage: number;
-  paginate: true;
-  sortModel: SortModelItem[];
-  filterModel: any;
+  page?: number;
+  itemsPerPage?: number;
+  paginate?: true;
+  sortModel?: SortModelItem[];
+  filterModel?: any;
+  search?: string
 };
