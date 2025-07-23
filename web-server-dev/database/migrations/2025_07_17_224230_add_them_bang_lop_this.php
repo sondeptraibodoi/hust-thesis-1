@@ -54,8 +54,6 @@ class AddThemBangLopThis extends Migration
             $table->foreignId('de_thi_id')->constrained('de_this');
             $table->foreignId('loai_thi_id')->constrained('loai_this');
             $table->string('level')->nullable(); // "A", "B", "C" hoặc "Dễ", "TB", "Khó"
-            $table->dateTime('ca_thi')->nullable(); // thời gian thi
-            $table->string('phong_thi')->nullable();
             $table->timestamps();
             $table->unique(['de_thi_id', 'lop_thi_id', 'loai_thi_id', 'level']);
         });
