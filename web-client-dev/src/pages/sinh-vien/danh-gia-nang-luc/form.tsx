@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { Button, Card, Divider, Radio, Space, Typography, message } from "antd";
 import type { RadioChangeEvent } from "antd";
 import baiThiApi from "@/api/baiThi/baiThi.api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -29,6 +29,7 @@ export const QuizPage: FC<Props> = (props) => {
   const [timeLeft, setTimeLeft] = useState<number>(time * 60);
   const [startTime] = useState<Date>(new Date());
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const {id} = useParams();
   useEffect(() => {
     if (isSubmitted) return;
     const timer = setInterval(() => {
@@ -82,7 +83,8 @@ export const QuizPage: FC<Props> = (props) => {
         type: type,
         answers: answers,
         mon_hoc_id: mon_hoc_id,
-        de_thi_id: de_thi_id
+        de_thi_id: de_thi_id,
+        lop_id: id
       })
         console.log("🚀 ~ handleSubmit ~ res:", res)
       const endTime = new Date();

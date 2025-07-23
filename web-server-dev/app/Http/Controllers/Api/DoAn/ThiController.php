@@ -23,7 +23,7 @@ class ThiController extends Controller
         $validated = $request->validate([
             'answers' => 'required|array',
         ]);
-
+        $lopId = $request->get('lop_id');
         $type = $request->get('type', 'kiem-tra');
         $answers = $validated['answers'];
         $monHocId = $request->input('mon_hoc_id');
@@ -39,7 +39,8 @@ class ThiController extends Controller
                 'mon_hoc_id' => $monHocId,
                 'de_thi_id' => $deThi->id,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
+                'lop_thi_id' => $lopId
             ]);
 
             $cauHoiList = CauHoi::whereIn('id', $cauHoiIds)->get()->keyBy('id');
@@ -97,7 +98,8 @@ class ThiController extends Controller
                 'mon_hoc_id' => $monHocId,
                 'de_thi_id' => $deThi->id,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
+                'lop_thi_id' => $lopId
             ]);
 
             $cauHoiList = CauHoi::whereIn('id', $cauHoiIds)->get()->keyBy('id');
