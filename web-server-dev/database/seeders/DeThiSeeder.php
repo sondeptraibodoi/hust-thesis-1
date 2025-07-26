@@ -38,7 +38,7 @@ class DeThiSeeder extends Seeder
             # code...
             LoaiDe::create($value);
         }
-
+        $loaiDe = LoaiDe::where('ten_loai', 'Đánh giá năng lực')->first();
         foreach ($monHocIds as $monHocId) {
         $doKhoList = array_merge(
             Arr::random([1, 2, 3], 3),          // 30% dễ
@@ -76,7 +76,7 @@ class DeThiSeeder extends Seeder
             'code' => $code,
             'created_at' => now(),
             'updated_at' => now(),
-            'loai_thi_id' => 1
+            'loai_thi_id' => $loaiDe->id
         ]);
 
         $diemMoiCau = 1; // Mỗi câu 1 điểm (10 câu 10 điểm)
