@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CreateTestDataSeeder::class,
             CreateMonHocSeeder::class,
-            // DeThiSeeder::class
+            DeThiSeeder::class
         ]);
     }
 }

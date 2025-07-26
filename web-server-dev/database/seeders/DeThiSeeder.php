@@ -8,6 +8,7 @@ use App\Models\CauHoi;
 use App\Models\ChiTietDeThi;
 use App\Models\DeThi;
 use App\Models\LoaiDe;
+use App\Models\MonHoc;
 use Arr;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -21,7 +22,7 @@ class DeThiSeeder extends Seeder
      */
     public function run()
     {
-        $monHocIds = [1, 2, 3, 4, 5]; // Toán, Văn, Anh, Lý, Hóa
+        $monHocIds = MonHoc::where('ten_mon_hoc', 'Anh')->get()->pluck('id'); // Toán, Văn, Anh, Lý, Hóa
         $nguoiTaoId = 1;
 
         $loais = [
