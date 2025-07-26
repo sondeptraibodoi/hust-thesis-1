@@ -12,7 +12,7 @@ class CauHoi extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'de_bai', 'do_kho', 'mon_hoc_id', 'dap_an', 'chu_thich', 'image_url', 'loai'
+        'de_bai', 'do_kho', 'mon_hoc_id', 'dap_an', 'chu_thich', 'image_url', 'loai', 'cach_giai'
     ];
 
     public function monHoc()
