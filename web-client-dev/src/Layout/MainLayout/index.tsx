@@ -1,7 +1,7 @@
 import "./scss/index.scss";
 
-import { ConfigProvider, theme } from "antd";
-import { Outlet, useNavigate } from "react-router-dom";
+import { ConfigProvider, FloatButton, theme } from "antd";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import React, { Suspense } from "react";
 
 import AdminHeader from "./Header";
@@ -16,6 +16,7 @@ import { getPrefix } from "@/constant";
 import { isServerInvalid } from "@/api/axios";
 import { useAppSelector } from "@/stores/hook";
 import { useCheckCapNhatCode } from "@/hooks/useCheckCapNhatCode";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 const THEME_CONFIG = {
   token: {
@@ -61,12 +62,21 @@ const AdminLayout: React.FC<any> = () => {
     }
   });
   useCheckCapNhatCode();
+
+  const location = useLocation();
+
+  // Nếu là trang login hoặc trang quen-mat-khau → ẩn FloatButton
+  const hideFloatButton = ["/login", "/quen-mat-khau", "/doi-mat-khau"].some((path) =>
+    location.pathname.includes(path)
+  );
+  const linkChatbox = 'http://8.8.8.8';
   return (
     <ConfigProvider theme={THEME_CONFIG}>
       <div className="wrapper">
         <div className="header">
           <AdminHeader />
         </div>
+         {!hideFloatButton && (<FloatButton onClick={() => window.open(linkChatbox, '_blank')} tooltip="Chatbox" icon={<QuestionCircleOutlined size={40}/>} type="primary" style={{ insetInlineEnd: 24, marginBottom: 200 }} />)}
         <ConfigProvider theme={LAYOUT_CONFIG}>
           <div className="relative">
             <HeaderSticky>
