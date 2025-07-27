@@ -107,8 +107,8 @@ class ThongKeController extends Controller
         // level theo môn học
 
         $query = DB::table('level_mon_hoc')
-        ->join('nguoi_dungs', 'nguoi_dung.id', '=', 'level_mon_hoc.nguoi_dung_id')
-        ->select('nguoi_dung.ho_ten', 'level_mon_hoc.level');
+        ->join('nguoi_dungs', 'nguoi_dungs.id', '=', 'level_mon_hoc.nguoi_dung_id')
+        ->select('nguoi_dungs.email', 'level_mon_hoc.level');
 
     if ($monHocId) {
         $query->where('level_mon_hoc.mon_hoc_id', $monHocId);
@@ -118,7 +118,7 @@ class ThongKeController extends Controller
 
     // Định dạng cho Chart.js
     $level = [
-        'labels' => $data->pluck('ho_ten'),       // Tên người dùng
+        'labels' => $data->pluck('email'),       // Tên người dùng
         'datasets' => [
             [
                 'label' => 'Level',
