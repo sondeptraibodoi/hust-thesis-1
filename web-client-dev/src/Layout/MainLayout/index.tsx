@@ -17,6 +17,7 @@ import { isServerInvalid } from "@/api/axios";
 import { useAppSelector } from "@/stores/hook";
 import { useCheckCapNhatCode } from "@/hooks/useCheckCapNhatCode";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import { RootState } from "@/stores";
 
 const THEME_CONFIG = {
   token: {
@@ -62,6 +63,7 @@ const AdminLayout: React.FC<any> = () => {
     }
   });
   useCheckCapNhatCode();
+  const { currentUser } = useAppSelector((state: RootState) => state.auth);
 
   const location = useLocation();
 
@@ -69,7 +71,7 @@ const AdminLayout: React.FC<any> = () => {
   const hideFloatButton = ["/login", "/quen-mat-khau", "/doi-mat-khau"].some((path) =>
     location.pathname.includes(path)
   );
-  const linkChatbox = 'http://8.8.8.8';
+  const linkChatbox = `http://192.168.81.141:${currentUser?.vai_tro === 'sinh_vien' ? 8052 :8051}/`;
   return (
     <ConfigProvider theme={THEME_CONFIG}>
       <div className="wrapper">
