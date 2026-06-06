@@ -4,6 +4,8 @@ import easyocr
 import numpy as np
 from fastapi import UploadFile
 import math
+import re
+from app.mnist_cnn import predict_score_from_cell
 
 UPLOAD_DIR = "uploads"
 
@@ -76,7 +78,12 @@ async def predict_image(file: UploadFile):
     cell_results = []
 
     for cell in cells:
-        text = read_cell_text(reader, table_image, cell)
+        text = read_cell_text(
+            reader,
+            table_image,
+            cell,
+            mode=get_cell_ocr_mode(cell)
+        )
 
         cell_results.append({
             **cell,
@@ -523,13 +530,29 @@ def normalize_lines(lines, min_gap=8):
     return sorted(list(set(normalized)))
 
 
-def read_cell_text(reader, image, cell):
+def get_cell_ocr_mode(cell):
+    if cell["row"] == 0:
+        return "text"
+
+    if cell["col"] == 0:
+        return "index"
+
+    if cell["col"] == 1:
+        return "student_code"
+
+    if cell["col"] == 4:
+        return "score"
+
+    return "text"
+
+
+def read_cell_text(reader, image, cell, mode="text"):
     x = cell["x"]
     y = cell["y"]
     w = cell["w"]
     h = cell["h"]
 
-    padding = 4
+    padding = 3 if mode == "score" else 5
 
     x1 = max(x + padding, 0)
     y1 = max(y + padding, 0)
@@ -541,7 +564,16 @@ def read_cell_text(reader, image, cell):
     if cell_img.size == 0:
         return ""
 
-    gray = cv2.cvtColor(cell_img, cv2.COLOR_BGR2GRAY)
+    if mode == "index":
+        return read_digit_cell(reader, cell_img, min_len=1, max_len=3)
+
+    if mode == "student_code":
+        return read_digit_cell(reader, cell_img, min_len=6, max_len=12)
+
+    if mode == "score":
+        return read_score_cell(reader, cell_img)
+
+    gray = prepare_ocr_gray(cell_img, scale=2, threshold=False)
 
     results = reader.readtext(
         gray,
@@ -550,6 +582,250 @@ def read_cell_text(reader, image, cell):
     )
 
     return " ".join(results).strip()
+
+
+def read_digit_cell(reader, cell_img, min_len=1, max_len=12):
+    images = [
+        prepare_ocr_gray(cell_img, scale=3, threshold=False),
+        prepare_ocr_gray(cell_img, scale=3, threshold=True)
+    ]
+
+    candidates = read_ocr_candidates(
+        reader,
+        images,
+        allowlist="0123456789"
+    )
+
+    best_text = ""
+    best_score = -1
+
+    for text, confidence in candidates:
+        digits = re.sub(r"\D", "", text)
+
+        if not digits:
+            continue
+
+        length_bonus = 1 if min_len <= len(digits) <= max_len else 0
+        score = confidence + length_bonus + min(len(digits), max_len) * 0.02
+
+        if score > best_score:
+            best_score = score
+            best_text = digits
+
+    return best_text
+
+
+def read_score_cell(reader, cell_img):
+    cnn_score = read_score_cell_with_cnn(cell_img)
+
+    if cnn_score:
+        return cnn_score
+
+    images = [
+        prepare_ocr_gray(cell_img, scale=3, threshold=False),
+        prepare_ocr_gray(cell_img, scale=3, threshold=True),
+        *prepare_score_color_images(cell_img)
+    ]
+
+    candidates = read_ocr_candidates(
+        reader,
+        images,
+        allowlist="0123456789,."
+    )
+
+    best_text = ""
+    best_score = -1
+
+    for text, confidence in candidates:
+        score_text = normalize_score_text(text)
+
+        if not score_text:
+            continue
+
+        score = confidence + score_value_bonus(score_text)
+
+        if score > best_score:
+            best_score = score
+            best_text = score_text
+
+    return best_text
+
+
+def read_score_cell_with_cnn(cell_img):
+    try:
+        digit_text, predictions = predict_score_from_cell(cell_img)
+    except FileNotFoundError:
+        return ""
+
+    if not digit_text:
+        return ""
+
+    average_confidence = sum(
+        item["confidence"] for item in predictions
+    ) / max(len(predictions), 1)
+
+    if average_confidence < 0.45:
+        return ""
+
+    return normalize_score_text(digit_text)
+
+
+def read_ocr_candidates(reader, images, allowlist=None):
+    candidates = []
+
+    for image in images:
+        results = reader.readtext(
+            image,
+            detail=1,
+            paragraph=False,
+            allowlist=allowlist,
+            decoder="beamsearch",
+            batch_size=1,
+            contrast_ths=0.05,
+            adjust_contrast=0.7
+        )
+
+        for result in results:
+            if len(result) < 3:
+                continue
+
+            text = str(result[1]).strip()
+            confidence = float(result[2])
+
+            if text:
+                candidates.append((text, confidence))
+
+    return candidates
+
+
+def prepare_ocr_gray(cell_img, scale=2, threshold=False):
+    gray = cv2.cvtColor(cell_img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.copyMakeBorder(
+        gray,
+        8,
+        8,
+        8,
+        8,
+        cv2.BORDER_CONSTANT,
+        value=255
+    )
+
+    gray = cv2.resize(
+        gray,
+        None,
+        fx=scale,
+        fy=scale,
+        interpolation=cv2.INTER_CUBIC
+    )
+
+    gray = cv2.GaussianBlur(gray, (3, 3), 0)
+
+    if not threshold:
+        return cv2.equalizeHist(gray)
+
+    return cv2.threshold(
+        gray,
+        0,
+        255,
+        cv2.THRESH_BINARY + cv2.THRESH_OTSU
+    )[1]
+
+
+def prepare_score_color_images(cell_img):
+    padded = cv2.copyMakeBorder(
+        cell_img,
+        8,
+        8,
+        8,
+        8,
+        cv2.BORDER_CONSTANT,
+        value=(255, 255, 255)
+    )
+
+    images = []
+
+    for scale in (3, 5, 8):
+        images.append(
+            cv2.resize(
+                padded,
+                None,
+                fx=scale,
+                fy=scale,
+                interpolation=cv2.INTER_CUBIC
+            )
+        )
+
+    return images
+
+
+def normalize_score_text(text):
+    text = (
+        text.strip()
+        .replace("O", "0")
+        .replace("o", "0")
+        .replace("I", "1")
+        .replace("l", "1")
+        .replace("|", "1")
+    )
+
+    text = re.sub(r"[^0-9,.]", "", text)
+
+    if not text:
+        return ""
+
+    text = text.replace(".", ",")
+
+    if "," in text:
+        integer_part, decimal_part = text.split(",", 1)
+        integer_part = re.sub(r"\D", "", integer_part)
+        decimal_part = re.sub(r"\D", "", decimal_part)
+
+        if not integer_part:
+            return ""
+
+        normalized = integer_part
+
+        if decimal_part:
+            normalized = f"{integer_part},{decimal_part[0]}"
+
+        return normalized if is_valid_score(normalized) else ""
+
+    digits = re.sub(r"\D", "", text)
+
+    if not digits:
+        return ""
+
+    if len(digits) == 1:
+        return digits if is_valid_score(digits) else ""
+
+    if digits in ("10", "100"):
+        return "10"
+
+    if len(digits) == 3 and digits[0] == "0":
+        normalized = f"{int(digits[:2])},{digits[2]}"
+    elif len(digits) >= 3:
+        normalized = f"{digits[0]},{digits[-1]}"
+    else:
+        normalized = f"{digits[0]},{digits[1]}"
+
+    return normalized if is_valid_score(normalized) else ""
+
+
+def score_value_bonus(score_text):
+    if not is_valid_score(score_text):
+        return -2
+
+    return 1
+
+
+def is_valid_score(score_text):
+    try:
+        score = float(score_text.replace(",", "."))
+    except ValueError:
+        return False
+
+    return 0 <= score <= 10
+
 
 def group_cells_to_students(cell_results):
     rows = {}
@@ -567,13 +843,16 @@ def group_cells_to_students(cell_results):
     for row_index in sorted(rows.keys()):
         row_cells = sorted(rows[row_index], key=lambda item: item["col"])
 
+        if row_index == 0:
+            continue
+
         # bỏ dòng tiêu đề nếu text có Mã SV / Họ và tên
         row_text = " ".join([cell.get("text", "") for cell in row_cells])
 
         if "Mã" in row_text or "Họ" in row_text or "Tên" in row_text:
             continue
 
-        if len(row_cells) < 4:
+        if len(row_cells) < 5:
             continue
 
         students.append({
@@ -585,3 +864,131 @@ def group_cells_to_students(cell_results):
         })
 
     return students
+
+
+# Override the simple positional mapper above with data-aware row mapping.
+def group_cells_to_students(cell_results):
+    rows = {}
+
+    for cell in cell_results:
+        row = cell["row"]
+
+        if row not in rows:
+            rows[row] = []
+
+        rows[row].append(cell)
+
+    students = []
+
+    for row_index in sorted(rows.keys()):
+        row_cells = sorted(rows[row_index], key=lambda item: item["col"])
+
+        if row_index == 0:
+            continue
+
+        student_code_cell = find_student_code_cell(row_cells)
+
+        if student_code_cell is None:
+            continue
+
+        student_code = normalize_digits(student_code_cell.get("text", ""))
+        score_cell = find_score_cell(row_cells, student_code_cell["col"])
+        text_cells = find_text_cells_after_code(row_cells, student_code_cell["col"])
+
+        students.append({
+            "stt": find_student_index(row_cells, student_code_cell["col"], len(students) + 1),
+            "student_code": student_code,
+            "student_name": text_cells[0] if len(text_cells) > 0 else "",
+            "class_name": text_cells[1] if len(text_cells) > 1 else "",
+            "score": score_cell.get("text", "") if score_cell else ""
+        })
+
+    return students
+
+
+def find_student_code_cell(row_cells):
+    for cell in row_cells:
+        if cell.get("w", 0) > 260:
+            continue
+
+        digits = normalize_digits(cell.get("text", ""))
+
+        if 6 <= len(digits) <= 12:
+            return cell
+
+    return None
+
+
+def find_student_index(row_cells, student_code_col, fallback_index):
+    for cell in row_cells:
+        if cell["col"] >= student_code_col:
+            continue
+
+        digits = normalize_digits(cell.get("text", ""))
+
+        if 1 <= len(digits) <= 3:
+            return digits
+
+    return str(fallback_index)
+
+
+def find_score_cell(row_cells, student_code_col):
+    candidates = []
+
+    for cell in row_cells:
+        if cell["col"] <= student_code_col:
+            continue
+
+        if cell.get("w", 0) < 35:
+            continue
+
+        if cell.get("w", 0) > 170:
+            continue
+
+        score_text = normalize_score_text(cell.get("text", ""))
+
+        if not score_text:
+            continue
+
+        candidates.append({
+            **cell,
+            "text": score_text
+        })
+
+    if not candidates:
+        return None
+
+    return sorted(
+        candidates,
+        key=lambda item: (item["col"], item.get("w", 0))
+    )[0]
+
+
+def find_text_cells_after_code(row_cells, student_code_col):
+    text_cells = []
+
+    for cell in row_cells:
+        if cell["col"] <= student_code_col:
+            continue
+
+        text = cell.get("text", "").strip()
+
+        if not text:
+            continue
+
+        if cell.get("w", 0) < 40:
+            continue
+
+        if cell.get("w", 0) <= 170 and normalize_score_text(text):
+            continue
+
+        if cell.get("w", 0) <= 170 and normalize_digits(text) == text:
+            continue
+
+        text_cells.append(text)
+
+    return text_cells
+
+
+def normalize_digits(text):
+    return re.sub(r"\D", "", text or "")
