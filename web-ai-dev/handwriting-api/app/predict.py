@@ -78,16 +78,32 @@ async def predict_image(file: UploadFile):
     cell_results = []
 
     for cell in cells:
-        text = read_cell_text(
-            reader,
-            table_image,
-            cell,
-            mode=get_cell_ocr_mode(cell)
-        )
+        mode = get_cell_ocr_mode(cell)
+        read_cell = expand_score_cell(cell, cells) if mode == "score" else cell
+        extra_result = {}
+
+        if mode == "score":
+            cell_img = crop_cell_image(table_image, read_cell, mode=mode)
+            score_result = read_score_cell_result(reader, cell_img)
+            text = score_result["text"]
+            extra_result = {
+                "score_match_percent": score_result["match_percent"],
+                "score_source": score_result["source"],
+                "score_digits": score_result["digits"],
+                "score_digit_confidences": score_result["digit_confidences"],
+            }
+        else:
+            text = read_cell_text(
+                reader,
+                table_image,
+                read_cell,
+                mode=mode
+            )
 
         cell_results.append({
             **cell,
-            "text": text
+            "text": text,
+            **extra_result
         })
         
     students = group_cells_to_students(cell_results)
@@ -546,20 +562,31 @@ def get_cell_ocr_mode(cell):
     return "text"
 
 
+def expand_score_cell(cell, cells):
+    expanded = dict(cell)
+    row = cell["row"]
+    next_col = cell["col"] + 1
+    next_cell = next(
+        (
+            item for item in cells
+            if item["row"] == row and item["col"] == next_col
+        ),
+        None
+    )
+
+    if next_cell is None:
+        return expanded
+
+    if next_cell.get("w", 0) > 80:
+        return expanded
+
+    expanded["w"] = (next_cell["x"] + next_cell["w"]) - cell["x"]
+
+    return expanded
+
+
 def read_cell_text(reader, image, cell, mode="text"):
-    x = cell["x"]
-    y = cell["y"]
-    w = cell["w"]
-    h = cell["h"]
-
-    padding = 3 if mode == "score" else 5
-
-    x1 = max(x + padding, 0)
-    y1 = max(y + padding, 0)
-    x2 = min(x + w - padding, image.shape[1])
-    y2 = min(y + h - padding, image.shape[0])
-
-    cell_img = image[y1:y2, x1:x2]
+    cell_img = crop_cell_image(image, cell, mode=mode)
 
     if cell_img.size == 0:
         return ""
@@ -582,6 +609,22 @@ def read_cell_text(reader, image, cell, mode="text"):
     )
 
     return " ".join(results).strip()
+
+
+def crop_cell_image(image, cell, mode="text"):
+    x = cell["x"]
+    y = cell["y"]
+    w = cell["w"]
+    h = cell["h"]
+
+    padding = 3 if mode == "score" else 5
+
+    x1 = max(x + padding, 0)
+    y1 = max(y + padding, 0)
+    x2 = min(x + w - padding, image.shape[1])
+    y2 = min(y + h - padding, image.shape[0])
+
+    return image[y1:y2, x1:x2]
 
 
 def read_digit_cell(reader, cell_img, min_len=1, max_len=12):
@@ -616,10 +659,17 @@ def read_digit_cell(reader, cell_img, min_len=1, max_len=12):
 
 
 def read_score_cell(reader, cell_img):
-    cnn_score = read_score_cell_with_cnn(cell_img)
+    return read_score_cell_result(reader, cell_img)["text"]
 
-    if cnn_score:
-        return cnn_score
+
+def read_score_cell_result(reader, cell_img):
+    cnn_result = read_score_cell_with_cnn(cell_img)
+
+    if cnn_result["text"]:
+        return cnn_result
+
+    if reader is None:
+        return empty_score_result()
 
     images = [
         prepare_ocr_gray(cell_img, scale=3, threshold=False),
@@ -635,6 +685,7 @@ def read_score_cell(reader, cell_img):
 
     best_text = ""
     best_score = -1
+    best_confidence = 0
 
     for text, confidence in candidates:
         score_text = normalize_score_text(text)
@@ -642,32 +693,103 @@ def read_score_cell(reader, cell_img):
         if not score_text:
             continue
 
-        score = confidence + score_value_bonus(score_text)
+        score = confidence + score_value_bonus(score_text, text)
 
         if score > best_score:
             best_score = score
             best_text = score_text
+            best_confidence = confidence
 
-    return best_text
+    if not best_text:
+        return empty_score_result(source="easyocr")
+
+    return {
+        "text": best_text,
+        "match_percent": round(best_confidence * 100, 2),
+        "source": "easyocr",
+        "digits": normalize_digits(best_text),
+        "digit_confidences": [],
+    }
 
 
 def read_score_cell_with_cnn(cell_img):
     try:
         digit_text, predictions = predict_score_from_cell(cell_img)
     except FileNotFoundError:
-        return ""
+        return empty_score_result(source="cnn")
 
     if not digit_text:
+        return empty_score_result(source="cnn")
+
+    score_text = format_cnn_score_digits(digit_text)
+
+    if not score_text:
+        return empty_score_result(
+            source="cnn",
+            digits=digit_text,
+            digit_confidences=build_digit_confidences(predictions),
+        )
+
+    return {
+        "text": score_text,
+        "match_percent": calculate_score_match_percent(predictions),
+        "source": "cnn",
+        "digits": digit_text,
+        "digit_confidences": build_digit_confidences(predictions),
+    }
+
+
+def format_cnn_score_digits(digit_text):
+    digits = normalize_digits(digit_text)
+
+    if not digits:
         return ""
 
-    average_confidence = sum(
-        item["confidence"] for item in predictions
-    ) / max(len(predictions), 1)
+    if digits in ("10", "100"):
+        return "10"
 
-    if average_confidence < 0.45:
-        return ""
+    if len(digits) == 1:
+        return digits if is_valid_score(digits) else ""
 
-    return normalize_score_text(digit_text)
+    integer_part = digits[:-1].lstrip("0") or "0"
+    decimal_part = digits[-1]
+    score_text = f"{integer_part},{decimal_part}"
+
+    return score_text if is_valid_score(score_text) else ""
+
+
+def calculate_score_match_percent(predictions):
+    confidences = [item["confidence"] for item in predictions]
+
+    if not confidences:
+        return 0
+
+    return round(sum(confidences) / len(confidences) * 100, 2)
+
+
+def build_digit_confidences(predictions):
+    return [
+        {
+            "digit": item["digit"],
+            "confidence_percent": round(item["confidence"] * 100, 2),
+            "box": item.get("box", {}),
+        }
+        for item in predictions
+    ]
+
+
+def empty_score_result(
+    source="",
+    digits="",
+    digit_confidences=None,
+):
+    return {
+        "text": "",
+        "match_percent": 0,
+        "source": source,
+        "digits": digits,
+        "digit_confidences": digit_confidences or [],
+    }
 
 
 def read_ocr_candidates(reader, images, allowlist=None):
@@ -811,11 +933,26 @@ def normalize_score_text(text):
     return normalized if is_valid_score(normalized) else ""
 
 
-def score_value_bonus(score_text):
+def score_value_bonus(score_text, original_text=""):
     if not is_valid_score(score_text):
         return -2
 
-    return 1
+    bonus = 1
+    raw_digits = normalize_digits(original_text)
+
+    if "," in score_text:
+        bonus += 1.0
+
+    if len(raw_digits) >= 2:
+        bonus += 0.3
+
+    if len(raw_digits) == 3 and raw_digits.startswith("0"):
+        bonus += 0.5
+
+    if score_text.endswith(",0") or score_text.endswith(",5"):
+        bonus += 0.3
+
+    return bonus
 
 
 def is_valid_score(score_text):
@@ -900,7 +1037,11 @@ def group_cells_to_students(cell_results):
             "student_code": student_code,
             "student_name": text_cells[0] if len(text_cells) > 0 else "",
             "class_name": text_cells[1] if len(text_cells) > 1 else "",
-            "score": score_cell.get("text", "") if score_cell else ""
+            "score": score_cell.get("text", "") if score_cell else "",
+            "score_match_percent": score_cell.get("score_match_percent", 0) if score_cell else 0,
+            "score_source": score_cell.get("score_source", "") if score_cell else "",
+            "score_digits": score_cell.get("score_digits", "") if score_cell else "",
+            "score_digit_confidences": score_cell.get("score_digit_confidences", []) if score_cell else []
         })
 
     return students
