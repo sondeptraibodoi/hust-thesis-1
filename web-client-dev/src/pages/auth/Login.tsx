@@ -80,20 +80,6 @@ const Login: FC = () => {
               </Button>
             </Form.Item>
           </Form>
-          <Button
-            className="set-height"
-            type="primary"
-            style={{ marginBottom: "12px" }}
-            block
-            icon={<BsMicrosoftTeams style={{ fontSize: "130%" }} />}
-            onClick={async () => {
-              const res = await sdk.get("auth/getMicrosoftLoginUrl");
-              const url = res.data.data;
-              window.location.href = url;
-            }}
-          >
-            {t("action.microsoft")}
-          </Button>
           <p style={{ textAlign: "center", paddingTop: "5px" }}>
             <a href="quen-mat-khau">{t("action.forgot_pass")}</a>
           </p>

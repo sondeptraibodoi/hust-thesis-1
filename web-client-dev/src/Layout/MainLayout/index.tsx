@@ -63,22 +63,15 @@ const AdminLayout: React.FC<any> = () => {
     }
   });
   useCheckCapNhatCode();
-  const { currentUser } = useAppSelector((state: RootState) => state.auth);
-
-  const location = useLocation();
 
   // Nếu là trang login hoặc trang quen-mat-khau → ẩn FloatButton
-  const hideFloatButton = ["/login", "/quen-mat-khau", "/doi-mat-khau"].some((path) =>
-    location.pathname.includes(path)
-  );
-  const linkChatbox = `http://192.168.81.141:${currentUser?.vai_tro === 'sinh_vien' ? 8052 :8051}/`;
   return (
     <ConfigProvider theme={THEME_CONFIG}>
       <div className="wrapper">
         <div className="header">
           <AdminHeader />
         </div>
-         {!hideFloatButton && (<FloatButton onClick={() => window.open(linkChatbox, '_blank')} tooltip="Chatbox" icon={<QuestionCircleOutlined size={40}/>} type="primary" style={{ insetInlineEnd: 24, marginBottom: 200 }} />)}
+
         <ConfigProvider theme={LAYOUT_CONFIG}>
           <div className="relative">
             <HeaderSticky>
