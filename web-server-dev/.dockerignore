@@ -29,6 +29,7 @@ phpunit.txt
 .phpunit.result.cache
 public/static
 *.lock
+!composer.lock
 storage/*
 !storage/static
 !storage/app/data/*

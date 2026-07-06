@@ -1,0 +1,132 @@
+name: hust-thesis
+
+services:
+  db:
+    image: postgis/postgis:15-3.4
+    container_name: hust-thesis-db
+    environment:
+      POSTGRES_DB: sohoa
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sohoa"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    container_name: hust-thesis-redis
+    command: ["redis-server", "--requirepass", "secret"]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "secret", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./web-server-dev
+      dockerfile: Dockerfile.dev
+    container_name: hust-thesis-backend
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      LOG_CHANNEL: daily
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: sohoa
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
+      BROADCAST_DRIVER: log
+      CACHE_DRIVER: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      REDIS_PASSWORD: secret
+      REDIS_PORT: 6379
+      DETEX_API: http://ai:8000/
+      RUN_MIGRATIONS: "true"
+      RUN_SEEDERS: "false"
+    ports:
+      - "8000:80"
+    volumes:
+      - ./web-server-dev:/var/www/web-server
+      - backend_vendor:/var/www/web-server/vendor
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  backend-worker:
+    build:
+      context: ./web-server-dev
+      dockerfile: Dockerfile.dev
+    container_name: hust-thesis-backend-worker
+    command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--timeout=0"]
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: sohoa
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
+      CACHE_DRIVER: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      REDIS_PASSWORD: secret
+      REDIS_PORT: 6379
+      RUN_MIGRATIONS: "false"
+      RUN_SEEDERS: "false"
+    volumes:
+      - ./web-server-dev:/var/www/web-server
+      - backend_vendor:/var/www/web-server/vendor
+    depends_on:
+      backend:
+        condition: service_started
+
+  client:
+    build:
+      context: ./web-client-dev
+      dockerfile: Dockerfile.dev
+    container_name: hust-thesis-client
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web-client-dev:/app
+      - client_node_modules:/app/node_modules
+    depends_on:
+      backend:
+        condition: service_started
+
+  ai:
+    build:
+      context: ./web-ai-dev/handwriting-api
+      dockerfile: Dockerfile
+    container_name: hust-thesis-ai
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./web-ai-dev/handwriting-api:/app
+
+volumes:
+  postgres_data:
+  backend_vendor:
+  client_node_modules:

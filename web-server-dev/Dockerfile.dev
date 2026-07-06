@@ -1,0 +1,56 @@
+FROM php:8.2-apache
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    default-jdk \
+    default-jre \
+    g++ \
+    gdal-bin \
+    git \
+    libcurl4-openssl-dev \
+    libfreetype6-dev \
+    libicu-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libpq-dev \
+    libzip-dev \
+    p7zip-full \
+    pdftk-java \
+    pkg-config \
+    postgresql-client \
+    supervisor \
+    unzip \
+    zip \
+  && docker-php-ext-configure gd --with-freetype --with-jpeg \
+  && docker-php-ext-install -j"$(nproc)" \
+    bcmath \
+    exif \
+    gd \
+    intl \
+    opcache \
+    pcntl \
+    pdo \
+    pdo_pgsql \
+    pgsql \
+    zip \
+  && pecl install --force redis \
+  && docker-php-ext-enable exif redis \
+  && a2enmod rewrite \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+
+COPY apache.conf /etc/apache2/sites-enabled/000-default.conf
+COPY php/php.ini /usr/local/etc/php/php.ini
+COPY docker/entrypoint.dev.sh /usr/local/bin/docker-entrypoint-dev
+
+RUN chmod +x /usr/local/bin/docker-entrypoint-dev
+
+WORKDIR /var/www/web-server
+
+EXPOSE 80
+
+ENTRYPOINT ["docker-entrypoint-dev"]
+CMD ["apache2-foreground"]

@@ -10,7 +10,7 @@ const Footer = () => {
         />
         <div className="text-right">
           <div>Bản quyền thuộc về Khoa Điện tử viễn thông, Đại học Bách khoa Hà Nội</div>
-          <div>Đồ án 1</div>
+          <div>Đồ án tốt nghiệp</div>
         </div>
       </div>
     </div>
