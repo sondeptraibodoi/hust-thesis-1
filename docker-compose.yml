@@ -4,6 +4,8 @@ services:
   db:
     image: postgis/postgis:15-3.4
     container_name: hust-thesis-db
+    profiles:
+      - docker-db
     environment:
       POSTGRES_DB: sohoa
       POSTGRES_USER: postgres
@@ -41,11 +43,11 @@ services:
       APP_URL: http://localhost:8000
       LOG_CHANNEL: daily
       DB_CONNECTION: pgsql
-      DB_HOST: db
+      DB_HOST: host.docker.internal
       DB_PORT: 5432
-      DB_DATABASE: sohoa
+      DB_DATABASE: hust
       DB_USERNAME: postgres
-      DB_PASSWORD: secret
+      DB_PASSWORD: "12345678"
       BROADCAST_DRIVER: log
       CACHE_DRIVER: redis
       QUEUE_CONNECTION: redis
@@ -56,15 +58,15 @@ services:
       REDIS_PORT: 6379
       DETEX_API: http://ai:8000/
       RUN_MIGRATIONS: "true"
-      RUN_SEEDERS: "false"
+      RUN_SEEDERS: "auto"
     ports:
       - "8000:80"
     volumes:
       - ./web-server-dev:/var/www/web-server
       - backend_vendor:/var/www/web-server/vendor
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
-      db:
-        condition: service_healthy
       redis:
         condition: service_healthy
 
@@ -78,11 +80,11 @@ services:
       APP_ENV: local
       APP_DEBUG: "true"
       DB_CONNECTION: pgsql
-      DB_HOST: db
+      DB_HOST: host.docker.internal
       DB_PORT: 5432
-      DB_DATABASE: sohoa
+      DB_DATABASE: hust
       DB_USERNAME: postgres
-      DB_PASSWORD: secret
+      DB_PASSWORD: "12345678"
       CACHE_DRIVER: redis
       QUEUE_CONNECTION: redis
       SESSION_DRIVER: redis
@@ -95,6 +97,8 @@ services:
     volumes:
       - ./web-server-dev:/var/www/web-server
       - backend_vendor:/var/www/web-server/vendor
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       backend:
         condition: service_started

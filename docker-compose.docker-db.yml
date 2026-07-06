@@ -1,0 +1,17 @@
+services:
+  backend:
+    environment:
+      DB_HOST: db
+      DB_DATABASE: sohoa
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend-worker:
+    environment:
+      DB_HOST: db
+      DB_DATABASE: sohoa
+      DB_USERNAME: postgres
+      DB_PASSWORD: secret
