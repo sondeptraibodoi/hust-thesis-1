@@ -12,6 +12,7 @@ const DeThiForm = lazy(() => import("@/pages/giao-vien/de-thi/form"));
 const PhanCongPage = lazy(() => import("@/pages/system/phan-cong"));
 const LopPage = lazy(() => import("@/pages/system/lop"));
 const LopForm = lazy(() => import("@/pages/system/lop/form"))
+const AcademicPage = lazy(() => import("@/pages/academic"));
 //giao vien
 // admin đã bao gồm cả quyền trợ lý, nên không cần thêm router của trợ lý vào
 
@@ -82,6 +83,15 @@ export const AdminRoute: RouteObject[] = [
   {
     path: "thong-ke",
     element: <ChartPage />
+  },
+  {
+    path: "hoc-vu",
+    element: (
+      <>
+        <PageTitle title="Học vụ" />
+        <AcademicPage />
+      </>
+    )
   },
   {
     path: "lop",

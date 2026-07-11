@@ -8,6 +8,7 @@ const DethiPage = lazy(() => import("@/pages/giao-vien/de-thi"));
 const DeThiForm = lazy(() => import("@/pages/giao-vien/de-thi/form"));
 const LopPage = lazy(() => import("@/pages/system/lop"));
 const LopForm = lazy(() => import("@/pages/system/lop/form"))
+const AcademicPage = lazy(() => import("@/pages/academic"));
 
 export const TeacherRoute: RouteObject[] = [
   {
@@ -64,6 +65,24 @@ export const TeacherRoute: RouteObject[] = [
         )
       }
     ]
+  },
+  {
+    path: "hoc-vu",
+    element: (
+      <>
+        <PageTitle title="Học vụ" />
+        <AcademicPage />
+      </>
+    )
+  },
+  {
+    path: "chu-nhiem",
+    element: (
+      <>
+        <PageTitle title="Chủ nhiệm" />
+        <AcademicPage />
+      </>
+    )
   },
   {
     path: "lop-phu-trach",

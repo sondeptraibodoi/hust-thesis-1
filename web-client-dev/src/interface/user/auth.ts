@@ -1,10 +1,9 @@
 import { User } from "./user";
 
 export function createAuthUser(user: User): AuthUser {
-  const roles = user.vai_tro || [];
   return {
     ...user,
-    role_code: roles[0]
+    role_code: user.vai_tro
   };
 }
 export interface AuthUser extends User {
@@ -14,6 +13,5 @@ export function checkUserRoleAllow(user: User, role: string) {
   return user.vai_tro === role
 }
 export function checkUserRoleAllowMultiple(user: User, roles: string[]) {
-  const auth_roles = user.vai_tro || [];
-  return roles.some((role) => auth_roles.includes(role));
+  return roles.some((role) => user.vai_tro === role);
 }

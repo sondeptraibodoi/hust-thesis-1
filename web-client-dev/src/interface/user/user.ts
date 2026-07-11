@@ -71,6 +71,8 @@ export enum ROLE {
   student = "sinh_vien",
   admin = "admin",
   teacher = "giang_vien",
+  subject_teacher = "giao_vien_bo_mon",
+  homeroom_teacher = "giao_vien_chu_nhiem",
   assistant = "assistant",
   hp_assistant = "hp_assistant",
   hp_office = "hp_office"

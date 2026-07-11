@@ -14,7 +14,7 @@ export const PrivateRoute: FC<{
   role?: ROLE;
   roles?: ROLE[];
   element: React.ReactNode;
-}> = ({ element, role }) => {
+}> = ({ element, role, roles }) => {
   const { logged, currentUser, loadingInfo } = useAppSelector((state: RootState) => state.auth);
 
   if (!logged) {
@@ -27,6 +27,9 @@ export const PrivateRoute: FC<{
     return <Page404 />;
   }
   if (role && !checkUserRoleAllow(currentUser, role)) {
+    return <Page404 />;
+  }
+  if (roles && !roles.some((item) => checkUserRoleAllow(currentUser, item))) {
     return <Page404 />;
   }
   if (!currentUser) {
@@ -44,8 +47,10 @@ export const GuestOnlyRoute: FC<RouteProps> = (props) => {
   }
   if (checkUserRoleAllow(currentUser, ROLE_CODE.ADMIN)) {
     return <Navigate to={getPrefix() + "/tai-khoan"} />;
-  } else if (checkUserRoleAllow(currentUser, ROLE_CODE.TEACHER)) {
+  } else if (checkUserRoleAllow(currentUser, ROLE_CODE.TEACHER) || checkUserRoleAllow(currentUser, ROLE_CODE.SUBJECT_TEACHER)) {
     return <Navigate to={getPrefix() + "/mon-hoc"} />;
+  } else if (checkUserRoleAllow(currentUser, ROLE_CODE.HOMEROOM_TEACHER)) {
+    return <Navigate to={getPrefix() + "/chu-nhiem"} />;
   } else if (checkUserRoleAllow(currentUser, ROLE_CODE.STUDENT)) {
     return <Navigate to={getPrefix() + "/sinh-vien/mon-hoc"} />;
   } else if (checkUserRoleAllow(currentUser, ROLE_CODE.ASSISTANT)) {

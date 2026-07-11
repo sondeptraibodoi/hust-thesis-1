@@ -159,4 +159,14 @@ class LopController extends Controller
             'de_thi' => $deThis,
         ]);
     }
+
+    public function cacheLopThiMon($id)
+    {
+        return $this->responseSuccess(
+            LopThi::query()
+                ->with('monHoc')
+                ->where('mon_hoc_id', $id)
+                ->get()
+        );
+    }
 }

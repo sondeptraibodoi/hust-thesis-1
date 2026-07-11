@@ -8,6 +8,8 @@ export function getPrefix() {
 }
 export const ROLE_CODE = {
   TEACHER: "giang_vien",
+  SUBJECT_TEACHER: "giao_vien_bo_mon",
+  HOMEROOM_TEACHER: "giao_vien_chu_nhiem",
   ADMIN: "admin",
   STUDENT: "sinh_vien",
   ASSISTANT: "assistant",

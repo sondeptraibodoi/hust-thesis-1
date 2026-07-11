@@ -1,13 +1,11 @@
 
 <?php
 use App\Http\Controllers\Api\CacheController;
-use App\Http\Controllers\Api\GiaoVien\GiaoVienController;
+use App\Http\Controllers\Api\DoAn\GiaoVienController;
+use App\Http\Controllers\Api\DoAn\LopController as LopHocController;
+use App\Http\Controllers\Api\DoAn\LopController as LopThiController;
 use App\Http\Controllers\Api\User\SinhVienController;
-use App\Http\Controllers\Api\Lop\LopHocController;
-use App\Http\Controllers\Api\KiHocController;
 use App\Http\Controllers\Api\Lop\GiaoVienLopController;
-use App\Http\Controllers\Api\Lop\LopThiController;
-use App\Http\Controllers\Api\PhucKhao\PhucKhaoStudentController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(["prefix" => "cache"], function () {
@@ -25,4 +23,3 @@ Route::group(["prefix" => "cache"], function () {
     });
     Route::get("lop-ma-hps", [GiaoVienLopController::class, "getMaHp"]);
 });
-

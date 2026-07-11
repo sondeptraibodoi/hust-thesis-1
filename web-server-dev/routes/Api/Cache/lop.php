@@ -1,8 +1,8 @@
 <?php
 
 use App\Constants\RoleCode;
-use App\Http\Controllers\Api\Lop\LopHocController;
-use App\Http\Controllers\Api\Lop\LopThiController;
+use App\Http\Controllers\Api\DoAn\LopController as LopHocController;
+use App\Http\Controllers\Api\DoAn\LopController as LopThiController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(["prefix" => "cache", "middleware" => "auth:sanctum"], function () {

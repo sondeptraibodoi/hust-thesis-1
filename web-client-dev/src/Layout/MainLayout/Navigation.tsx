@@ -29,6 +29,10 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
       key: "lop"
     },
     {
+      label: "Học vụ",
+      key: "hoc-vu"
+    },
+    {
       label: "Thống kê",
       key: "thong-ke"
     },
@@ -200,9 +204,33 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
       ]
     },
     {
+      label: "Học vụ",
+      key: "hoc-vu"
+    },
+    {
       label: "Lớp",
       key: "lop-phu-trach"
     },
+  ],
+  [ROLE_CODE.SUBJECT_TEACHER]: [
+    {
+      label: "Môn học",
+      key: "mon-hoc"
+    },
+    {
+      label: "Học vụ",
+      key: "hoc-vu"
+    }
+  ],
+  [ROLE_CODE.HOMEROOM_TEACHER]: [
+    {
+      label: "Chủ nhiệm",
+      key: "chu-nhiem"
+    },
+    {
+      label: "Học vụ",
+      key: "hoc-vu"
+    }
   ],
   [ROLE_CODE.STUDENT]: [
     {
@@ -213,6 +241,10 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
     {
       label: "Điểm thi",
       key: "diem-sinh-vien"
+    },
+    {
+      label: "Học vụ",
+      key: "hoc-vu"
     },
     {
       label: "Lớp",

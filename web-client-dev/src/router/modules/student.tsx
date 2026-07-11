@@ -11,6 +11,7 @@ const DanhGiaPage = lazy(() => import("@/pages/sinh-vien/danh-gia-nang-luc"));
 const FormKiemTra = lazy(() => import("@/pages/sinh-vien/kiem-tra/form"));
 const FormDetailDiem = lazy(() => import("@/pages/sinh-vien/bang-diem/detail"))
 const LopPage = lazy(() => import("@/pages/system/lop"));
+const AcademicPage = lazy(() => import("@/pages/academic"));
 
 export const StudentRoute = [
   {
@@ -80,6 +81,15 @@ export const StudentRoute = [
         )
       }
     ]
+  },
+  {
+    path: "hoc-vu",
+    element: (
+      <>
+        <PageTitle title="Học vụ" />
+        <AcademicPage />
+      </>
+    )
   },
   {
     path: "lop-hoc",
