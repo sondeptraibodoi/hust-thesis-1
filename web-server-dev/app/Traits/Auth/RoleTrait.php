@@ -13,11 +13,11 @@ trait RoleTrait
     }
     public function isTeacher()
     {
-        return $this->is_giao_vien;
+        return in_array($this->vai_tro, RoleCode::TEACHER_ROLES, true);
     }
     public function isStudent()
     {
-        return $this->is_sinh_vien;
+        return $this->vai_tro === RoleCode::STUDENT;
     }
     public function isAdmin()
     {
@@ -26,6 +26,9 @@ trait RoleTrait
     public function allow($code)
     {
         if ($this->isAdmin()) {
+            return true;
+        }
+        if ($code === RoleCode::TEACHER && $this->isTeacher()) {
             return true;
         }
         return in_array($code, $this->roles);

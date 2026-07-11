@@ -61,6 +61,21 @@ class User extends Authenticatable
         return $this->username == "administrator";
     }
 
+    public function getRoleCodeAttribute()
+    {
+        return $this->vai_tro;
+    }
+
+    public function getIsGiaoVienAttribute()
+    {
+        return in_array($this->vai_tro, RoleCode::TEACHER_ROLES, true);
+    }
+
+    public function getIsSinhVienAttribute()
+    {
+        return $this->vai_tro === RoleCode::STUDENT;
+    }
+
     public function sinhVien()
     {
         return $this->hasOne(SinhVien::class, 'nguoi_dung_id');
@@ -78,7 +93,7 @@ class User extends Authenticatable
                 return $this->sinhVien;
             }
 
-            if ($this->vai_tro === RoleCode::TEACHER) {
+            if (in_array($this->vai_tro, RoleCode::TEACHER_ROLES, true)) {
                 return $this->giaoVien;
             }
 

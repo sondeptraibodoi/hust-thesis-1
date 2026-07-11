@@ -46,6 +46,24 @@ class CreateTestDataSeeder extends Seeder
                 'ho_ten' => 'Giáo Viên'
             ],
             [
+                "username" => "giaovien.bomon@hust.com",
+                "mat_khau" => bcrypt("12345678"),
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now(),
+                "vai_tro" => RoleCode::SUBJECT_TEACHER,
+                "email" => "giaovien.bomon@hust.com",
+                'ho_ten' => 'Giao vien bo mon'
+            ],
+            [
+                "username" => "giaovien.chunhiem@hust.com",
+                "mat_khau" => bcrypt("12345678"),
+                "created_at" => Carbon::now(),
+                "updated_at" => Carbon::now(),
+                "vai_tro" => RoleCode::HOMEROOM_TEACHER,
+                "email" => "giaovien.chunhiem@hust.com",
+                'ho_ten' => 'Giao vien chu nhiem'
+            ],
+            [
                 "username" => "student@hust.com",
                 "mat_khau" => bcrypt("12345678"),
                 "created_at" => Carbon::now(),
@@ -110,7 +128,7 @@ class CreateTestDataSeeder extends Seeder
                         'email' => $user['email'],
                     ]);
                 }
-                if($user['vai_tro'] === RoleCode::TEACHER) {
+                if(in_array($user['vai_tro'], RoleCode::TEACHER_ROLES, true)) {
                     GiaoVien::create([
                         'nguoi_dung_id' => $check->id,
                         'ho_ten' => $user['ho_ten'],

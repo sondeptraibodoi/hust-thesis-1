@@ -17,7 +17,7 @@ class LopController extends Controller
     {
         $user = $request->user();
         $query = LopThi::query()->with(['monHoc']);
-        if($user->vai_tro === RoleCode::TEACHER) {
+        if($user->isTeacher()) {
             $query->whereHas('giaoViens', function ($q) use ($user) {
                 $q->where('giao_vien_id', $user->giaoVien->id);
             });

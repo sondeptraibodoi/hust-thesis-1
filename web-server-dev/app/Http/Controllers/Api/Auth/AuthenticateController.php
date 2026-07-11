@@ -108,7 +108,7 @@ class AuthenticateController extends Controller
                 'vai_tro' => $role,
                 'active' => true
             ]);
-            if($role = RoleCode::STUDENT) {
+            if($role === RoleCode::STUDENT) {
                 ModelsSinhVien::create([
                     'nguoi_dung_id' => $user->id,
                     'mssv' => substr($userProfile->getDisplayName(), strrpos($userProfile->getDisplayName(), ' ') + 1),
@@ -116,7 +116,7 @@ class AuthenticateController extends Controller
                     'email' => $mail,
                 ]);
             }
-            if($role = RoleCode::TEACHER) {
+            if(in_array($role, RoleCode::TEACHER_ROLES, true)) {
                 ModelsGiaoVien::create([
                     'ho_ten' => $name,
                     'email' => $mail,

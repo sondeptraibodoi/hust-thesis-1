@@ -55,7 +55,7 @@ class AdminSinhVienController extends Controller
                 'nguoi_dung_id' => $user->id,
             ]);
         }
-        if($query['vai_tro'] === RoleCode::TEACHER) {
+        if(in_array($query['vai_tro'], RoleCode::TEACHER_ROLES, true)) {
             GiaoVien::create([
                 'ho_ten' => $query['ho_ten'],
                 'email' => $query['email'],
@@ -89,7 +89,7 @@ class AdminSinhVienController extends Controller
         if ($oldVaiTro === RoleCode::STUDENT) {
             SinhVien::where('nguoi_dung_id', $user->id)->delete();
         }
-        if ($oldVaiTro === RoleCode::TEACHER) {
+        if (in_array($oldVaiTro, RoleCode::TEACHER_ROLES, true)) {
             GiaoVien::where('nguoi_dung_id', $user->id)->delete();
         }
     }
@@ -106,7 +106,7 @@ class AdminSinhVienController extends Controller
         );
     }
 
-    if ($request->vai_tro === RoleCode::TEACHER) {
+    if (in_array($request->vai_tro, RoleCode::TEACHER_ROLES, true)) {
         GiaoVien::updateOrCreate(
             ['nguoi_dung_id' => $user->id],
             [
