@@ -509,9 +509,12 @@ const ChuNhiemTab = () => {
       <TableFrame>
         <BaseTable key={keyRender} columns={columns} api={academicApi.chuNhiem.sinhVien} />
       </TableFrame>
-      <Drawer title="Tổng quan học vụ" open={!!detail} onClose={() => setDetail(undefined)} width={720} loading={loading}>
-        <StudentOverview data={detail} />
-      </Drawer>
+      <StudentOverviewModal
+        open={!!detail}
+        loading={loading}
+        data={detail}
+        onClose={() => setDetail(undefined)}
+      />
     </>
   );
 };
@@ -598,9 +601,12 @@ const LopHanhChinhStudentsDrawer: FC<{ data?: any; onClose: () => void }> = ({ d
           setKeyRender(Math.random());
         }}
       />
-      <Drawer title="Tổng quan học vụ" open={!!detail} onClose={() => setDetail(undefined)} width={720} loading={loading}>
-        <StudentOverview data={detail} />
-      </Drawer>
+      <StudentOverviewModal
+        open={!!detail}
+        loading={loading}
+        data={detail}
+        onClose={() => setDetail(undefined)}
+      />
     </>
   );
 };
@@ -1271,43 +1277,125 @@ const CauHinhModal: FC<{ open: boolean; data?: any; onClose: () => void; onDone:
   );
 };
 
+const StudentOverviewModal: FC<{ open: boolean; loading?: boolean; data?: any; onClose: () => void }> = ({
+  open,
+  loading,
+  data,
+  onClose,
+}) => (
+  <Modal
+    centered
+    open={open}
+    title="Tổng quan học vụ"
+    onCancel={onClose}
+    footer={null}
+    width="min(1120px, calc(100vw - 32px))"
+  >
+    {loading ? <div className="py-10 text-center text-[#6b7280]">Đang tải...</div> : <StudentOverview data={data} />}
+  </Modal>
+);
+
 const StudentOverview: FC<{ data?: any }> = ({ data }) => {
   if (!data) return null;
 
-  const renderTags = (items: any[], color: string) => (
-    <Space wrap>
-      {(items || []).map((item: any) => (
-        <Tag key={item.id || item.mon_hoc?.id} color={color}>
-          {item.lop_hoc_phan?.mon_hoc?.ten_mon_hoc || item.ten_mon_hoc || item.mon_hoc?.ten_mon_hoc}
-        </Tag>
-      ))}
-    </Space>
-  );
-
   return (
     <Space direction="vertical" className="w-full" size="middle">
-      <Descriptions bordered size="small" column={1}>
+      <Descriptions bordered size="small" column={{ xs: 1, sm: 2, md: 3 }}>
         <Descriptions.Item label="Sinh viên">{data.sinh_vien?.ho_ten}</Descriptions.Item>
         <Descriptions.Item label="MSSV">{data.sinh_vien?.mssv}</Descriptions.Item>
         <Descriptions.Item label="Lớp">{data.sinh_vien?.lop_hanh_chinh?.ten_lop}</Descriptions.Item>
       </Descriptions>
-      <div>
-        <b>Môn đang học</b>
-        <div className="mt-2">{renderTags(data.mon_dang_hoc, "blue")}</div>
-      </div>
-      <div>
-        <b>Môn đã qua</b>
-        <div className="mt-2">{renderTags(data.mon_da_qua, "green")}</div>
-      </div>
-      <div>
-        <b>Môn bị trượt</b>
-        <div className="mt-2">{renderTags(data.mon_bi_truot, "red")}</div>
-      </div>
-      <div>
-        <b>Môn còn nợ</b>
-        <div className="mt-2">{renderTags(data.mon_con_no, "gold")}</div>
-      </div>
+      <Tabs
+        tabBarGutter={24}
+        className="[&_.ant-tabs-nav]:mb-3 [&_.ant-tabs-nav-wrap]:overflow-x-auto [&_.ant-tabs-nav-list]:min-w-max"
+        items={[
+          {
+            key: "dang-hoc",
+            label: <OverviewTabLabel title="Môn đang học" count={data.mon_dang_hoc?.length || 0} color="blue" />,
+            children: <OverviewSubjectTable items={data.mon_dang_hoc} />,
+          },
+          {
+            key: "da-qua",
+            label: <OverviewTabLabel title="Môn đã qua" count={data.mon_da_qua?.length || 0} color="green" />,
+            children: <OverviewSubjectTable items={data.mon_da_qua} />,
+          },
+          {
+            key: "bi-truot",
+            label: <OverviewTabLabel title="Môn bị trượt" count={data.mon_bi_truot?.length || 0} color="red" />,
+            children: <OverviewSubjectTable items={data.mon_bi_truot} />,
+          },
+          {
+            key: "con-no",
+            label: <OverviewTabLabel title="Môn còn nợ" count={data.mon_con_no?.length || 0} color="gold" />,
+            children: <OverviewSubjectTable items={data.mon_con_no} />,
+          },
+        ]}
+      />
     </Space>
+  );
+};
+
+const OverviewTabLabel: FC<{ title: string; count: number; color: string }> = ({ title, count, color }) => (
+  <Space size={6}>
+    <span>{title}</span>
+    <Tag color={color} className="m-0">
+      {count}
+    </Tag>
+  </Space>
+);
+
+const OverviewSubjectTable: FC<{ items?: any[] }> = ({ items = [] }) => {
+  const rows = items.map((item, index) => {
+    const lopHocPhan = item.lop_hoc_phan;
+    const monHoc = item.mon_hoc || lopHocPhan?.mon_hoc || item;
+    const hocKy = item.hoc_ky || lopHocPhan?.hoc_ky;
+
+    return {
+      id: item.id || item.dang_ky_id || monHoc?.id || index,
+      ma_mon: monHoc?.ma,
+      ten_mon_hoc: monHoc?.ten_mon_hoc,
+      lop_hoc_phan: lopHocPhan?.ma_lop_hoc_phan || lopHocPhan?.ten_lop_hoc_phan,
+      hoc_ky: hocKy?.ten_hoc_ky,
+      diem_tong_ket: item.diem_tong_ket,
+      ket_qua: item.ket_qua,
+      trang_thai: item.trang_thai,
+    };
+  });
+
+  const columns: ColDef[] = [
+    { headerName: "Mã môn", field: "ma_mon", width: 120 },
+    { headerName: "Môn học", field: "ten_mon_hoc", flex: 1, minWidth: 180 },
+    { headerName: "Lớp học phần", field: "lop_hoc_phan", width: 150 },
+    { headerName: "Kỳ học", field: "hoc_ky", width: 150 },
+    { headerName: "Điểm tổng kết", field: "diem_tong_ket", width: 140 },
+    { headerName: "Kết quả", field: "ket_qua", width: 130, cellRenderer: (p: any) => <StatusTag value={p.value} /> },
+    { headerName: "Trạng thái", field: "trang_thai", width: 140, cellRenderer: (p: any) => <StatusTag value={p.value} /> },
+  ];
+
+  return (
+    <div>
+      <div style={{ height: rows.length ? Math.min(420, 112 + rows.length * 42) : 220 }} className="w-full">
+        <BaseTable
+          key={`overview-${rows.length}`}
+          columns={columns}
+          api={async () =>
+            ({
+              data: {
+                list: rows,
+                pagination: {
+                  count: rows.length,
+                  hasMoreItems: false,
+                  itemsPerPage: rows.length || 10,
+                  page: 1,
+                  total: rows.length,
+                  totalPage: 1,
+                },
+              },
+            }) as any
+          }
+        />
+      </div>
+    </div>
   );
 };
 
