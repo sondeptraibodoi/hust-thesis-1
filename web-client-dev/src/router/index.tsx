@@ -89,7 +89,7 @@ const routeList: RouteObject[] = [
       },
       {
         path: "",
-        element: <WrapperRouteComponent element={<Outlet />} auth roles={[ROLE.teacher, ROLE.subject_teacher, ROLE.homeroom_teacher]} />,
+        element: <WrapperRouteComponent element={<Outlet />} auth role={ROLE.teacher} />,
         children: TeacherRoute
       },
       {

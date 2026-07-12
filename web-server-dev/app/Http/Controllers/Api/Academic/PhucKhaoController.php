@@ -21,20 +21,25 @@ class PhucKhaoController extends Controller
             $query->where('sinh_vien_id', optional($user->sinhVien)->id);
         }
 
-        if ($user->isTeacher() && $user->vai_tro !== RoleCode::HOMEROOM_TEACHER) {
-            $query->whereHas('lopHocPhan', function ($q) use ($user) {
-                $q->where('giao_vien_bo_mon_id', optional($user->giaoVien)->id);
-            });
-        }
-
-        if ($user->vai_tro === RoleCode::HOMEROOM_TEACHER) {
-            $query->whereHas('sinhVien.lopHanhChinh', function ($q) use ($user) {
-                $q->where('giao_vien_chu_nhiem_id', optional($user->giaoVien)->id);
+        if ($user->isTeacher()) {
+            $giaoVienId = optional($user->giaoVien)->id;
+            $query->where(function ($teacherQuery) use ($giaoVienId) {
+                $teacherQuery
+                    ->whereHas('lopHocPhan', function ($q) use ($giaoVienId) {
+                        $q->where('giao_vien_bo_mon_id', $giaoVienId);
+                    })
+                    ->orWhereHas('sinhVien.lopHanhChinh', function ($q) use ($giaoVienId) {
+                        $q->where('giao_vien_chu_nhiem_id', $giaoVienId);
+                    });
             });
         }
 
         if ($request->filled('trang_thai')) {
             $query->where('trang_thai', $request->trang_thai);
+        }
+
+        if ($request->filled('lop_hoc_phan_id')) {
+            $query->where('lop_hoc_phan_id', $request->lop_hoc_phan_id);
         }
 
         return $this->responseSuccess($query->latest()->paginate($request->get('per_page', 20)));

@@ -22,13 +22,14 @@ class LopHocPhanController extends Controller
             $query->where('mon_hoc_id', $request->mon_hoc_id);
         }
 
-        if ($user->isTeacher() && $user->vai_tro !== RoleCode::HOMEROOM_TEACHER) {
-            $query->where('giao_vien_bo_mon_id', optional($user->giaoVien)->id);
-        }
-
-        if ($user->vai_tro === RoleCode::HOMEROOM_TEACHER) {
-            $query->whereHas('dangKyMonHocs.sinhVien.lopHanhChinh', function ($q) use ($user) {
-                $q->where('giao_vien_chu_nhiem_id', optional($user->giaoVien)->id);
+        if ($user->isTeacher()) {
+            $giaoVienId = optional($user->giaoVien)->id;
+            $query->where(function ($teacherQuery) use ($giaoVienId) {
+                $teacherQuery
+                    ->where('giao_vien_bo_mon_id', $giaoVienId)
+                    ->orWhereHas('dangKyMonHocs.sinhVien.lopHanhChinh', function ($q) use ($giaoVienId) {
+                        $q->where('giao_vien_chu_nhiem_id', $giaoVienId);
+                    });
             });
         }
 
@@ -125,7 +126,7 @@ class LopHocPhanController extends Controller
             return;
         }
 
-        if ($user->vai_tro === RoleCode::HOMEROOM_TEACHER && $lopHocPhan->dangKyMonHocs()->whereHas('sinhVien.lopHanhChinh', function ($q) use ($user) {
+        if ($user->isTeacher() && $lopHocPhan->dangKyMonHocs()->whereHas('sinhVien.lopHanhChinh', function ($q) use ($user) {
             $q->where('giao_vien_chu_nhiem_id', optional($user->giaoVien)->id);
         })->exists()) {
             return;

@@ -2,69 +2,12 @@ import PageTitle from "@/Layout/PageTitle";
 import { lazy } from "react";
 import { Navigate, RouteObject } from "react-router-dom";
 
-const MonHocPage = lazy(() => import("@/pages/sinh-vien/mon-hoc"));
-const CauHoiPage = lazy(() => import("@/pages/giao-vien/cau-hoi"))
-const DethiPage = lazy(() => import("@/pages/giao-vien/de-thi"));
-const DeThiForm = lazy(() => import("@/pages/giao-vien/de-thi/form"));
-const LopPage = lazy(() => import("@/pages/system/lop"));
-const LopForm = lazy(() => import("@/pages/system/lop/form"))
 const AcademicPage = lazy(() => import("@/pages/academic"));
 
 export const TeacherRoute: RouteObject[] = [
   {
     path: "",
-    element: <Navigate to="mon-hoc" />
-  },
-  {
-    path: "mon-hoc",
-    children: [
-      {
-        path: "",
-        index: true,
-        element: (
-          <>
-            <PageTitle title="Môn học" />
-            <MonHocPage />
-          </>
-        )
-      },
-      {
-        path: ":id/cau-hoi",
-        element: (
-          <>
-            <PageTitle title="Câu hỏi" />
-            <CauHoiPage />
-          </>
-        )
-      },
-      {
-        path: ":id/de-thi",
-        element: (
-          <>
-            <PageTitle title="Đề thi" />
-            <DethiPage />
-          </>
-        )
-      },
-      {
-        path: ":id/de-thi/tao-moi",
-        element: (
-          <>
-            <PageTitle title="Đề thi" />
-            <DeThiForm type="create"/>
-          </>
-        )
-      },
-      {
-        path: ":id/de-thi/:dethi",
-        element: (
-          <>
-            <PageTitle title="Đề thi" />
-            <DeThiForm type="update"/>
-          </>
-        )
-      }
-    ]
+    element: <Navigate to="hoc-vu" />
   },
   {
     path: "hoc-vu",
@@ -74,48 +17,5 @@ export const TeacherRoute: RouteObject[] = [
         <AcademicPage />
       </>
     )
-  },
-  {
-    path: "chu-nhiem",
-    element: (
-      <>
-        <PageTitle title="Chủ nhiệm" />
-        <AcademicPage />
-      </>
-    )
-  },
-  {
-    path: "lop-phu-trach",
-    children: [
-      {
-        path: "",
-        index: true,
-        element: (
-          <>
-            <PageTitle title="Lớp học" />
-            <LopPage />
-          </>
-        )
-      },
-      {
-        path: ":id",
-        index: true,
-        element: (
-          <>
-            <PageTitle title="Chi tiết" />
-            <LopForm />
-          </>
-        )
-      },
-    ]
   }
-  // {
-  //   path: "diem-sinh-vien",
-  //   element: (
-  //     <>
-  //       <PageTitle title="Điểm" />
-  //       <BangDiemPage />
-  //     </>
-  //   )
-  // },
 ];

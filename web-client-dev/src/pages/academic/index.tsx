@@ -14,10 +14,12 @@ import {
   ReloadOutlined,
   SaveOutlined,
   StopOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 import { ColDef } from "ag-grid-community";
 import {
   Button,
+  Checkbox,
   Descriptions,
   Drawer,
   Form,
@@ -32,11 +34,7 @@ import {
   Tooltip,
   notification,
 } from "antd";
-import { FC, useEffect, useMemo, useState } from "react";
-
-const ROLE_SUBJECT_TEACHER = "giao_vien_bo_mon";
-const ROLE_HOMEROOM_TEACHER = "giao_vien_chu_nhiem";
-const TEACHER_ROLES = [ROLE_CODE.TEACHER, ROLE_SUBJECT_TEACHER];
+import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 
 const AcademicPage = () => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
@@ -47,6 +45,7 @@ const AcademicPage = () => {
       return [
         { key: "hoc-ky", label: "Kỳ học", children: <HocKyTab /> },
         { key: "lop-hoc-phan", label: "Lớp học phần", children: <LopHocPhanTab /> },
+        { key: "lop-hanh-chinh", label: "Lớp chủ nhiệm", children: <LopHanhChinhTab /> },
         { key: "cau-hinh", label: "Cấu hình", children: <CauHinhTab /> },
       ];
     }
@@ -60,18 +59,11 @@ const AcademicPage = () => {
       ];
     }
 
-    if (role === ROLE_HOMEROOM_TEACHER) {
-      return [
-        { key: "chu-nhiem", label: "Sinh viên phụ trách", children: <ChuNhiemTab /> },
-        { key: "bang-diem", label: "Theo dõi điểm", children: <BangDiemTab readonly /> },
-        { key: "phuc-khao", label: "Phúc khảo", children: <PhucKhaoTab readonly /> },
-      ];
-    }
-
     return [
-      { key: "lop-hoc-phan", label: "Lớp phụ trách", children: <LopHocPhanTab mode="teacher" /> },
+      { key: "lop-hoc-phan", label: "Lớp giảng dạy", children: <LopHocPhanTab mode="teacher" /> },
       { key: "bang-diem", label: "Chấm điểm", children: <BangDiemTab /> },
       { key: "phuc-khao", label: "Phúc khảo", children: <PhucKhaoTab /> },
+      { key: "chu-nhiem", label: "Chủ nhiệm", children: <ChuNhiemTab /> },
     ];
   }, [role]);
 
@@ -153,7 +145,9 @@ const HocKyTab = () => {
         }}
         onReload={() => setKeyRender(Math.random())}
       />
-      <BaseTable key={keyRender} columns={columns} api={academicApi.hocKy.list} />
+      <TableFrame>
+        <BaseTable key={keyRender} columns={columns} api={academicApi.hocKy.list} />
+      </TableFrame>
       <HocKyModal
         open={open}
         data={editing}
@@ -172,6 +166,7 @@ const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
   const [keyRender, setKeyRender] = useState(1);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>();
+  const [detail, setDetail] = useState<any>();
   const isAdmin = currentUser?.vai_tro === ROLE_CODE.ADMIN;
 
   const columns: ColDef[] = [
@@ -189,6 +184,9 @@ const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
       width: 150,
       cellRenderer: ({ data }: any) => (
         <Space>
+          <Tooltip title="Danh sách sinh viên, điểm, phúc khảo">
+            <Button type="text" icon={<FileSearchOutlined />} onClick={() => setDetail(data)} />
+          </Tooltip>
           {mode === "student-open" && (
             <Tooltip title="Đăng ký">
               <Button
@@ -229,12 +227,14 @@ const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
         }}
         onReload={() => setKeyRender(Math.random())}
       />
-      <BaseTable
-        key={keyRender}
-        columns={columns}
-        api={academicApi.lopHocPhan.list}
-        defaultParams={mode === "student-open" ? {} : undefined}
-      />
+      <TableFrame>
+        <BaseTable
+          key={keyRender}
+          columns={columns}
+          api={academicApi.lopHocPhan.list}
+          defaultParams={mode === "student-open" ? {} : undefined}
+        />
+      </TableFrame>
       <LopHocPhanModal
         open={open}
         data={editing}
@@ -244,6 +244,7 @@ const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
           setKeyRender(Math.random());
         }}
       />
+      <LopHocPhanDetailDrawer data={detail} onClose={() => setDetail(undefined)} />
     </>
   );
 };
@@ -280,18 +281,88 @@ const DangKyTab = () => {
   return (
     <>
       <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
-      <BaseTable key={keyRender} columns={columns} api={academicApi.dangKy.list} />
+      <TableFrame>
+        <BaseTable key={keyRender} columns={columns} api={academicApi.dangKy.list} />
+      </TableFrame>
     </>
   );
 };
 
-const BangDiemTab: FC<{ readonly?: boolean }> = ({ readonly }) => {
+const LopHanhChinhTab = () => {
+  const { currentUser } = useAppSelector((state: RootState) => state.auth);
+  const [keyRender, setKeyRender] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<any>();
+  const [studentClass, setStudentClass] = useState<any>();
+  const isAdmin = currentUser?.vai_tro === ROLE_CODE.ADMIN;
+
+  const columns: ColDef[] = [
+    { headerName: "Mã lớp", field: "ma_lop", filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Tên lớp", field: "ten_lop", filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Ngành", field: "nganh" },
+    { headerName: "Khóa", field: "khoa" },
+    { headerName: "Giáo viên chủ nhiệm", field: "giao_vien_chu_nhiem.ho_ten", flex: 1 },
+    {
+      headerName: "Hành động",
+      pinned: "right",
+      width: 150,
+      cellRenderer: ({ data }: any) => (
+        <Space>
+          <Tooltip title="Sinh viên trong lớp">
+            <Button type="text" icon={<TeamOutlined />} onClick={() => setStudentClass(data)} />
+          </Tooltip>
+          {isAdmin && (
+            <Tooltip title="Sửa">
+              <Button
+                type="text"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setEditing(data);
+                  setOpen(true);
+                }}
+              />
+            </Tooltip>
+          )}
+        </Space>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Toolbar
+        hiddenCreate={!isAdmin}
+        onCreate={() => {
+          setEditing(undefined);
+          setOpen(true);
+        }}
+        onReload={() => setKeyRender(Math.random())}
+      />
+      <TableFrame>
+        <BaseTable key={keyRender} columns={columns} api={academicApi.lopHanhChinh.list} />
+      </TableFrame>
+      <LopHanhChinhModal
+        open={open}
+        data={editing}
+        onClose={() => setOpen(false)}
+        onDone={() => {
+          setOpen(false);
+          setKeyRender(Math.random());
+        }}
+      />
+      <LopHanhChinhStudentsDrawer data={studentClass} onClose={() => setStudentClass(undefined)} />
+    </>
+  );
+};
+
+const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readonly, lopHocPhanId }) => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
   const [keyRender, setKeyRender] = useState(1);
   const [editing, setEditing] = useState<any>();
   const [phucKhao, setPhucKhao] = useState<any>();
-  const canGrade = currentUser?.vai_tro === ROLE_CODE.ADMIN || TEACHER_ROLES.includes(currentUser?.vai_tro || "");
   const isStudent = currentUser?.vai_tro === ROLE_CODE.STUDENT;
+  const canGradeRow = (row: any) =>
+    currentUser?.vai_tro === ROLE_CODE.ADMIN || row?.lop_hoc_phan?.giao_vien_bo_mon_id === currentUser?.info?.id;
 
   const columns: ColDef[] = [
     { headerName: "Sinh viên", field: "sinh_vien.ho_ten", filter: "agTextColumnFilter", floatingFilter: true },
@@ -310,7 +381,7 @@ const BangDiemTab: FC<{ readonly?: boolean }> = ({ readonly }) => {
       width: 160,
       cellRenderer: ({ data }: any) => (
         <Space>
-          {canGrade && !readonly && (
+          {canGradeRow(data) && !readonly && (
             <Tooltip title="Nhập điểm">
               <Button type="text" icon={<EditOutlined />} onClick={() => setEditing(data)} />
             </Tooltip>
@@ -328,7 +399,14 @@ const BangDiemTab: FC<{ readonly?: boolean }> = ({ readonly }) => {
   return (
     <>
       <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
-      <BaseTable key={keyRender} columns={columns} api={academicApi.bangDiem.list} />
+      <TableFrame>
+        <BaseTable
+          key={`${keyRender}-${lopHocPhanId ?? "all"}`}
+          columns={columns}
+          api={academicApi.bangDiem.list}
+          defaultParams={lopHocPhanId ? { lop_hoc_phan_id: lopHocPhanId } : undefined}
+        />
+      </TableFrame>
       <DiemModal
         data={editing}
         onClose={() => setEditing(undefined)}
@@ -342,12 +420,13 @@ const BangDiemTab: FC<{ readonly?: boolean }> = ({ readonly }) => {
   );
 };
 
-const PhucKhaoTab: FC<{ readonly?: boolean }> = ({ readonly }) => {
+const PhucKhaoTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readonly, lopHocPhanId }) => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
   const [keyRender, setKeyRender] = useState(1);
   const [resolveItem, setResolveItem] = useState<any>();
-  const canResolve =
-    !readonly && (currentUser?.vai_tro === ROLE_CODE.ADMIN || TEACHER_ROLES.includes(currentUser?.vai_tro || ""));
+  const canResolveRow = (row: any) =>
+    !readonly &&
+    (currentUser?.vai_tro === ROLE_CODE.ADMIN || row?.lop_hoc_phan?.giao_vien_bo_mon_id === currentUser?.info?.id);
 
   const columns: ColDef[] = [
     { headerName: "Sinh viên", field: "sinh_vien.ho_ten", filter: "agTextColumnFilter", floatingFilter: true },
@@ -361,7 +440,7 @@ const PhucKhaoTab: FC<{ readonly?: boolean }> = ({ readonly }) => {
       pinned: "right",
       width: 120,
       cellRenderer: ({ data }: any) =>
-        canResolve && data?.trang_thai === "cho_xu_ly" ? (
+        canResolveRow(data) && data?.trang_thai === "cho_xu_ly" ? (
           <Tooltip title="Xử lý">
             <Button type="text" icon={<EditOutlined />} onClick={() => setResolveItem(data)} />
           </Tooltip>
@@ -372,7 +451,14 @@ const PhucKhaoTab: FC<{ readonly?: boolean }> = ({ readonly }) => {
   return (
     <>
       <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
-      <BaseTable key={keyRender} columns={columns} api={academicApi.phucKhao.list} />
+      <TableFrame>
+        <BaseTable
+          key={`${keyRender}-${lopHocPhanId ?? "all"}`}
+          columns={columns}
+          api={academicApi.phucKhao.list}
+          defaultParams={lopHocPhanId ? { lop_hoc_phan_id: lopHocPhanId } : undefined}
+        />
+      </TableFrame>
       <PhucKhaoResolveModal
         data={resolveItem}
         onClose={() => setResolveItem(undefined)}
@@ -420,10 +506,346 @@ const ChuNhiemTab = () => {
   return (
     <>
       <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
-      <BaseTable key={keyRender} columns={columns} api={academicApi.chuNhiem.sinhVien} />
+      <TableFrame>
+        <BaseTable key={keyRender} columns={columns} api={academicApi.chuNhiem.sinhVien} />
+      </TableFrame>
       <Drawer title="Tổng quan học vụ" open={!!detail} onClose={() => setDetail(undefined)} width={720} loading={loading}>
         <StudentOverview data={detail} />
       </Drawer>
+    </>
+  );
+};
+
+const LopHanhChinhStudentsDrawer: FC<{ data?: any; onClose: () => void }> = ({ data, onClose }) => {
+  const { currentUser } = useAppSelector((state: RootState) => state.auth);
+  const [keyRender, setKeyRender] = useState(1);
+  const [detail, setDetail] = useState<any>();
+  const [assignOpen, setAssignOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const canManage =
+    currentUser?.vai_tro === ROLE_CODE.ADMIN || data?.giao_vien_chu_nhiem_id === currentUser?.info?.id;
+
+  const columns: ColDef[] = [
+    { headerName: "MSSV", field: "mssv", width: 140, filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Họ tên", field: "ho_ten", flex: 1, filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Email", field: "email", flex: 1 },
+    { headerName: "Trạng thái", field: "trang_thai_hoc_tap", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
+    {
+      headerName: "Hành động",
+      pinned: "right",
+      width: 150,
+      cellRenderer: ({ data: row }: any) => (
+        <Space>
+          <Tooltip title="Xem học vụ">
+            <Button
+              type="text"
+              icon={<FileSearchOutlined />}
+              onClick={async () => {
+                setLoading(true);
+                const res = await academicApi.chuNhiem.tongQuanSinhVien(row.id);
+                setDetail(res.data.data);
+                setLoading(false);
+              }}
+            />
+          </Tooltip>
+          {canManage && data?.id && (
+            <Tooltip title="Bỏ khỏi lớp">
+              <Button
+                type="text"
+                danger
+                icon={<StopOutlined />}
+                onClick={async () => {
+                  await academicApi.chuNhiem.removeSinhVien(data.id, row.id);
+                  notification.success({ message: "Đã bỏ sinh viên khỏi lớp" });
+                  setKeyRender(Math.random());
+                }}
+              />
+            </Tooltip>
+          )}
+        </Space>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Drawer
+        title={data ? `Sinh viên lớp ${data.ten_lop || data.ma_lop}` : "Sinh viên trong lớp"}
+        open={!!data}
+        onClose={onClose}
+        width={920}
+      >
+        <Toolbar
+          hiddenCreate={!canManage}
+          onCreate={() => setAssignOpen(true)}
+          onReload={() => setKeyRender(Math.random())}
+        />
+        <TableFrame>
+          <BaseTable
+            key={`${keyRender}-${data?.id ?? "none"}`}
+            columns={columns}
+            api={academicApi.chuNhiem.sinhVien}
+            defaultParams={data?.id ? { lop_hanh_chinh_id: data.id } : undefined}
+          />
+        </TableFrame>
+      </Drawer>
+      <AssignClassStudentsModal
+        open={assignOpen}
+        lop={data}
+        onClose={() => setAssignOpen(false)}
+        onDone={() => {
+          setAssignOpen(false);
+          setKeyRender(Math.random());
+        }}
+      />
+      <Drawer title="Tổng quan học vụ" open={!!detail} onClose={() => setDetail(undefined)} width={720} loading={loading}>
+        <StudentOverview data={detail} />
+      </Drawer>
+    </>
+  );
+};
+
+const AssignClassStudentsModal: FC<{ open: boolean; lop?: any; onClose: () => void; onDone: () => void }> = ({
+  open,
+  lop,
+  onClose,
+  onDone,
+}) => {
+  const [assignForm] = Form.useForm();
+  const [createForm] = Form.useForm();
+  const [students, setStudents] = useState<any[]>([]);
+  const [mode, setMode] = useState("existing");
+  const [selectedStudentIds, setSelectedStudentIds] = useState<Array<number | string>>([]);
+  const [keyword, setKeyword] = useState("");
+
+  useEffect(() => {
+    if (!open || !lop?.id) return;
+
+    assignForm.resetFields();
+    createForm.resetFields();
+    setMode("existing");
+    setKeyword("");
+    setSelectedStudentIds([]);
+    academicApi.chuNhiem
+      .sinhVien({ available_for_lop_hanh_chinh_id: lop.id, itemsPerPage: 200 })
+      .then((res) => setStudents(res.data.list || []));
+  }, [assignForm, createForm, lop?.id, open]);
+
+  const filteredStudents = useMemo(() => {
+    const normalizedKeyword = keyword.trim().toLowerCase();
+    if (!normalizedKeyword) return students;
+
+    return students.filter((student) =>
+      [student.mssv, student.ho_ten, student.email].some((value) =>
+        String(value || "").toLowerCase().includes(normalizedKeyword)
+      )
+    );
+  }, [keyword, students]);
+
+  const selectedStudents = useMemo(
+    () => students.filter((student) => selectedStudentIds.includes(student.id)),
+    [selectedStudentIds, students]
+  );
+
+  return (
+    <Modal
+      open={open}
+      title={lop ? `Thêm sinh viên vào ${lop.ten_lop || lop.ma_lop}` : "Thêm sinh viên vào lớp"}
+      onCancel={onClose}
+      onOk={() => {
+        if (mode === "existing") {
+          assignForm.setFieldsValue({ sinh_vien_ids: selectedStudentIds });
+        }
+        (mode === "existing" ? assignForm : createForm).submit();
+      }}
+      okText="Thêm"
+      cancelText="Đóng"
+      width={720}
+    >
+      <Tabs
+        activeKey={mode}
+        onChange={setMode}
+        items={[
+          {
+            key: "existing",
+            label: "Chọn sinh viên có sẵn",
+            children: (
+              <Form
+                form={assignForm}
+                layout="vertical"
+                onFinish={async (values) => {
+                  await academicApi.chuNhiem.assignSinhVien(lop.id, values.sinh_vien_ids);
+                  notification.success({ message: "Đã thêm sinh viên vào lớp" });
+                  onDone();
+                }}
+              >
+                <Form.Item
+                  name="sinh_vien_ids"
+                  rules={[
+                    {
+                      validator: () =>
+                        selectedStudentIds.length
+                          ? Promise.resolve()
+                          : Promise.reject(new Error("Vui lòng chọn ít nhất một sinh viên")),
+                    },
+                  ]}
+                >
+                  <Input type="hidden" />
+                </Form.Item>
+                <div className="rounded border border-solid border-[#e5e7eb] bg-[#fafafa] p-3">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <Input.Search
+                      allowClear
+                      placeholder="Tìm theo MSSV, họ tên, email"
+                      value={keyword}
+                      onChange={(event) => setKeyword(event.target.value)}
+                    />
+                    <Tag color="red" className="m-0 shrink-0">
+                      {selectedStudentIds.length} đã chọn
+                    </Tag>
+                  </div>
+                  <div className="max-h-[280px] overflow-auto rounded bg-white">
+                    {filteredStudents.length ? (
+                      filteredStudents.map((student) => {
+                        const checked = selectedStudentIds.includes(student.id);
+                        return (
+                          <label
+                            key={student.id}
+                            className={`mb-0 flex cursor-pointer items-center gap-3 border-0 border-b border-solid border-[#f0f0f0] px-3 py-2 transition ${
+                              checked ? "bg-[#fff1f0]" : "bg-white hover:bg-[#fafafa]"
+                            }`}
+                          >
+                            <Checkbox
+                              checked={checked}
+                              onChange={(event) => {
+                                setSelectedStudentIds((current) =>
+                                  event.target.checked
+                                    ? [...current, student.id]
+                                    : current.filter((id) => id !== student.id)
+                                );
+                              }}
+                            />
+                            <div className="min-w-0 flex-1">
+                              <div className="truncate font-medium text-[#111827]">{student.ho_ten}</div>
+                              <div className="truncate text-xs text-[#6b7280]">
+                                {student.mssv || "Chưa có MSSV"} · {student.email || "Chưa có email"}
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      })
+                    ) : (
+                      <div className="px-3 py-8 text-center text-[#6b7280]">Không có sinh viên phù hợp</div>
+                    )}
+                  </div>
+                  {!!selectedStudents.length && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {selectedStudents.map((student) => (
+                        <Tag
+                          key={student.id}
+                          closable
+                          onClose={() =>
+                            setSelectedStudentIds((current) => current.filter((id) => id !== student.id))
+                          }
+                        >
+                          {student.mssv} - {student.ho_ten}
+                        </Tag>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </Form>
+            ),
+          },
+          {
+            key: "create",
+            label: "Tạo sinh viên mới",
+            children: (
+              <Form
+                form={createForm}
+                layout="vertical"
+                initialValues={{ password: "12345678" }}
+                onFinish={async (values) => {
+                  await academicApi.chuNhiem.createSinhVien(lop.id, values);
+                  notification.success({ message: "Đã tạo sinh viên trong lớp" });
+                  onDone();
+                }}
+              >
+                <Form.Item name="mssv" label="MSSV" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="ho_ten" label="Họ tên" rules={[{ required: true }]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="email" label="Email" rules={[{ required: true, type: "email" }]}>
+                  <Input />
+                </Form.Item>
+                <Form.Item name="password" label="Mật khẩu">
+                  <Input.Password />
+                </Form.Item>
+              </Form>
+            ),
+          },
+        ]}
+      />
+    </Modal>
+  );
+};
+
+const LopHocPhanDetailDrawer: FC<{ data?: any; onClose: () => void }> = ({ data, onClose }) => {
+  if (!data) return null;
+
+  return (
+    <Drawer
+      title={`Lớp học phần ${data.ma_lop_hoc_phan || ""}`}
+      open={!!data}
+      onClose={onClose}
+      width={1080}
+    >
+      <Tabs
+        items={[
+          {
+            key: "dang-ky",
+            label: "Sinh viên đăng ký",
+            children: <DangKyLopHocPhanTable lopHocPhanId={data.id} />,
+          },
+          {
+            key: "bang-diem",
+            label: "Bảng điểm",
+            children: <BangDiemTab lopHocPhanId={data.id} />,
+          },
+          {
+            key: "phuc-khao",
+            label: "Phúc khảo",
+            children: <PhucKhaoTab lopHocPhanId={data.id} />,
+          },
+        ]}
+      />
+    </Drawer>
+  );
+};
+
+const DangKyLopHocPhanTable: FC<{ lopHocPhanId: number }> = ({ lopHocPhanId }) => {
+  const [keyRender, setKeyRender] = useState(1);
+  const columns: ColDef[] = [
+    { headerName: "MSSV", field: "sinh_vien.mssv", width: 140 },
+    { headerName: "Sinh viên", field: "sinh_vien.ho_ten", flex: 1, filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Email", field: "sinh_vien.email", flex: 1 },
+    { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
+    { headerName: "Ghi chú", field: "ghi_chu", flex: 1 },
+  ];
+
+  return (
+    <>
+      <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
+      <TableFrame>
+        <BaseTable
+          key={`${keyRender}-${lopHocPhanId}`}
+          columns={columns}
+          api={academicApi.dangKy.list}
+          defaultParams={{ lop_hoc_phan_id: lopHocPhanId }}
+        />
+      </TableFrame>
     </>
   );
 };
@@ -583,6 +1005,60 @@ const LopHocPhanModal: FC<{ open: boolean; data?: any; onClose: () => void; onDo
   );
 };
 
+const LopHanhChinhModal: FC<{ open: boolean; data?: any; onClose: () => void; onDone: () => void }> = ({
+  open,
+  data,
+  onClose,
+  onDone,
+}) => {
+  const [form] = Form.useForm();
+  const [giaoVien, setGiaoVien] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!open) return;
+    form.setFieldsValue(data || {});
+    giaoVienApi.list({ itemsPerPage: 100 } as any).then((res: any) => setGiaoVien(res.data.list || res.data?.data?.data || []));
+  }, [data, form, open]);
+
+  return (
+    <Modal
+      open={open}
+      title={data ? "Sửa lớp chủ nhiệm" : "Thêm lớp chủ nhiệm"}
+      onCancel={onClose}
+      onOk={() => form.submit()}
+      okText="Ghi"
+      cancelText="Đóng"
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={async (values) => {
+          if (data) await academicApi.lopHanhChinh.edit({ ...data, ...values });
+          else await academicApi.lopHanhChinh.create(values);
+          notification.success({ message: "Lưu lớp chủ nhiệm thành công" });
+          onDone();
+        }}
+      >
+        <Form.Item name="ma_lop" label="Mã lớp" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item name="ten_lop" label="Tên lớp" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+        <Form.Item name="giao_vien_chu_nhiem_id" label="Giáo viên chủ nhiệm">
+          <Select options={giaoVien.map((x) => ({ value: x.id, label: x.ho_ten }))} allowClear showSearch optionFilterProp="label" />
+        </Form.Item>
+        <Form.Item name="nganh" label="Ngành">
+          <Input />
+        </Form.Item>
+        <Form.Item name="khoa" label="Khóa">
+          <Input placeholder="2025-2029" />
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+};
+
 const DiemModal: FC<{ data?: any; onClose: () => void; onDone: () => void }> = ({ data, onClose, onDone }) => {
   const [form] = Form.useForm();
 
@@ -726,7 +1202,9 @@ const CauHinhTab = () => {
         }}
         onReload={() => setKeyRender(Math.random())}
       />
-      <BaseTable key={keyRender} columns={columns} api={academicApi.cauHinh.list} />
+      <TableFrame>
+        <BaseTable key={keyRender} columns={columns} api={academicApi.cauHinh.list} />
+      </TableFrame>
       <CauHinhModal
         open={open}
         data={editing}
@@ -823,3 +1301,9 @@ const StudentOverview: FC<{ data?: any }> = ({ data }) => {
     </Space>
   );
 };
+
+const TableFrame: FC<{ children: ReactNode }> = ({ children }) => (
+  <div style={{ height: "calc(100vh - 260px)", minHeight: 420 }} className="w-full">
+    {children}
+  </div>
+);

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Academic\CauHinhHeThongController;
 use App\Http\Controllers\Api\Academic\DangKyMonHocController;
 use App\Http\Controllers\Api\Academic\GiaoVienChuNhiemController;
 use App\Http\Controllers\Api\Academic\HocKyController;
+use App\Http\Controllers\Api\Academic\LopHanhChinhController;
 use App\Http\Controllers\Api\Academic\LopHocPhanController;
 use App\Http\Controllers\Api\Academic\PhucKhaoController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,11 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'academic'], function 
     Route::put('lop-hoc-phan/{id}', [LopHocPhanController::class, 'update']);
     Route::delete('lop-hoc-phan/{id}', [LopHocPhanController::class, 'destroy']);
 
+    Route::get('lop-hanh-chinh', [LopHanhChinhController::class, 'index']);
+    Route::post('lop-hanh-chinh', [LopHanhChinhController::class, 'store']);
+    Route::put('lop-hanh-chinh/{id}', [LopHanhChinhController::class, 'update']);
+    Route::delete('lop-hanh-chinh/{id}', [LopHanhChinhController::class, 'destroy']);
+
     Route::get('dang-ky-mon-hoc', [DangKyMonHocController::class, 'index']);
     Route::post('dang-ky-mon-hoc', [DangKyMonHocController::class, 'store']);
     Route::put('dang-ky-mon-hoc/{id}/huy', [DangKyMonHocController::class, 'cancel']);
@@ -37,5 +43,8 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'academic'], function 
     Route::put('phuc-khao/{id}/xu-ly', [PhucKhaoController::class, 'resolve']);
 
     Route::get('chu-nhiem/sinh-vien', [GiaoVienChuNhiemController::class, 'sinhViens']);
+    Route::post('chu-nhiem/lop/{lopId}/sinh-vien', [GiaoVienChuNhiemController::class, 'assignSinhViens']);
+    Route::post('chu-nhiem/lop/{lopId}/sinh-vien/create', [GiaoVienChuNhiemController::class, 'createSinhVien']);
+    Route::delete('chu-nhiem/lop/{lopId}/sinh-vien/{sinhVienId}', [GiaoVienChuNhiemController::class, 'removeSinhVien']);
     Route::get('chu-nhiem/sinh-vien/{id}', [GiaoVienChuNhiemController::class, 'tongQuanSinhVien']);
 });

@@ -9,15 +9,10 @@ import { useAppSelector } from "@/stores/hook";
 import {
   DeleteOutlined,
   EditOutlined,
-  ExceptionOutlined,
-  SignatureOutlined,
-  TeamOutlined,
-  UnorderedListOutlined
 } from "@ant-design/icons";
 import { ColDef } from "ag-grid-community";
 import { Button, Tooltip } from "antd";
 import { FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const MonHocPage = () => {
   const [data, setData] = useState();
@@ -151,22 +146,9 @@ export default MonHocPage;
 
 const ActionRender: FC<any> = ({  onUpdateItem, onDeleteItem, data }) => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
-  const navigate = useNavigate();
   if (!data) return;
   return (
     <>
-      <Tooltip className={currentUser?.vai_tro !== "admin" ? "hidden" : ""} title="Phân công giáo viên">
-        <Button onClick={() => navigate(`phan-cong/${data.id}`)} type="text" icon={<TeamOutlined />} />
-      </Tooltip>
-      {/* <Tooltip className={currentUser?.vai_tro !== "sinh_vien" ? "hidden" : ""} title="Làm bài thi">
-        <Button onClick={() => navigate(`kiem-tra/${data.id}`)} type="text" icon={<SignatureOutlined />} />
-      </Tooltip> */}
-      <Tooltip className={currentUser?.vai_tro === "sinh_vien" ? "hidden" : ""} title="Danh sách đề thi">
-        <Button onClick={() => navigate(`${data.id}/de-thi`)} type="text" icon={<ExceptionOutlined />} />
-      </Tooltip>
-      <Tooltip className={currentUser?.vai_tro === "sinh_vien" ? "hidden" : ""} title="Danh sách câu hỏi">
-        <Button onClick={() => navigate(`${data.id}/cau-hoi`)} type="text" icon={<UnorderedListOutlined />} />
-      </Tooltip>
       <Tooltip className={currentUser?.vai_tro !== "admin" ? "hidden" : ""} title="Sửa">
         <Button type="text" icon={<EditOutlined />} onClick={() => onUpdateItem(data)}/>
       </Tooltip>

@@ -38,7 +38,7 @@ class AdminSinhVienController extends Controller
         'email' => 'required|email|unique:nguoi_dungs,email',
         'ho_ten' => 'required|string|max:255',
         'password' => 'required|min:6',
-        'vai_tro' => 'required'
+        'vai_tro' => 'required|in:admin,sinh_vien,giang_vien'
     ]);
         $query = $request->all();
         $user = User::create([
@@ -71,7 +71,7 @@ class AdminSinhVienController extends Controller
         'email' => 'required|email|unique:nguoi_dungs,email,' . $id,
         'ho_ten' => 'required|string|max:255',
         'password' => 'nullable|min:6',
-        'vai_tro' => 'required'
+        'vai_tro' => 'required|in:admin,sinh_vien,giang_vien'
     ]);
 
     $user = User::findOrFail($id);

@@ -16,24 +16,12 @@ class LopHanhChinh extends Model
         'ten_lop',
         'khoa',
         'nganh',
-        'nien_khoa',
-        'chuong_trinh_dao_tao_id',
         'giao_vien_chu_nhiem_id',
-        'trang_thai',
-    ];
-
-    protected $casts = [
-        'trang_thai' => 'boolean',
     ];
 
     public function giaoVienChuNhiem()
     {
         return $this->belongsTo(GiaoVien::class, 'giao_vien_chu_nhiem_id');
-    }
-
-    public function chuongTrinhDaoTao()
-    {
-        return $this->belongsTo(ChuongTrinhDaoTao::class, 'chuong_trinh_dao_tao_id');
     }
 
     public function sinhViens()

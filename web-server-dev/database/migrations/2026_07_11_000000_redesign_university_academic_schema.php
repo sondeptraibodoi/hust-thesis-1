@@ -9,12 +9,16 @@ class RedesignUniversityAcademicSchema extends Migration
 {
     public function up()
     {
+        if (Schema::hasTable('nguoi_dungs') && Schema::hasColumn('nguoi_dungs', 'vai_tro')) {
+            DB::table('nguoi_dungs')
+                ->whereIn('vai_tro', ['giao_vien_bo_mon', 'giao_vien_chu_nhiem'])
+                ->update(['vai_tro' => 'giang_vien']);
+        }
+
         $this->syncUserRoleConstraint([
             'admin',
             'sinh_vien',
             'giang_vien',
-            'giao_vien_bo_mon',
-            'giao_vien_chu_nhiem',
         ]);
 
         Schema::table('giao_viens', function (Blueprint $table) {
@@ -112,12 +116,9 @@ class RedesignUniversityAcademicSchema extends Migration
                 $table->id();
                 $table->string('ma_lop')->unique();
                 $table->string('ten_lop');
-                $table->string('khoa')->nullable();
                 $table->string('nganh')->nullable();
-                $table->string('nien_khoa')->nullable();
-                $table->foreignId('chuong_trinh_dao_tao_id')->nullable()->constrained('chuong_trinh_dao_taos')->nullOnDelete();
+                $table->string('khoa')->nullable();
                 $table->foreignId('giao_vien_chu_nhiem_id')->nullable()->constrained('giao_viens')->nullOnDelete();
-                $table->boolean('trang_thai')->default(true);
                 $table->timestamps();
             });
         }

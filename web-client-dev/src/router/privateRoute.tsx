@@ -47,12 +47,10 @@ export const GuestOnlyRoute: FC<RouteProps> = (props) => {
   }
   if (checkUserRoleAllow(currentUser, ROLE_CODE.ADMIN)) {
     return <Navigate to={getPrefix() + "/tai-khoan"} />;
-  } else if (checkUserRoleAllow(currentUser, ROLE_CODE.TEACHER) || checkUserRoleAllow(currentUser, ROLE_CODE.SUBJECT_TEACHER)) {
-    return <Navigate to={getPrefix() + "/mon-hoc"} />;
-  } else if (checkUserRoleAllow(currentUser, ROLE_CODE.HOMEROOM_TEACHER)) {
-    return <Navigate to={getPrefix() + "/chu-nhiem"} />;
+  } else if (checkUserRoleAllow(currentUser, ROLE_CODE.TEACHER)) {
+    return <Navigate to={getPrefix() + "/hoc-vu"} />;
   } else if (checkUserRoleAllow(currentUser, ROLE_CODE.STUDENT)) {
-    return <Navigate to={getPrefix() + "/sinh-vien/mon-hoc"} />;
+    return <Navigate to={getPrefix() + "/hoc-vu"} />;
   } else if (checkUserRoleAllow(currentUser, ROLE_CODE.ASSISTANT)) {
     return <Navigate to={getPrefix() + "/thong-ke-du-lieu"} />;
   } else if (checkUserRoleAllow(currentUser, ROLE_CODE.HP_ASSISTANT)) {

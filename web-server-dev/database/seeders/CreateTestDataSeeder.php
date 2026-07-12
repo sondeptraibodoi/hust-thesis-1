@@ -50,7 +50,7 @@ class CreateTestDataSeeder extends Seeder
                 "mat_khau" => bcrypt("12345678"),
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now(),
-                "vai_tro" => RoleCode::SUBJECT_TEACHER,
+                "vai_tro" => RoleCode::TEACHER,
                 "email" => "giaovien.bomon@hust.com",
                 'ho_ten' => 'Giao vien bo mon'
             ],
@@ -59,7 +59,7 @@ class CreateTestDataSeeder extends Seeder
                 "mat_khau" => bcrypt("12345678"),
                 "created_at" => Carbon::now(),
                 "updated_at" => Carbon::now(),
-                "vai_tro" => RoleCode::HOMEROOM_TEACHER,
+                "vai_tro" => RoleCode::TEACHER,
                 "email" => "giaovien.chunhiem@hust.com",
                 'ho_ten' => 'Giao vien chu nhiem'
             ],

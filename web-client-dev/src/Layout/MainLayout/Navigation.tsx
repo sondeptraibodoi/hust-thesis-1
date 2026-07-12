@@ -21,16 +21,12 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
       key: "tai-khoan"
     },
     {
-      label: "Môn học",
-      key: "quan-ly-mon"
-    },
-    {
-      label: "Lớp",
-      key: "lop"
-    },
-    {
       label: "Học vụ",
       key: "hoc-vu"
+    },
+    {
+      label: "Môn học",
+      key: "quan-ly-mon"
     },
     {
       label: "Thống kê",
@@ -186,69 +182,14 @@ const MENUS: { [key: string]: MENU_ITEM[] } = {
 
   [ROLE_CODE.TEACHER]: [
     {
-      label: "Môn học",
-      key: "mon-hoc",
-      children: [
-        {
-          label: "Môn học",
-          key: "mon-hoc"
-        },
-        // {
-        //   label: "Lớp coi thi",
-        //   key: "lop-trong-thi"
-        // },
-        // {
-        //   label: "Tài liệu",
-        //   key: "giao-vien/tai-lieu"
-        // }
-      ]
-    },
-    {
-      label: "Học vụ",
-      key: "hoc-vu"
-    },
-    {
-      label: "Lớp",
-      key: "lop-phu-trach"
-    },
-  ],
-  [ROLE_CODE.SUBJECT_TEACHER]: [
-    {
-      label: "Môn học",
-      key: "mon-hoc"
-    },
-    {
-      label: "Học vụ",
-      key: "hoc-vu"
-    }
-  ],
-  [ROLE_CODE.HOMEROOM_TEACHER]: [
-    {
-      label: "Chủ nhiệm",
-      key: "chu-nhiem"
-    },
-    {
       label: "Học vụ",
       key: "hoc-vu"
     }
   ],
   [ROLE_CODE.STUDENT]: [
     {
-      label: "Môn học",
-      key: "sinh-vien/mon-hoc"
-    },
-
-    {
-      label: "Điểm thi",
-      key: "diem-sinh-vien"
-    },
-    {
       label: "Học vụ",
       key: "hoc-vu"
-    },
-    {
-      label: "Lớp",
-      key: "lop-hoc"
     },
   ]
 };
