@@ -368,11 +368,11 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readon
     { headerName: "Sinh viên", field: "sinh_vien.ho_ten", filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "MSSV", field: "sinh_vien.mssv", width: 130 },
     { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "Lớp HP", field: "lop_hoc_phan.ma_lop_hoc_phan", width: 130 },
-    { headerName: "CC", field: "diem_chuyen_can", width: 90 },
-    { headerName: "GK", field: "diem_giua_ky", width: 90 },
-    { headerName: "CK", field: "diem_cuoi_ky", width: 90 },
-    { headerName: "Tổng", field: "diem_tong_ket", width: 100 },
+    { headerName: "Lớp học phần", field: "lop_hoc_phan.ma_lop_hoc_phan", width: 150 },
+    { headerName: "Chuyên cần", field: "diem_chuyen_can", width: 130 },
+    { headerName: "Giữa kỳ", field: "diem_giua_ky", width: 120 },
+    { headerName: "Cuối kỳ", field: "diem_cuoi_ky", width: 120 },
+    { headerName: "Tổng kết", field: "diem_tong_ket", width: 120 },
     { headerName: "Kết quả", field: "ket_qua", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     {
@@ -649,6 +649,7 @@ const AssignClassStudentsModal: FC<{ open: boolean; lop?: any; onClose: () => vo
 
   return (
     <Modal
+      centered
       open={open}
       title={lop ? `Thêm sinh viên vào ${lop.ten_lop || lop.ma_lop}` : "Thêm sinh viên vào lớp"}
       onCancel={onClose}
@@ -660,11 +661,14 @@ const AssignClassStudentsModal: FC<{ open: boolean; lop?: any; onClose: () => vo
       }}
       okText="Thêm"
       cancelText="Đóng"
-      width={720}
+      width="min(920px, calc(100vw - 32px))"
     >
       <Tabs
         activeKey={mode}
         onChange={setMode}
+        tabBarGutter={24}
+        moreIcon={null}
+        className="[&_.ant-tabs-nav]:mb-4 [&_.ant-tabs-nav-wrap]:overflow-x-auto [&_.ant-tabs-nav-list]:min-w-max"
         items={[
           {
             key: "existing",
@@ -800,9 +804,11 @@ const LopHocPhanDetailDrawer: FC<{ data?: any; onClose: () => void }> = ({ data,
       title={`Lớp học phần ${data.ma_lop_hoc_phan || ""}`}
       open={!!data}
       onClose={onClose}
-      width={1080}
+      width="min(1320px, calc(100vw - 32px))"
     >
       <Tabs
+        tabBarGutter={28}
+        className="[&_.ant-tabs-nav]:mb-4 [&_.ant-tabs-nav-wrap]:overflow-x-auto [&_.ant-tabs-nav-list]:min-w-max"
         items={[
           {
             key: "dang-ky",
@@ -881,6 +887,7 @@ const HocKyModal: FC<{ open: boolean; data?: any; onClose: () => void; onDone: (
 
   return (
     <Modal
+      centered
       open={open}
       title={data ? "Sửa kỳ học" : "Thêm kỳ học"}
       onCancel={onClose}
@@ -956,6 +963,7 @@ const LopHocPhanModal: FC<{ open: boolean; data?: any; onClose: () => void; onDo
 
   return (
     <Modal
+      centered
       open={open}
       title={data ? "Sửa lớp học phần" : "Thêm lớp học phần"}
       onCancel={onClose}
@@ -1022,6 +1030,7 @@ const LopHanhChinhModal: FC<{ open: boolean; data?: any; onClose: () => void; on
 
   return (
     <Modal
+      centered
       open={open}
       title={data ? "Sửa lớp chủ nhiệm" : "Thêm lớp chủ nhiệm"}
       onCancel={onClose}
@@ -1067,7 +1076,7 @@ const DiemModal: FC<{ data?: any; onClose: () => void; onDone: () => void }> = (
   }, [data, form]);
 
   return (
-    <Modal open={!!data} title="Nhập điểm" onCancel={onClose} onOk={() => form.submit()} okText="Ghi" cancelText="Đóng">
+    <Modal centered open={!!data} title="Nhập điểm" onCancel={onClose} onOk={() => form.submit()} okText="Ghi" cancelText="Đóng">
       <Form
         form={form}
         layout="vertical"
@@ -1113,7 +1122,7 @@ const DiemModal: FC<{ data?: any; onClose: () => void; onDone: () => void }> = (
 const PhucKhaoCreateModal: FC<{ data?: any; onClose: () => void }> = ({ data, onClose }) => {
   const [form] = Form.useForm();
   return (
-    <Modal open={!!data} title="Gửi phúc khảo" onCancel={onClose} onOk={() => form.submit()} okText="Gửi" cancelText="Đóng">
+    <Modal centered open={!!data} title="Gửi phúc khảo" onCancel={onClose} onOk={() => form.submit()} okText="Gửi" cancelText="Đóng">
       <Form
         form={form}
         layout="vertical"
@@ -1138,7 +1147,7 @@ const PhucKhaoCreateModal: FC<{ data?: any; onClose: () => void }> = ({ data, on
 const PhucKhaoResolveModal: FC<{ data?: any; onClose: () => void; onDone: () => void }> = ({ data, onClose, onDone }) => {
   const [form] = Form.useForm();
   return (
-    <Modal open={!!data} title="Xử lý phúc khảo" onCancel={onClose} onOk={() => form.submit()} okText="Ghi" cancelText="Đóng">
+    <Modal centered open={!!data} title="Xử lý phúc khảo" onCancel={onClose} onOk={() => form.submit()} okText="Ghi" cancelText="Đóng">
       <Form
         form={form}
         layout="vertical"
@@ -1235,7 +1244,7 @@ const CauHinhModal: FC<{ open: boolean; data?: any; onClose: () => void; onDone:
   }, [data, form, open]);
 
   return (
-    <Modal open={open} title="Cấu hình" onCancel={onClose} onOk={() => form.submit()} okText="Ghi" cancelText="Đóng">
+    <Modal centered open={open} title="Cấu hình" onCancel={onClose} onOk={() => form.submit()} okText="Ghi" cancelText="Đóng">
       <Form
         form={form}
         layout="vertical"
