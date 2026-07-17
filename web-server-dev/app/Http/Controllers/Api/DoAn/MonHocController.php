@@ -17,6 +17,9 @@ class MonHocController extends Controller
     {
         $user = $request->user();
         $query = MonHoc::query();
+        if($user->vai_tro === RoleCode::STUDENT) {
+            $query->where('trang_thai', 'dang_mo');
+        }
         if($user->isTeacher()) {
             $mon = GiaoVienMon::where('giao_vien_id', $user->giaoVien->id)->get()->pluck('mon_hoc_id');
             $query->whereIn('id', $mon);
@@ -51,12 +54,14 @@ class MonHocController extends Controller
         $request->validate([
             'ten_mon_hoc' => 'required|string|max:255',
             'ma' => 'required|string|max:255|unique:mon_hocs,ma',
+            'trang_thai' => 'nullable|string|in:dang_mo,da_dong',
         ]);
 
         try {
             DB::table('mon_hocs')->insert([
                 'ma' => $request->ma,
                 'ten_mon_hoc' => $request->ten_mon_hoc,
+                'trang_thai' => $request->trang_thai ?? 'dang_mo',
                 'created_at' => now(),
                 'updated_at' => null
             ]);
@@ -92,6 +97,7 @@ class MonHocController extends Controller
         $request->validate([
             'ten_mon_hoc' => 'required|string|max:255',
             'ma' => 'required|string|max:255|unique:mon_hocs,ma,' . $id,
+            'trang_thai' => 'nullable|string|in:dang_mo,da_dong',
         ]);
 
         try {
@@ -102,6 +108,7 @@ class MonHocController extends Controller
             $updated = DB::table('mon_hocs')->where('id', $id)->update([
                 'ten_mon_hoc' => $request->ten_mon_hoc,
                 'ma' => $request->ma,
+                'trang_thai' => $request->trang_thai ?? 'dang_mo',
             ]);
 
             DB::commit();

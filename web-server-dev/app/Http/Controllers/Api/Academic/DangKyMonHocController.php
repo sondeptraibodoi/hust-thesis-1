@@ -68,6 +68,7 @@ class DangKyMonHocController extends Controller
         $lopHocPhan = LopHocPhan::with(['hocKy', 'monHoc.monHocTienQuyets'])->findOrFail($data['lop_hoc_phan_id']);
 
         abort_unless($user->vai_tro === RoleCode::ADMIN || $lopHocPhan->hocKy->dang_mo_dang_ky, 422, 'Hoc ky chua mo dang ky.');
+        abort_unless($lopHocPhan->monHoc->trang_thai === 'dang_mo', 422, 'Mon hoc chua duoc mo dang ky.');
         abort_unless($lopHocPhan->trang_thai === 'dang_mo', 422, 'Lop hoc phan khong dang mo.');
 
         if ($lopHocPhan->si_so_toi_da) {

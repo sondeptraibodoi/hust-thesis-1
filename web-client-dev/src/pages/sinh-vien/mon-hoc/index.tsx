@@ -6,16 +6,18 @@ import { ActionField } from "@/interface/common";
 import PageContainer from "@/Layout/PageContainer";
 import { RootState } from "@/stores";
 import { useAppSelector } from "@/stores/hook";
-import {
-  DeleteOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ColDef } from "ag-grid-community";
-import { Button, Tooltip } from "antd";
+import { Button, Tag, Tooltip } from "antd";
 import { FC, useState } from "react";
 
+const subjectStatusMap: Record<string, { color: string; label: string }> = {
+  dang_mo: { color: "green", label: "Mở đăng ký" },
+  da_dong: { color: "default", label: "Đóng đăng ký" }
+};
+
 const MonHocPage = () => {
-  const [data, setData] = useState();
+  const [data, setData] = useState<any>();
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [modalEditor, setModalEditor] = useState<boolean>(false);
   const [keyRender, setKeyRender] = useState(1);
@@ -27,7 +29,7 @@ const MonHocPage = () => {
       required: true,
       type: "input",
       name: "ma",
-      label: "Mã",
+      label: "Mã môn",
       placeholder: "Vui lòng nhập mã môn"
     },
     {
@@ -35,7 +37,18 @@ const MonHocPage = () => {
       type: "input",
       name: "ten_mon_hoc",
       label: "Tên môn học",
-      placeholder: "Vui lòng nhập tên môn"
+      placeholder: "Vui lòng nhập tên môn học"
+    },
+    {
+      type: "select",
+      name: "trang_thai",
+      label: "Trạng thái đăng ký",
+      placeholder: "Chọn trạng thái",
+      initialValue: "dang_mo",
+      children: [
+        { value: "dang_mo", title: "Mở đăng ký" },
+        { value: "da_dong", title: "Đóng đăng ký" }
+      ]
     }
   ];
 
@@ -57,25 +70,21 @@ const MonHocPage = () => {
       floatingFilter: true
     },
     {
-      headerName: "Số câu hỏi",
-      field: "so_cau_hoi",
-      filter: "agNumberColumnFilter",
+      headerName: "Trạng thái",
+      field: "trang_thai",
+      filter: "agTextColumnFilter",
       floatingFilter: true,
-      hide: currentUser?.vai_tro === "sinh_vien"
-    },
-    {
-      headerName: "Cấp độ",
-      field: "level",
-      filter: "agNumberColumnFilter",
-      floatingFilter: true,
-      hide: currentUser?.vai_tro !== "sinh_vien"
+      cellRenderer: ({ value }: any) => {
+        const status = subjectStatusMap[value] ?? subjectStatusMap.da_dong;
+        return <Tag color={status.color}>{status.label}</Tag>;
+      }
     },
     {
       headerName: "Hành động",
       field: "#",
       pinned: "right",
       cellRenderer: ActionRender,
-      width: 200,
+      width: 140,
       cellRendererParams: {
         onUpdateItem: (item: any) => {
           setData(item);
@@ -92,19 +101,26 @@ const MonHocPage = () => {
       }
     }
   ]);
+
   return (
     <PageContainer
-      title="Danh sách môn"
-      extraTitle={currentUser?.vai_tro === 'admin' ?
-        <Button
-          onClick={() => {
-            setIsEdit(false), setModalEditor(true);
-          }}
-          type="primary"
-          style={{ float: "right", marginTop: "20px" }}
-        >
-          Thêm mới
-        </Button> : <div></div>
+      title="Danh sách môn học"
+      extraTitle={
+        currentUser?.vai_tro === "admin" ? (
+          <Button
+            onClick={() => {
+              setData(undefined);
+              setIsEdit(false);
+              setModalEditor(true);
+            }}
+            type="primary"
+            style={{ float: "right", marginTop: "20px" }}
+          >
+            Thêm mới
+          </Button>
+        ) : (
+          <div></div>
+        )
       }
     >
       <BaseTable
@@ -123,8 +139,8 @@ const MonHocPage = () => {
         disableSubTitle
         setKeyRender={setKeyRender}
         isEdit={isEdit}
-        apiCreate={(data: any) => monHocApi.create({ ...data })}
-        apiEdit={(data: any) => monHocApi.edit(data)}
+        apiCreate={(formData: any) => monHocApi.create({ ...formData })}
+        apiEdit={(formData: any) => monHocApi.edit(formData)}
         options={option}
         openModal={modalEditor}
         closeModal={setModalEditor}
@@ -133,7 +149,7 @@ const MonHocPage = () => {
         <DeleteDialog
           openModal={isModalDelete}
           closeModal={setIsModalDelete}
-          name={"Câu hỏi"}
+          name={"môn học"}
           apiDelete={() => data && monHocApi.delete(data)}
           setKeyRender={setKeyRender}
         />
@@ -144,16 +160,20 @@ const MonHocPage = () => {
 
 export default MonHocPage;
 
-const ActionRender: FC<any> = ({  onUpdateItem, onDeleteItem, data }) => {
+const ActionRender: FC<any> = ({ onUpdateItem, onDeleteItem, data }) => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
-  if (!data) return;
+
+  if (!data || currentUser?.vai_tro !== "admin") {
+    return null;
+  }
+
   return (
     <>
-      <Tooltip className={currentUser?.vai_tro !== "admin" ? "hidden" : ""} title="Sửa">
-        <Button type="text" icon={<EditOutlined />} onClick={() => onUpdateItem(data)}/>
+      <Tooltip title="Sửa">
+        <Button type="text" icon={<EditOutlined />} onClick={() => onUpdateItem(data)} />
       </Tooltip>
-      <Tooltip className={currentUser?.vai_tro !== "admin" ? "hidden" : ""} title="Xóa">
-        <Button type="text" icon={<DeleteOutlined />} onClick={() => onDeleteItem(data)}/>
+      <Tooltip title="Xóa">
+        <Button type="text" icon={<DeleteOutlined />} onClick={() => onDeleteItem(data)} />
       </Tooltip>
     </>
   );
