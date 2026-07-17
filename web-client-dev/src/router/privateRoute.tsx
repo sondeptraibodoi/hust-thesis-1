@@ -48,7 +48,7 @@ export const GuestOnlyRoute: FC<RouteProps> = (props) => {
   if (checkUserRoleAllow(currentUser, ROLE_CODE.ADMIN)) {
     return <Navigate to={getPrefix() + "/tai-khoan"} />;
   } else if (checkUserRoleAllow(currentUser, ROLE_CODE.TEACHER)) {
-    return <Navigate to={getPrefix() + "/hoc-vu"} />;
+    return <Navigate to={getPrefix() + "/lop-giang-day"} />;
   } else if (checkUserRoleAllow(currentUser, ROLE_CODE.STUDENT)) {
     return <Navigate to={getPrefix() + "/hoc-vu"} />;
   } else if (checkUserRoleAllow(currentUser, ROLE_CODE.ASSISTANT)) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Academic;
 
 use App\Constants\RoleCode;
 use App\Http\Controllers\Controller;
+use App\Models\BangDiem;
 use App\Models\Auth\User;
 use App\Models\LopHanhChinh;
 use App\Models\SinhVien;
@@ -138,8 +139,14 @@ class GiaoVienChuNhiemController extends Controller
             ];
         })->values();
 
-        $passed = $sinhVien->bangDiems->where('ket_qua', 'qua_mon')->values();
-        $failed = $sinhVien->bangDiems->where('ket_qua', 'truot')->values();
+        $bangDiems = $sinhVien->bangDiems->map(function (BangDiem $bangDiem) {
+            $bangDiem->ket_qua = $this->resolveResult($bangDiem);
+
+            return $bangDiem;
+        });
+
+        $passed = $bangDiems->where('ket_qua', 'qua_mon')->values();
+        $failed = $bangDiems->where('ket_qua', 'truot')->values();
         $passedSubjectIds = $passed->map(fn ($item) => $item->lopHocPhan->mon_hoc_id)->unique();
 
         $requiredSubjects = optional($sinhVien->chuongTrinhDaoTao)->monHocs ?? collect();
@@ -170,5 +177,26 @@ class GiaoVienChuNhiemController extends Controller
         }
 
         abort(403, 'Khong co quyen quan ly sinh vien trong lop nay.');
+    }
+
+    private function resolveResult(BangDiem $bangDiem): string
+    {
+        if ($bangDiem->diem_tong_ket === null) {
+            return 'chua_co_diem';
+        }
+
+        $diemQuaMon = $bangDiem->lopHocPhan->monHoc->diem_qua_mon
+            ?? $bangDiem->lopHocPhan->hocKy->diem_qua_mon_mac_dinh
+            ?? 4;
+
+        foreach (['diem_chuyen_can', 'diem_giua_ky', 'diem_cuoi_ky', 'diem_tong_ket'] as $field) {
+            $currentScore = $bangDiem->{$field};
+
+            if ($currentScore !== null && (float) $currentScore < (float) $diemQuaMon) {
+                return 'truot';
+            }
+        }
+
+        return 'qua_mon';
     }
 }

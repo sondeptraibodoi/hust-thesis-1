@@ -41,7 +41,14 @@ class BangDiemController extends Controller
             $query->where('sinh_vien_id', $request->sinh_vien_id);
         }
 
-        return $this->responseSuccess($query->paginate($request->get('per_page', 20)));
+        $data = $query->paginate($request->get('per_page', 20));
+        $data->getCollection()->transform(function (BangDiem $bangDiem) {
+            $bangDiem->ket_qua = $this->resolveResult($bangDiem);
+
+            return $bangDiem;
+        });
+
+        return $this->responseSuccess($data);
     }
 
     public function update(Request $request, $id)
@@ -64,7 +71,7 @@ class BangDiemController extends Controller
             $before = $bangDiem->only(['diem_chuyen_can', 'diem_giua_ky', 'diem_cuoi_ky', 'diem_tong_ket', 'diem_chu', 'ket_qua']);
 
             $data['diem_tong_ket'] = $data['diem_tong_ket'] ?? $this->calculateFinalScore($data, $bangDiem);
-            $data['ket_qua'] = $this->resolveResult($bangDiem, $data['diem_tong_ket']);
+            $data['ket_qua'] = $this->resolveResult($bangDiem, $data);
             $data['nguoi_cham_id'] = optional($request->user()->giaoVien)->id;
             $data['ngay_cham'] = now();
 
@@ -87,10 +94,11 @@ class BangDiemController extends Controller
 
     public function chotDiem(Request $request, $id)
     {
-        $bangDiem = BangDiem::with('lopHocPhan')->findOrFail($id);
+        $bangDiem = BangDiem::with('lopHocPhan.hocKy', 'lopHocPhan.monHoc')->findOrFail($id);
         $this->authorizeGrade($request, $bangDiem);
 
         $bangDiem->update([
+            'ket_qua' => $this->resolveResult($bangDiem),
             'trang_thai' => 'da_chot',
             'nguoi_chot_id' => $request->user()->id,
             'ngay_chot' => now(),
@@ -135,8 +143,14 @@ class BangDiemController extends Controller
         return round($cc * 0.1 + $gk * 0.3 + $ck * 0.6, 2);
     }
 
-    private function resolveResult(BangDiem $bangDiem, ?float $diemTongKet): string
+    private function resolveResult(BangDiem $bangDiem, array $overrides = []): string
     {
+        $score = function (string $field) use ($bangDiem, $overrides) {
+            return array_key_exists($field, $overrides) ? $overrides[$field] : $bangDiem->{$field};
+        };
+
+        $diemTongKet = $score('diem_tong_ket');
+
         if ($diemTongKet === null) {
             return 'chua_co_diem';
         }
@@ -145,6 +159,14 @@ class BangDiemController extends Controller
             ?? $bangDiem->lopHocPhan->hocKy->diem_qua_mon_mac_dinh
             ?? 4;
 
-        return $diemTongKet >= $diemQuaMon ? 'qua_mon' : 'truot';
+        foreach (['diem_chuyen_can', 'diem_giua_ky', 'diem_cuoi_ky', 'diem_tong_ket'] as $field) {
+            $currentScore = $score($field);
+
+            if ($currentScore !== null && (float) $currentScore < (float) $diemQuaMon) {
+                return 'truot';
+            }
+        }
+
+        return 'qua_mon';
     }
 }

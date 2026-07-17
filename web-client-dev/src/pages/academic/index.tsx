@@ -403,6 +403,33 @@ const calculateGradeTotal = (row: any) => {
   return Math.round((midterm * 0.4 + final * 0.6) * 100) / 100;
 };
 
+const getPassingScore = (row: any, lopHocPhan?: any) => {
+  const classData = row?.lop_hoc_phan || lopHocPhan || {};
+  const value = classData?.mon_hoc?.diem_qua_mon ?? classData?.hoc_ky?.diem_qua_mon_mac_dinh ?? 4;
+  const passingScore = Number(value);
+
+  return Number.isNaN(passingScore) ? 4 : passingScore;
+};
+
+const resolveGradeResult = (row: any, lopHocPhan?: any) => {
+  if (row?.diem_tong_ket === null || row?.diem_tong_ket === undefined) {
+    return "chua_co_diem";
+  }
+
+  const passingScore = getPassingScore(row, lopHocPhan);
+  const scores = [row?.diem_chuyen_can, row?.diem_giua_ky, row?.diem_cuoi_ky, row?.diem_tong_ket];
+  const hasScoreBelowPassingScore = scores.some((score) => {
+    if (score === null || score === undefined || score === "") {
+      return false;
+    }
+
+    const value = Number(score);
+    return !Number.isNaN(value) && value < passingScore;
+  });
+
+  return hasScoreBelowPassingScore ? "truot" : "qua_mon";
+};
+
 const ChamDiemTheoLopTab = () => {
   const [keyRender, setKeyRender] = useState(1);
   const [selectedClass, setSelectedClass] = useState<any>();
@@ -483,6 +510,7 @@ const ChamDiemLopDetail: FC<{ data: any; onBack: () => void }> = ({ data, onBack
       [field]: event.newValue,
     };
     nextRow.diem_tong_ket = calculateGradeTotal(nextRow);
+    nextRow.ket_qua = resolveGradeResult(nextRow, data);
 
     setRows((current) => current.map((row) => (row.id === nextRow.id ? nextRow : row)));
     setDirtyRows((current) => ({ ...current, [nextRow.id]: nextRow }));
@@ -545,7 +573,7 @@ const ChamDiemLopDetail: FC<{ data: any; onBack: () => void }> = ({ data, onBack
     { headerName: "Điểm giữa kỳ", field: "diem_giua_ky", editable: (p: any) => p.data?.trang_thai !== "da_chot", valueParser: gradeValueParser, width: 150 },
     { headerName: "Điểm cuối kỳ", field: "diem_cuoi_ky", editable: (p: any) => p.data?.trang_thai !== "da_chot", valueParser: gradeValueParser, width: 150 },
     { headerName: "Tổng kết", field: "diem_tong_ket", width: 130 },
-    { headerName: "Kết quả", field: "ket_qua", width: 130, cellRenderer: (p: any) => <StatusTag value={p.value} /> },
+    { headerName: "Kết quả", field: "ket_qua", width: 130, cellRenderer: (p: any) => <StatusTag value={resolveGradeResult(p.data, data)} /> },
     { headerName: "Trạng thái", field: "trang_thai", width: 140, cellRenderer: (p: any) => <StatusTag value={p.value} /> },
   ];
 
@@ -661,7 +689,7 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent
     { headerName: "Giữa kỳ", field: "diem_giua_ky", width: 120 },
     { headerName: "Cuối kỳ", field: "diem_cuoi_ky", width: 120 },
     { headerName: "Tổng kết", field: "diem_tong_ket", width: 120 },
-    { headerName: "Kết quả", field: "ket_qua", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
+    { headerName: "Kết quả", field: "ket_qua", cellRenderer: (p: any) => <StatusTag value={resolveGradeResult(p.data)} /> },
     { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     {
       headerName: "Hành động",
@@ -1830,7 +1858,11 @@ const OverviewSubjectTable: FC<{ items?: any[] }> = ({ items = [] }) => {
       ma_mon: monHoc?.ma,
       ten_mon_hoc: monHoc?.ten_mon_hoc,
       lop_hoc_phan: lopHocPhan?.ma_lop_hoc_phan || lopHocPhan?.ten_lop_hoc_phan,
+      lop_hoc_phan_data: lopHocPhan,
       hoc_ky: hocKy?.ten_hoc_ky,
+      diem_chuyen_can: item.diem_chuyen_can,
+      diem_giua_ky: item.diem_giua_ky,
+      diem_cuoi_ky: item.diem_cuoi_ky,
       diem_tong_ket: item.diem_tong_ket,
       ket_qua: item.ket_qua,
       trang_thai: item.trang_thai,
@@ -1843,7 +1875,7 @@ const OverviewSubjectTable: FC<{ items?: any[] }> = ({ items = [] }) => {
     { headerName: "Lớp học phần", field: "lop_hoc_phan", width: 150 },
     { headerName: "Kỳ học", field: "hoc_ky", width: 150 },
     { headerName: "Điểm tổng kết", field: "diem_tong_ket", width: 140 },
-    { headerName: "Kết quả", field: "ket_qua", width: 130, cellRenderer: (p: any) => <StatusTag value={p.value} /> },
+    { headerName: "Kết quả", field: "ket_qua", width: 130, cellRenderer: (p: any) => <StatusTag value={resolveGradeResult(p.data, p.data?.lop_hoc_phan_data)} /> },
     { headerName: "Trạng thái", field: "trang_thai", width: 140, cellRenderer: (p: any) => <StatusTag value={p.value} /> },
   ];
 

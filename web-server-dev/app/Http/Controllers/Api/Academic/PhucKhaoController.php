@@ -93,7 +93,7 @@ class PhucKhaoController extends Controller
             if ($data['trang_thai'] === 'chap_nhan') {
                 $bangDiem->update([
                     'diem_tong_ket' => $data['diem_moi'],
-                    'ket_qua' => $this->resolveResult($bangDiem, $data['diem_moi']),
+                    'ket_qua' => $this->resolveResult($bangDiem, ['diem_tong_ket' => $data['diem_moi']]),
                     'nguoi_cham_id' => optional($request->user()->giaoVien)->id,
                     'ngay_cham' => now(),
                 ]);
@@ -145,8 +145,14 @@ class PhucKhaoController extends Controller
         return $studentId;
     }
 
-    private function resolveResult(BangDiem $bangDiem, ?float $diemTongKet): string
+    private function resolveResult(BangDiem $bangDiem, array $overrides = []): string
     {
+        $score = function (string $field) use ($bangDiem, $overrides) {
+            return array_key_exists($field, $overrides) ? $overrides[$field] : $bangDiem->{$field};
+        };
+
+        $diemTongKet = $score('diem_tong_ket');
+
         if ($diemTongKet === null) {
             return 'chua_co_diem';
         }
@@ -155,6 +161,14 @@ class PhucKhaoController extends Controller
             ?? $bangDiem->lopHocPhan->hocKy->diem_qua_mon_mac_dinh
             ?? 4;
 
-        return $diemTongKet >= $diemQuaMon ? 'qua_mon' : 'truot';
+        foreach (['diem_chuyen_can', 'diem_giua_ky', 'diem_cuoi_ky', 'diem_tong_ket'] as $field) {
+            $currentScore = $score($field);
+
+            if ($currentScore !== null && (float) $currentScore < (float) $diemQuaMon) {
+                return 'truot';
+            }
+        }
+
+        return 'qua_mon';
     }
 }
