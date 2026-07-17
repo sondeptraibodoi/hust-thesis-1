@@ -24,13 +24,17 @@ class LopHocPhanController extends Controller
 
         if ($user->isTeacher()) {
             $giaoVienId = optional($user->giaoVien)->id;
-            $query->where(function ($teacherQuery) use ($giaoVienId) {
-                $teacherQuery
-                    ->where('giao_vien_bo_mon_id', $giaoVienId)
-                    ->orWhereHas('dangKyMonHocs.sinhVien.lopHanhChinh', function ($q) use ($giaoVienId) {
-                        $q->where('giao_vien_chu_nhiem_id', $giaoVienId);
-                    });
-            });
+            if ($request->boolean('teaching_only')) {
+                $query->where('giao_vien_bo_mon_id', $giaoVienId);
+            } else {
+                $query->where(function ($teacherQuery) use ($giaoVienId) {
+                    $teacherQuery
+                        ->where('giao_vien_bo_mon_id', $giaoVienId)
+                        ->orWhereHas('dangKyMonHocs.sinhVien.lopHanhChinh', function ($q) use ($giaoVienId) {
+                            $q->where('giao_vien_chu_nhiem_id', $giaoVienId);
+                        });
+                });
+            }
         }
 
         if ($user->vai_tro === RoleCode::STUDENT) {

@@ -17,7 +17,7 @@ class BangDiemController extends Controller
         $query = BangDiem::query()->with(['sinhVien', 'lopHocPhan.hocKy', 'lopHocPhan.monHoc', 'nguoiCham']);
 
         if ($user->vai_tro === RoleCode::STUDENT) {
-            $query->where('sinh_vien_id', optional($user->sinhVien)->id);
+            $query->where('sinh_vien_id', $this->currentStudentId($request));
         }
 
         if ($user->isTeacher()) {
@@ -112,6 +112,14 @@ class BangDiemController extends Controller
         }
 
         abort(403, 'Khong co quyen cham diem lop hoc phan nay.');
+    }
+
+    private function currentStudentId(Request $request): int
+    {
+        $studentId = optional($request->user()->sinhVien)->id;
+        abort_unless($studentId, 403, 'Khong tim thay ho so sinh vien cua tai khoan nay.');
+
+        return $studentId;
     }
 
     private function calculateFinalScore(array $data, BangDiem $bangDiem): ?float

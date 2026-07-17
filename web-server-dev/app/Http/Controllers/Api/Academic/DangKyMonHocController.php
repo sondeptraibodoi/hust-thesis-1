@@ -18,7 +18,7 @@ class DangKyMonHocController extends Controller
         $query = DangKyMonHoc::query()->with(['sinhVien', 'lopHocPhan.hocKy', 'lopHocPhan.monHoc', 'bangDiem']);
 
         if ($user->vai_tro === RoleCode::STUDENT) {
-            $query->where('sinh_vien_id', optional($user->sinhVien)->id);
+            $query->where('sinh_vien_id', $this->currentStudentId($request));
         }
 
         if ($user->isTeacher()) {
@@ -139,5 +139,13 @@ class DangKyMonHocController extends Controller
         ]);
 
         return $this->responseUpdated($dangKy->fresh(['lopHocPhan.monHoc']));
+    }
+
+    private function currentStudentId(Request $request): int
+    {
+        $studentId = optional($request->user()->sinhVien)->id;
+        abort_unless($studentId, 403, 'Khong tim thay ho so sinh vien cua tai khoan nay.');
+
+        return $studentId;
     }
 }

@@ -203,6 +203,14 @@ const Navigation: FC<Props> = ({ styles, mode }) => {
     if (!authUser) {
       return [];
     }
+    if (checkUserRoleAllow(authUser, ROLE_CODE.TEACHER)) {
+      return [
+        { label: "Lớp giảng dạy", key: "lop-giang-day" },
+        { label: "Chấm điểm", key: "cham-diem" },
+        { label: "Phúc khảo", key: "phuc-khao" },
+        { label: "Chủ nhiệm", key: "chu-nhiem" }
+      ];
+    }
     let menus: MENU_ITEM[] = [];
     for (const key in MENUS) {
       if (Object.prototype.hasOwnProperty.call(MENUS, key)) {
