@@ -18,6 +18,7 @@ const NotFound = lazy(() => import("@/pages/error/404"));
 const Page500 = lazy(() => import("@/pages/error/500"));
 const LoginPage = lazy(() => import("@/pages/auth/Login"));
 const MicrosoftLoginPage = lazy(() => import("@/pages/auth/MicrosoftLogin"));
+const AcademicPage = lazy(() => import("@/pages/academic"));
 const routeList: RouteObject[] = [
   {
     path: "/",
@@ -81,6 +82,21 @@ const routeList: RouteObject[] = [
       {
         path: "",
         element: <GuestOnlyRoute />
+      },
+      {
+        path: "hoc-vu",
+        element: (
+          <WrapperRouteComponent
+            auth
+            roles={[ROLE.admin, ROLE.teacher, ROLE.student]}
+            element={
+              <>
+                <PageTitle title="Học vụ" />
+                <AcademicPage />
+              </>
+            }
+          />
+        )
       },
       {
         path: "",

@@ -40,6 +40,10 @@ class LopHocPhanController extends Controller
                 });
             } else {
                 $query->where('trang_thai', 'dang_mo')
+                    ->whereDoesntHave('dangKyMonHocs', function ($q) use ($user) {
+                        $q->where('sinh_vien_id', optional($user->sinhVien)->id)
+                            ->where('trang_thai', 'da_dang_ky');
+                    })
                     ->whereHas('monHoc', function ($q) {
                         $q->where('trang_thai', 'dang_mo');
                     })

@@ -1,46 +1,22 @@
-// import configApi from "@/api/config.api";
 import PageTitle from "@/Layout/PageTitle";
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 
-//lop hoc
-const MonHocPage = lazy(() => import("@/pages/sinh-vien/mon-hoc"));
 const BangDiemPage = lazy(() => import("@/pages/sinh-vien/bang-diem"));
 const KiemTraPage = lazy(() => import("@/pages/sinh-vien/kiem-tra"));
 const DanhGiaPage = lazy(() => import("@/pages/sinh-vien/danh-gia-nang-luc"));
 const FormKiemTra = lazy(() => import("@/pages/sinh-vien/kiem-tra/form"));
-const FormDetailDiem = lazy(() => import("@/pages/sinh-vien/bang-diem/detail"))
+const FormDetailDiem = lazy(() => import("@/pages/sinh-vien/bang-diem/detail"));
 const LopPage = lazy(() => import("@/pages/system/lop"));
-const AcademicPage = lazy(() => import("@/pages/academic"));
 
 export const StudentRoute = [
   {
     path: "",
-    element: <Navigate to="mon-hoc" />
+    element: <Navigate to="hoc-vu" replace />
   },
   {
     path: "sinh-vien/mon-hoc",
-    children: [
-      {
-        path: "",
-        index: true,
-        element: (
-          <>
-            <PageTitle title="Môn học" />
-            <MonHocPage />
-          </>
-        )
-      },
-      {
-        path: "kiem-tra/:id",
-        element: (
-          <>
-            <PageTitle title="Chi tiết" />
-            <KiemTraPage />
-          </>
-        )
-      }
-    ]
+    element: <Navigate to="../hoc-vu" replace />
   },
   {
     path: "kiem-tra/:id",
@@ -76,20 +52,9 @@ export const StudentRoute = [
       {
         path: ":id",
         index: true,
-        element: (
-          <FormDetailDiem />
-        )
+        element: <FormDetailDiem />
       }
     ]
-  },
-  {
-    path: "hoc-vu",
-    element: (
-      <>
-        <PageTitle title="Học vụ" />
-        <AcademicPage />
-      </>
-    )
   },
   {
     path: "lop-hoc",
@@ -113,7 +78,6 @@ export const StudentRoute = [
           </>
         )
       }
-
     ]
   }
 ];

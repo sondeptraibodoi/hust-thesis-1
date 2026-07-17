@@ -187,9 +187,11 @@ const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
       width: 150,
       cellRenderer: ({ data }: any) => (
         <Space>
+          {mode !== "student-open" && (
           <Tooltip title="Danh sách sinh viên, điểm, phúc khảo">
             <Button type="text" icon={<FileSearchOutlined />} onClick={() => setDetail(data)} />
           </Tooltip>
+          )}
           {mode === "student-open" && (
             <Tooltip title="Đăng ký">
               <Button
@@ -371,6 +373,8 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent
   const isStudent = currentUser?.vai_tro === ROLE_CODE.STUDENT;
   const canGradeRow = (row: any) =>
     currentUser?.vai_tro === ROLE_CODE.ADMIN || row?.lop_hoc_phan?.giao_vien_bo_mon_id === currentUser?.info?.id;
+  const canRequestReview = (row: any) =>
+    isStudent && row?.diem_tong_ket !== null && row?.diem_tong_ket !== undefined && row?.ket_qua !== "chua_co_diem";
 
   const columns: ColDef[] = [
     { headerName: "Sinh viên", field: "sinh_vien.ho_ten", valueGetter: safeNestedValue("sinh_vien.ho_ten"), filter: "agTextColumnFilter", floatingFilter: true },
@@ -394,7 +398,7 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent
               <Button type="text" icon={<EditOutlined />} onClick={() => setEditing(data)} />
             </Tooltip>
           )}
-          {isStudent && (
+          {canRequestReview(data) && (
             <Tooltip title="Phúc khảo">
               <Button type="text" icon={<FileSearchOutlined />} onClick={() => setPhucKhao(data)} />
             </Tooltip>
