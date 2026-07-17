@@ -60,7 +60,7 @@ export class DataSource<T = any> implements IDatasource {
       ...this.defaultParams
     })
       .then((res) => {
-        rowsThisPage = res.data.list;
+        rowsThisPage = Array.isArray(res.data.list) ? res.data.list.filter(Boolean) : [];
         this.rowCount = rowsThisPage.length;
         params.successCallback(rowsThisPage, rowsThisPage.length);
         if (this.successCallback) {

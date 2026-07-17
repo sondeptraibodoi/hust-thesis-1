@@ -129,13 +129,27 @@ const safeNestedValue = (path: string) => (params: any) =>
 
 const editableGradeFields = ["diem_chuyen_can", "diem_giua_ky", "diem_cuoi_ky", "diem_tong_ket"];
 
+const parseGradeNumber = (value: any): number | null => {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const grade = Number(value);
+  return Number.isFinite(grade) ? grade : null;
+};
+
+const formatGradeValue = (params: any) => {
+  const value = parseGradeNumber(params.value);
+  return value === null ? "" : value.toFixed(2);
+};
+
 const gradeValueParser = (params: any) => {
   if (params.newValue === "" || params.newValue === null || params.newValue === undefined) {
     return null;
   }
 
-  const value = Number(params.newValue);
-  return Number.isNaN(value) ? params.oldValue : Math.min(10, Math.max(0, value));
+  const value = parseGradeNumber(params.newValue);
+  return value === null ? params.oldValue : Math.min(10, Math.max(0, value));
 };
 
 const HocKyTab = () => {
@@ -392,15 +406,27 @@ const LopHanhChinhTab = () => {
   );
 };
 
-const calculateGradeTotal = (row: any) => {
-  const midterm = Number(row.diem_giua_ky);
-  const final = Number(row.diem_cuoi_ky);
+const calculateGradeTotal = (row?: any) => {
+  if (!row) {
+    return null;
+  }
 
-  if (Number.isNaN(midterm) || Number.isNaN(final)) {
+  const midterm = parseGradeNumber(row.diem_giua_ky);
+  const final = parseGradeNumber(row.diem_cuoi_ky);
+
+  if (midterm === null || final === null) {
     return null;
   }
 
   return Math.round((midterm * 0.4 + final * 0.6) * 100) / 100;
+};
+
+const getGradeTotalValue = (row?: any) => {
+  if (!row) {
+    return null;
+  }
+
+  return parseGradeNumber(row.diem_tong_ket) ?? calculateGradeTotal(row);
 };
 
 const getPassingScore = (row: any, lopHocPhan?: any) => {
@@ -411,20 +437,27 @@ const getPassingScore = (row: any, lopHocPhan?: any) => {
   return Number.isNaN(passingScore) ? 4 : passingScore;
 };
 
-const resolveGradeResult = (row: any, lopHocPhan?: any) => {
-  if (row?.diem_tong_ket === null || row?.diem_tong_ket === undefined) {
+const resolveGradeResult = (row?: any, lopHocPhan?: any) => {
+  if (!row) {
+    return "chua_co_diem";
+  }
+
+  const totalScore = getGradeTotalValue(row);
+
+  if (totalScore === null) {
     return "chua_co_diem";
   }
 
   const passingScore = getPassingScore(row, lopHocPhan);
-  const scores = [row?.diem_chuyen_can, row?.diem_giua_ky, row?.diem_cuoi_ky, row?.diem_tong_ket];
+  const scores = [row?.diem_chuyen_can, row?.diem_giua_ky, row?.diem_cuoi_ky, totalScore];
   const hasScoreBelowPassingScore = scores.some((score) => {
-    if (score === null || score === undefined || score === "") {
+    const value = parseGradeNumber(score);
+
+    if (value === null) {
       return false;
     }
 
-    const value = Number(score);
-    return !Number.isNaN(value) && value < passingScore;
+    return value < passingScore;
   });
 
   return hasScoreBelowPassingScore ? "truot" : "qua_mon";
@@ -485,7 +518,7 @@ const ChamDiemLopDetail: FC<{ data: any; onBack: () => void }> = ({ data, onBack
 
   const loadRows = async () => {
     const res = await academicApi.bangDiem.list({ lop_hoc_phan_id: data.id, itemsPerPage: 1000 });
-    setRows(res.data.list || []);
+    setRows((res.data.list || []).filter(Boolean));
     setDirtyRows({});
   };
 
@@ -570,9 +603,9 @@ const ChamDiemLopDetail: FC<{ data: any; onBack: () => void }> = ({ data, onBack
   const columns: ColDef[] = [
     { headerName: "MSSV", field: "sinh_vien.mssv", valueGetter: safeNestedValue("sinh_vien.mssv"), width: 140 },
     { headerName: "Sinh viên", field: "sinh_vien.ho_ten", valueGetter: safeNestedValue("sinh_vien.ho_ten"), flex: 1 },
-    { headerName: "Điểm giữa kỳ", field: "diem_giua_ky", editable: (p: any) => p.data?.trang_thai !== "da_chot", valueParser: gradeValueParser, width: 150 },
-    { headerName: "Điểm cuối kỳ", field: "diem_cuoi_ky", editable: (p: any) => p.data?.trang_thai !== "da_chot", valueParser: gradeValueParser, width: 150 },
-    { headerName: "Tổng kết", field: "diem_tong_ket", width: 130 },
+    { headerName: "Điểm giữa kỳ", field: "diem_giua_ky", editable: (p: any) => p.data?.trang_thai !== "da_chot", valueParser: gradeValueParser, valueFormatter: formatGradeValue, width: 150 },
+    { headerName: "Điểm cuối kỳ", field: "diem_cuoi_ky", editable: (p: any) => p.data?.trang_thai !== "da_chot", valueParser: gradeValueParser, valueFormatter: formatGradeValue, width: 150 },
+    { headerName: "Tổng kết", field: "diem_tong_ket", valueGetter: (p: any) => getGradeTotalValue(p.data), valueFormatter: formatGradeValue, width: 130 },
     { headerName: "Kết quả", field: "ket_qua", width: 130, cellRenderer: (p: any) => <StatusTag value={resolveGradeResult(p.data, data)} /> },
     { headerName: "Trạng thái", field: "trang_thai", width: 140, cellRenderer: (p: any) => <StatusTag value={p.value} /> },
   ];
@@ -597,15 +630,16 @@ const ChamDiemLopDetail: FC<{ data: any; onBack: () => void }> = ({ data, onBack
         <Descriptions.Item label="Lịch học">{data.lich_hoc}</Descriptions.Item>
       </Descriptions>
 
+      <div className="px-4 text-sm text-[#6b7280]">Click chuột vào ô điểm để sửa.</div>
+
       <div style={{ height: "calc(100vh - 430px)", minHeight: 360 }} className="ag-theme-alpine px-4">
         <AgGridReact
           rowData={rows}
           columnDefs={columns}
           defaultColDef={{ minWidth: 130, resizable: true, suppressMovable: true }}
           singleClickEdit
-          stopEditingWhenCellsLoseFocus
           onCellValueChanged={updateDirtyRow}
-          getRowId={(params) => String(params.data.id)}
+          getRowId={(params) => String(params.data?.id ?? "")}
         />
       </div>
 
@@ -642,6 +676,8 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent
     !readonly &&
     canGradeRow(params.data) &&
     (currentUser?.vai_tro === ROLE_CODE.ADMIN || params.data?.trang_thai !== "da_chot");
+  const canUseInlineGradeEdit =
+    !readonly && (currentUser?.vai_tro === ROLE_CODE.ADMIN || currentUser?.vai_tro === ROLE_CODE.TEACHER);
 
   const handleGradeCellChanged = async (event: any) => {
     const field = event.colDef.field;
@@ -685,10 +721,10 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent
     { headerName: "MSSV", field: "sinh_vien.mssv", valueGetter: safeNestedValue("sinh_vien.mssv"), width: 130 },
     { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", valueGetter: safeNestedValue("lop_hoc_phan.mon_hoc.ten_mon_hoc"), filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "Lớp học phần", field: "lop_hoc_phan.ma_lop_hoc_phan", valueGetter: safeNestedValue("lop_hoc_phan.ma_lop_hoc_phan"), width: 150 },
-    { headerName: "Chuyên cần", field: "diem_chuyen_can", width: 130 },
-    { headerName: "Giữa kỳ", field: "diem_giua_ky", width: 120 },
-    { headerName: "Cuối kỳ", field: "diem_cuoi_ky", width: 120 },
-    { headerName: "Tổng kết", field: "diem_tong_ket", width: 120 },
+    { headerName: "Chuyên cần", field: "diem_chuyen_can", valueFormatter: formatGradeValue, width: 130 },
+    { headerName: "Giữa kỳ", field: "diem_giua_ky", valueFormatter: formatGradeValue, width: 120 },
+    { headerName: "Cuối kỳ", field: "diem_cuoi_ky", valueFormatter: formatGradeValue, width: 120 },
+    { headerName: "Tổng kết", field: "diem_tong_ket", valueGetter: (p: any) => getGradeTotalValue(p.data), valueFormatter: formatGradeValue, width: 120 },
     { headerName: "Kết quả", field: "ket_qua", cellRenderer: (p: any) => <StatusTag value={resolveGradeResult(p.data)} /> },
     { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     {
@@ -727,6 +763,9 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent
           </Button>
         </div>
       )}
+      {canUseInlineGradeEdit && (
+        <div className="px-4 pb-2 text-sm text-[#6b7280]">Click chuột vào ô điểm để sửa.</div>
+      )}
       <TableFrame>
         <BaseTable
           key={`${keyRender}-${lopHocPhanId ?? "all"}`}
@@ -735,7 +774,6 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent
           defaultParams={lopHocPhanId ? { lop_hoc_phan_id: lopHocPhanId } : undefined}
           gridOption={{
             singleClickEdit: true,
-            stopEditingWhenCellsLoseFocus: true,
             onCellValueChanged: handleGradeCellChanged,
             defaultColDef: {
               editable: (params: any) =>
@@ -1874,7 +1912,7 @@ const OverviewSubjectTable: FC<{ items?: any[] }> = ({ items = [] }) => {
     { headerName: "Môn học", field: "ten_mon_hoc", flex: 1, minWidth: 180 },
     { headerName: "Lớp học phần", field: "lop_hoc_phan", width: 150 },
     { headerName: "Kỳ học", field: "hoc_ky", width: 150 },
-    { headerName: "Điểm tổng kết", field: "diem_tong_ket", width: 140 },
+    { headerName: "Điểm tổng kết", field: "diem_tong_ket", valueGetter: (p: any) => getGradeTotalValue(p.data), valueFormatter: formatGradeValue, width: 140 },
     { headerName: "Kết quả", field: "ket_qua", width: 130, cellRenderer: (p: any) => <StatusTag value={resolveGradeResult(p.data, p.data?.lop_hoc_phan_data)} /> },
     { headerName: "Trạng thái", field: "trang_thai", width: 140, cellRenderer: (p: any) => <StatusTag value={p.value} /> },
   ];
