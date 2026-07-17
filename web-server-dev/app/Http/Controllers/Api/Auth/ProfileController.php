@@ -7,6 +7,8 @@ use App\Constants\RoleCode;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\RegisterRequest;
 use App\Models\Auth\User;
+use App\Models\GiaoVien;
+use App\Models\SinhVien;
 use Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -56,10 +58,87 @@ class ProfileController extends Controller
     }
     public function me(Request $request)
     {
-        $user = $request->user();
+        $user = User::with(['sinhVien.lopHanhChinh', 'giaoVien.lopChuNhiems', 'giaoVien.lopHocPhans'])
+            ->findOrFail($request->user()->id);
+
+        $this->ensureAcademicProfile($user);
+
+        $user->load(['sinhVien.lopHanhChinh', 'giaoVien.lopChuNhiems', 'giaoVien.lopHocPhans']);
+
         return response()->json([
-            "user" => User::find($user->id),
+            "user" => $user,
         ]);
+    }
+
+    private function ensureAcademicProfile(User $user): void
+    {
+        if ($user->vai_tro === RoleCode::STUDENT && !$user->sinhVien) {
+            $email = $this->profileEmail($user);
+            $profile = SinhVien::where('email', $email)->first();
+
+            if ($profile) {
+                $profile->update(['nguoi_dung_id' => $user->id]);
+                return;
+            }
+
+            SinhVien::create([
+                'nguoi_dung_id' => $user->id,
+                'mssv' => $this->uniqueStudentCode($user),
+                'ho_ten' => $this->profileName($user),
+                'email' => $email,
+            ]);
+        }
+
+        if (in_array($user->vai_tro, RoleCode::TEACHER_ROLES, true) && !$user->giaoVien) {
+            $email = $this->profileEmail($user);
+            $profile = GiaoVien::where('email', $email)->first();
+
+            if ($profile) {
+                $profile->update(['nguoi_dung_id' => $user->id]);
+                return;
+            }
+
+            GiaoVien::create([
+                'nguoi_dung_id' => $user->id,
+                'ma_giao_vien' => $this->uniqueTeacherCode($user),
+                'ho_ten' => $this->profileName($user),
+                'email' => $email,
+            ]);
+        }
+    }
+
+    private function profileEmail(User $user): string
+    {
+        return $user->email ?: $user->username;
+    }
+
+    private function profileName(User $user): string
+    {
+        return $user->ho_ten ?: strtok($this->profileEmail($user), '@') ?: $user->username;
+    }
+
+    private function uniqueStudentCode(User $user): string
+    {
+        $emailName = strtok($this->profileEmail($user), '@') ?: '';
+        preg_match('/\d+/', $emailName, $matches);
+        $code = $matches[0] ?? 'SV' . $user->id;
+
+        if (!SinhVien::where('mssv', $code)->exists()) {
+            return $code;
+        }
+
+        return $code . '-' . $user->id;
+    }
+
+    private function uniqueTeacherCode(User $user): string
+    {
+        $code = 'GV' . $user->id;
+
+        if (!GiaoVien::where('ma_giao_vien', $code)->exists()) {
+            return $code;
+        }
+
+        return $code . '-' . time();
     }
 
     public function updatePassword(UpdatePasswordRequest $request)

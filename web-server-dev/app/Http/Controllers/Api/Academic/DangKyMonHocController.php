@@ -59,17 +59,24 @@ class DangKyMonHocController extends Controller
             'sinh_vien_id' => 'nullable|exists:sinh_viens,id',
         ]);
 
-        $sinhVienId = $user->vai_tro === RoleCode::ADMIN
+        $lopHocPhan = LopHocPhan::with(['hocKy', 'monHoc.monHocTienQuyets'])->findOrFail($data['lop_hoc_phan_id']);
+
+        $canManageLopHocPhan = $user->vai_tro === RoleCode::ADMIN
+            || ($user->isTeacher() && $lopHocPhan->giao_vien_bo_mon_id === optional($user->giaoVien)->id);
+
+        $sinhVienId = $canManageLopHocPhan
             ? ($data['sinh_vien_id'] ?? null)
             : optional($user->sinhVien)->id;
 
         abort_unless($sinhVienId, 422, 'Khong tim thay sinh vien dang ky.');
 
-        $lopHocPhan = LopHocPhan::with(['hocKy', 'monHoc.monHocTienQuyets'])->findOrFail($data['lop_hoc_phan_id']);
-
-        abort_unless($user->vai_tro === RoleCode::ADMIN || $lopHocPhan->hocKy->dang_mo_dang_ky, 422, 'Hoc ky chua mo dang ky.');
-        abort_unless($lopHocPhan->monHoc->trang_thai === 'dang_mo', 422, 'Mon hoc chua duoc mo dang ky.');
-        abort_unless($lopHocPhan->trang_thai === 'dang_mo', 422, 'Lop hoc phan khong dang mo.');
+        if ($user->vai_tro === RoleCode::STUDENT) {
+            abort_unless($lopHocPhan->hocKy->dang_mo_dang_ky, 422, 'Hoc ky chua mo dang ky.');
+            abort_unless($lopHocPhan->monHoc->trang_thai === 'dang_mo', 422, 'Mon hoc chua duoc mo dang ky.');
+            abort_unless($lopHocPhan->trang_thai === 'dang_mo', 422, 'Lop hoc phan khong dang mo.');
+        } else {
+            abort_unless($canManageLopHocPhan, 403, 'Khong co quyen them sinh vien vao lop hoc phan nay.');
+        }
 
         if ($lopHocPhan->si_so_toi_da) {
             $current = $lopHocPhan->dangKyMonHocs()->where('trang_thai', 'da_dang_ky')->count();

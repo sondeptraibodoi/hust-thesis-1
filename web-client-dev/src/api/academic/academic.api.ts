@@ -65,6 +65,9 @@ export default {
     create: (item: any) => sdk.post("academic/dang-ky-mon-hoc", item),
     cancel: (item: any) => sdk.put(`academic/dang-ky-mon-hoc/${item.id}/huy`, item),
   },
+  sinhVien: {
+    list: (params?: CallbackParams | any) => tableGet("sinh-vien", params),
+  },
   bangDiem: {
     list: (params?: CallbackParams | any) => tableGet("academic/bang-diem", params),
     edit: (item: any) => sdk.put(`academic/bang-diem/${item.id}`, item),

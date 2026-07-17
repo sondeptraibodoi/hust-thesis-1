@@ -55,10 +55,11 @@ export default function ProfileDrawer({ openState, closefunct }: ProfileDrawerPr
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    console.log("🚀 ~ ProfileDrawer ~ authUser:", authUser)
     if (activeTab && authUser && authUser.vai_tro !== 'admin') {
       form.setFieldsValue({
-        ho_ten: authUser.info.ho_ten,
-        email: authUser.info.email,
+        ho_ten: authUser.info?.ho_ten,
+        email: authUser.info?.email,
         mssv: authUser.info?.mssv || null
       });
     } else if (activeTab && authUser && authUser.vai_tro === 'admin') {

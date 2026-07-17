@@ -103,6 +103,9 @@ const StatusTag: FC<{ value?: string }> = ({ value }) => {
   return <Tag color={color}>{text[value || ""] || value || "Chưa rõ"}</Tag>;
 };
 
+const safeNestedValue = (path: string) => (params: any) =>
+  path.split(".").reduce((value, key) => value?.[key], params.data) ?? "";
+
 const HocKyTab = () => {
   const [keyRender, setKeyRender] = useState(1);
   const [open, setOpen] = useState(false);
@@ -172,9 +175,9 @@ const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
   const columns: ColDef[] = [
     { headerName: "Mã lớp", field: "ma_lop_hoc_phan", filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "Tên lớp", field: "ten_lop_hoc_phan", filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "Môn học", field: "mon_hoc.ten_mon_hoc", filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "Kỳ học", field: "hoc_ky.ten_hoc_ky", filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "Giáo viên", field: "giao_vien_bo_mon.ho_ten" },
+    { headerName: "Môn học", field: "mon_hoc.ten_mon_hoc", valueGetter: safeNestedValue("mon_hoc.ten_mon_hoc"), filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Kỳ học", field: "hoc_ky.ten_hoc_ky", valueGetter: safeNestedValue("hoc_ky.ten_hoc_ky"), filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Giáo viên", field: "giao_vien_bo_mon.ho_ten", valueGetter: safeNestedValue("giao_vien_bo_mon.ho_ten") },
     { headerName: "Sĩ số", field: "si_so_toi_da", width: 100 },
     { headerName: "Lịch học", field: "lich_hoc" },
     { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
@@ -252,9 +255,9 @@ const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
 const DangKyTab = () => {
   const [keyRender, setKeyRender] = useState(1);
   const columns: ColDef[] = [
-    { headerName: "Mã lớp", field: "lop_hoc_phan.ma_lop_hoc_phan" },
-    { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", flex: 1 },
-    { headerName: "Kỳ học", field: "lop_hoc_phan.hoc_ky.ten_hoc_ky" },
+    { headerName: "Mã lớp", field: "lop_hoc_phan.ma_lop_hoc_phan", valueGetter: safeNestedValue("lop_hoc_phan.ma_lop_hoc_phan") },
+    { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", valueGetter: safeNestedValue("lop_hoc_phan.mon_hoc.ten_mon_hoc"), flex: 1 },
+    { headerName: "Kỳ học", field: "lop_hoc_phan.hoc_ky.ten_hoc_ky", valueGetter: safeNestedValue("lop_hoc_phan.hoc_ky.ten_hoc_ky") },
     { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     {
       headerName: "Hành động",
@@ -301,7 +304,7 @@ const LopHanhChinhTab = () => {
     { headerName: "Tên lớp", field: "ten_lop", filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "Ngành", field: "nganh" },
     { headerName: "Khóa", field: "khoa" },
-    { headerName: "Giáo viên chủ nhiệm", field: "giao_vien_chu_nhiem.ho_ten", flex: 1 },
+    { headerName: "Giáo viên chủ nhiệm", field: "giao_vien_chu_nhiem.ho_ten", valueGetter: safeNestedValue("giao_vien_chu_nhiem.ho_ten"), flex: 1 },
     {
       headerName: "Hành động",
       pinned: "right",
@@ -355,20 +358,25 @@ const LopHanhChinhTab = () => {
   );
 };
 
-const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readonly, lopHocPhanId }) => {
+const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent?: boolean }> = ({
+  readonly,
+  lopHocPhanId,
+  canAddStudent,
+}) => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
   const [keyRender, setKeyRender] = useState(1);
   const [editing, setEditing] = useState<any>();
   const [phucKhao, setPhucKhao] = useState<any>();
+  const [addStudentOpen, setAddStudentOpen] = useState(false);
   const isStudent = currentUser?.vai_tro === ROLE_CODE.STUDENT;
   const canGradeRow = (row: any) =>
     currentUser?.vai_tro === ROLE_CODE.ADMIN || row?.lop_hoc_phan?.giao_vien_bo_mon_id === currentUser?.info?.id;
 
   const columns: ColDef[] = [
-    { headerName: "Sinh viên", field: "sinh_vien.ho_ten", filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "MSSV", field: "sinh_vien.mssv", width: 130 },
-    { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "Lớp học phần", field: "lop_hoc_phan.ma_lop_hoc_phan", width: 150 },
+    { headerName: "Sinh viên", field: "sinh_vien.ho_ten", valueGetter: safeNestedValue("sinh_vien.ho_ten"), filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "MSSV", field: "sinh_vien.mssv", valueGetter: safeNestedValue("sinh_vien.mssv"), width: 130 },
+    { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", valueGetter: safeNestedValue("lop_hoc_phan.mon_hoc.ten_mon_hoc"), filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Lớp học phần", field: "lop_hoc_phan.ma_lop_hoc_phan", valueGetter: safeNestedValue("lop_hoc_phan.ma_lop_hoc_phan"), width: 150 },
     { headerName: "Chuyên cần", field: "diem_chuyen_can", width: 130 },
     { headerName: "Giữa kỳ", field: "diem_giua_ky", width: 120 },
     { headerName: "Cuối kỳ", field: "diem_cuoi_ky", width: 120 },
@@ -398,7 +406,12 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readon
 
   return (
     <>
-      <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
+      <Toolbar
+        hiddenCreate={!canAddStudent}
+        createText="Thêm sinh viên"
+        onCreate={() => setAddStudentOpen(true)}
+        onReload={() => setKeyRender(Math.random())}
+      />
       <TableFrame>
         <BaseTable
           key={`${keyRender}-${lopHocPhanId ?? "all"}`}
@@ -412,6 +425,15 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readon
         onClose={() => setEditing(undefined)}
         onDone={() => {
           setEditing(undefined);
+          setKeyRender(Math.random());
+        }}
+      />
+      <AddLopHocPhanStudentModal
+        open={addStudentOpen}
+        lopHocPhanId={lopHocPhanId}
+        onClose={() => setAddStudentOpen(false)}
+        onDone={() => {
+          setAddStudentOpen(false);
           setKeyRender(Math.random());
         }}
       />
@@ -429,8 +451,8 @@ const PhucKhaoTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readon
     (currentUser?.vai_tro === ROLE_CODE.ADMIN || row?.lop_hoc_phan?.giao_vien_bo_mon_id === currentUser?.info?.id);
 
   const columns: ColDef[] = [
-    { headerName: "Sinh viên", field: "sinh_vien.ho_ten", filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", flex: 1 },
+    { headerName: "Sinh viên", field: "sinh_vien.ho_ten", valueGetter: safeNestedValue("sinh_vien.ho_ten"), filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", valueGetter: safeNestedValue("lop_hoc_phan.mon_hoc.ten_mon_hoc"), flex: 1 },
     { headerName: "Điểm cũ", field: "diem_cu", width: 100 },
     { headerName: "Điểm mới", field: "diem_moi", width: 100 },
     { headerName: "Nội dung", field: "noi_dung", flex: 1 },
@@ -480,7 +502,7 @@ const ChuNhiemTab = () => {
     { headerName: "MSSV", field: "mssv", width: 140, filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "Họ tên", field: "ho_ten", flex: 1, filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "Email", field: "email", flex: 1 },
-    { headerName: "Lớp", field: "lop_hanh_chinh.ten_lop", width: 180 },
+    { headerName: "Lớp", field: "lop_hanh_chinh.ten_lop", valueGetter: safeNestedValue("lop_hanh_chinh.ten_lop"), width: 180 },
     { headerName: "Trạng thái", field: "trang_thai_hoc_tap", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     {
       headerName: "Hành động",
@@ -634,7 +656,7 @@ const AssignClassStudentsModal: FC<{ open: boolean; lop?: any; onClose: () => vo
     setSelectedStudentIds([]);
     academicApi.chuNhiem
       .sinhVien({ available_for_lop_hanh_chinh_id: lop.id, itemsPerPage: 200 })
-      .then((res) => setStudents(res.data.list || []));
+      .then((res) => setStudents((res.data.list || []).filter(Boolean)));
   }, [assignForm, createForm, lop?.id, open]);
 
   const filteredStudents = useMemo(() => {
@@ -642,7 +664,7 @@ const AssignClassStudentsModal: FC<{ open: boolean; lop?: any; onClose: () => vo
     if (!normalizedKeyword) return students;
 
     return students.filter((student) =>
-      [student.mssv, student.ho_ten, student.email].some((value) =>
+      [student?.mssv, student?.ho_ten, student?.email].some((value) =>
         String(value || "").toLowerCase().includes(normalizedKeyword)
       )
     );
@@ -736,9 +758,9 @@ const AssignClassStudentsModal: FC<{ open: boolean; lop?: any; onClose: () => vo
                               }}
                             />
                             <div className="min-w-0 flex-1">
-                              <div className="truncate font-medium text-[#111827]">{student.ho_ten}</div>
+                              <div className="truncate font-medium text-[#111827]">{student?.ho_ten}</div>
                               <div className="truncate text-xs text-[#6b7280]">
-                                {student.mssv || "Chưa có MSSV"} · {student.email || "Chưa có email"}
+                                {student?.mssv || "Chưa có MSSV"} · {student?.email || "Chưa có email"}
                               </div>
                             </div>
                           </label>
@@ -758,7 +780,7 @@ const AssignClassStudentsModal: FC<{ open: boolean; lop?: any; onClose: () => vo
                             setSelectedStudentIds((current) => current.filter((id) => id !== student.id))
                           }
                         >
-                          {student.mssv} - {student.ho_ten}
+                          {student?.mssv} - {student?.ho_ten}
                         </Tag>
                       ))}
                     </div>
@@ -803,7 +825,12 @@ const AssignClassStudentsModal: FC<{ open: boolean; lop?: any; onClose: () => vo
 };
 
 const LopHocPhanDetailDrawer: FC<{ data?: any; onClose: () => void }> = ({ data, onClose }) => {
+  const { currentUser } = useAppSelector((state: RootState) => state.auth);
+
   if (!data) return null;
+
+  const canManageSubjectClass =
+    currentUser?.vai_tro === ROLE_CODE.ADMIN || data.giao_vien_bo_mon_id === currentUser?.info?.id;
 
   return (
     <Drawer
@@ -813,18 +840,19 @@ const LopHocPhanDetailDrawer: FC<{ data?: any; onClose: () => void }> = ({ data,
       width="min(1320px, calc(100vw - 32px))"
     >
       <Tabs
+        defaultActiveKey={canManageSubjectClass ? "bang-diem" : "dang-ky"}
         tabBarGutter={28}
         className="[&_.ant-tabs-nav]:mb-4 [&_.ant-tabs-nav-wrap]:overflow-x-auto [&_.ant-tabs-nav-list]:min-w-max"
         items={[
           {
             key: "dang-ky",
             label: "Sinh viên đăng ký",
-            children: <DangKyLopHocPhanTable lopHocPhanId={data.id} />,
+            children: <DangKyLopHocPhanTable lopHocPhanId={data.id} canAddStudent={canManageSubjectClass} />,
           },
           {
             key: "bang-diem",
             label: "Bảng điểm",
-            children: <BangDiemTab lopHocPhanId={data.id} />,
+            children: <BangDiemTab lopHocPhanId={data.id} canAddStudent={canManageSubjectClass} />,
           },
           {
             key: "phuc-khao",
@@ -837,19 +865,28 @@ const LopHocPhanDetailDrawer: FC<{ data?: any; onClose: () => void }> = ({ data,
   );
 };
 
-const DangKyLopHocPhanTable: FC<{ lopHocPhanId: number }> = ({ lopHocPhanId }) => {
+const DangKyLopHocPhanTable: FC<{ lopHocPhanId: number; canAddStudent?: boolean }> = ({
+  lopHocPhanId,
+  canAddStudent,
+}) => {
   const [keyRender, setKeyRender] = useState(1);
+  const [addStudentOpen, setAddStudentOpen] = useState(false);
   const columns: ColDef[] = [
-    { headerName: "MSSV", field: "sinh_vien.mssv", width: 140 },
-    { headerName: "Sinh viên", field: "sinh_vien.ho_ten", flex: 1, filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "Email", field: "sinh_vien.email", flex: 1 },
+    { headerName: "MSSV", field: "sinh_vien.mssv", valueGetter: safeNestedValue("sinh_vien.mssv"), width: 140 },
+    { headerName: "Sinh viên", field: "sinh_vien.ho_ten", valueGetter: safeNestedValue("sinh_vien.ho_ten"), flex: 1, filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Email", field: "sinh_vien.email", valueGetter: safeNestedValue("sinh_vien.email"), flex: 1 },
     { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     { headerName: "Ghi chú", field: "ghi_chu", flex: 1 },
   ];
 
   return (
     <>
-      <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
+      <Toolbar
+        hiddenCreate={!canAddStudent}
+        createText="Thêm sinh viên"
+        onCreate={() => setAddStudentOpen(true)}
+        onReload={() => setKeyRender(Math.random())}
+      />
       <TableFrame>
         <BaseTable
           key={`${keyRender}-${lopHocPhanId}`}
@@ -858,19 +895,160 @@ const DangKyLopHocPhanTable: FC<{ lopHocPhanId: number }> = ({ lopHocPhanId }) =
           defaultParams={{ lop_hoc_phan_id: lopHocPhanId }}
         />
       </TableFrame>
+      <AddLopHocPhanStudentModal
+        open={addStudentOpen}
+        lopHocPhanId={lopHocPhanId}
+        onClose={() => setAddStudentOpen(false)}
+        onDone={() => {
+          setAddStudentOpen(false);
+          setKeyRender(Math.random());
+        }}
+      />
     </>
   );
 };
 
-const Toolbar: FC<{ hiddenCreate?: boolean; onCreate?: () => void; onReload?: () => void }> = ({
+const AddLopHocPhanStudentModal: FC<{
+  open: boolean;
+  lopHocPhanId?: number;
+  onClose: () => void;
+  onDone: () => void;
+}> = ({ open, lopHocPhanId, onClose, onDone }) => {
+  const [form] = Form.useForm();
+  const [students, setStudents] = useState<any[]>([]);
+  const [selectedStudentIds, setSelectedStudentIds] = useState<Array<number | string>>([]);
+  const [keyword, setKeyword] = useState("");
+
+  useEffect(() => {
+    if (!open || !lopHocPhanId) return;
+
+    form.resetFields();
+    setKeyword("");
+    setSelectedStudentIds([]);
+
+    Promise.all([
+      academicApi.sinhVien.list({ itemsPerPage: 500 }),
+      academicApi.dangKy.list({ lop_hoc_phan_id: lopHocPhanId, itemsPerPage: 500 }),
+    ]).then(([studentRes, registeredRes]) => {
+      const activeStudentIds = new Set(
+        (registeredRes.data.list || [])
+          .filter((item: any) => item.trang_thai === "da_dang_ky")
+          .map((item: any) => item.sinh_vien_id)
+      );
+
+      setStudents((studentRes.data.list || []).filter(Boolean).filter((student: any) => !activeStudentIds.has(student.id)));
+    });
+  }, [form, lopHocPhanId, open]);
+
+  const filteredStudents = useMemo(() => {
+    const normalizedKeyword = keyword.trim().toLowerCase();
+    if (!normalizedKeyword) return students;
+
+    return students.filter((student) =>
+      [student?.mssv, student?.ho_ten, student?.email].some((value) =>
+        String(value || "").toLowerCase().includes(normalizedKeyword)
+      )
+    );
+  }, [keyword, students]);
+
+  return (
+    <Modal
+      centered
+      open={open}
+      title="Thêm sinh viên vào lớp học phần"
+      onCancel={onClose}
+      onOk={() => form.submit()}
+      okText="Thêm"
+      cancelText="Đóng"
+      width="min(920px, calc(100vw - 32px))"
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={async () => {
+          if (!lopHocPhanId || !selectedStudentIds.length) {
+            notification.warning({ message: "Vui lòng chọn ít nhất một sinh viên" });
+            return;
+          }
+
+          await Promise.all(
+            selectedStudentIds.map((sinhVienId) =>
+              academicApi.dangKy.create({ lop_hoc_phan_id: lopHocPhanId, sinh_vien_id: sinhVienId })
+            )
+          );
+
+          notification.success({ message: "Đã thêm sinh viên vào lớp học phần" });
+          onDone();
+        }}
+      >
+        <Form.Item>
+          <div className="rounded border border-solid border-[#e5e7eb] bg-[#fafafa] p-3">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <Input.Search
+                allowClear
+                placeholder="Tìm theo MSSV, họ tên, email"
+                value={keyword}
+                onChange={(event) => setKeyword(event.target.value)}
+              />
+              <Tag color="red" className="m-0 shrink-0">
+                {selectedStudentIds.length} đã chọn
+              </Tag>
+            </div>
+            <div className="max-h-[360px] overflow-auto rounded bg-white">
+              {filteredStudents.length ? (
+                filteredStudents.map((student) => {
+                  const checked = selectedStudentIds.includes(student.id);
+
+                  return (
+                    <label
+                      key={student.id}
+                      className={`mb-0 flex cursor-pointer items-center gap-3 border-0 border-b border-solid border-[#f0f0f0] px-3 py-2 transition ${
+                        checked ? "bg-[#fff1f0]" : "bg-white hover:bg-[#fafafa]"
+                      }`}
+                    >
+                      <Checkbox
+                        checked={checked}
+                        onChange={(event) => {
+                          setSelectedStudentIds((current) =>
+                            event.target.checked
+                              ? [...current, student.id]
+                              : current.filter((studentId) => studentId !== student.id)
+                          );
+                        }}
+                      />
+                      <div className="min-w-[108px] font-semibold text-[#001d4a]">{student?.mssv}</div>
+                      <div className="flex-1">
+                        <div className="font-medium text-[#111827]">{student?.ho_ten}</div>
+                        <div className="text-xs text-[#6b7280]">{student?.email}</div>
+                      </div>
+                    </label>
+                  );
+                })
+              ) : (
+                <div className="py-8 text-center text-[#6b7280]">Không còn sinh viên phù hợp</div>
+              )}
+            </div>
+          </div>
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+};
+
+const Toolbar: FC<{ hiddenCreate?: boolean; createText?: string; onCreate?: () => void; onReload?: () => void }> = ({
   hiddenCreate,
+  createText,
   onCreate,
   onReload,
 }) => (
   <div className="d-flex justify-end gap-2 px-4 pb-2">
     {!hiddenCreate && (
       <Button type="primary" icon={<PlusOutlined />} onClick={onCreate}>
+        {createText || (
+          <>
         Thêm mới
+          </>
+        )}
       </Button>
     )}
     <Button icon={<ReloadOutlined />} onClick={onReload}>
@@ -962,9 +1140,9 @@ const LopHocPhanModal: FC<{ open: boolean; data?: any; onClose: () => void; onDo
   useEffect(() => {
     if (!open) return;
     form.setFieldsValue(data || { trang_thai: "dang_mo" });
-    academicApi.hocKy.list({ itemsPerPage: 100 }).then((res) => setHocKy(res.data.list));
-    monHocApi.list({ itemsPerPage: 100 } as any).then((res: any) => setMonHoc(res.data.list || res.data?.data?.data || []));
-    giaoVienApi.list({ itemsPerPage: 100 } as any).then((res: any) => setGiaoVien(res.data.list || res.data?.data?.data || []));
+    academicApi.hocKy.list({ itemsPerPage: 100 }).then((res) => setHocKy((res.data.list || []).filter(Boolean)));
+    monHocApi.list({ itemsPerPage: 100 } as any).then((res: any) => setMonHoc((res.data.list || res.data?.data?.data || []).filter(Boolean)));
+    giaoVienApi.list({ itemsPerPage: 100 } as any).then((res: any) => setGiaoVien((res.data.list || res.data?.data?.data || []).filter(Boolean)));
   }, [data, form, open]);
 
   return (
@@ -988,13 +1166,13 @@ const LopHocPhanModal: FC<{ open: boolean; data?: any; onClose: () => void; onDo
         }}
       >
         <Form.Item name="hoc_ky_id" label="Kỳ học" rules={[{ required: true }]}>
-          <Select options={hocKy.map((x) => ({ value: x.id, label: x.ten_hoc_ky }))} showSearch optionFilterProp="label" />
+          <Select options={hocKy.map((x) => ({ value: x?.id, label: x?.ten_hoc_ky }))} showSearch optionFilterProp="label" />
         </Form.Item>
         <Form.Item name="mon_hoc_id" label="Môn học" rules={[{ required: true }]}>
-          <Select options={monHoc.map((x) => ({ value: x.id, label: x.ten_mon_hoc }))} showSearch optionFilterProp="label" />
+          <Select options={monHoc.map((x) => ({ value: x?.id, label: x?.ten_mon_hoc }))} showSearch optionFilterProp="label" />
         </Form.Item>
         <Form.Item name="giao_vien_bo_mon_id" label="Giáo viên bộ môn">
-          <Select options={giaoVien.map((x) => ({ value: x.id, label: x.ho_ten }))} allowClear showSearch optionFilterProp="label" />
+          <Select options={giaoVien.map((x) => ({ value: x?.id, label: x?.ho_ten }))} allowClear showSearch optionFilterProp="label" />
         </Form.Item>
         <Form.Item name="ma_lop_hoc_phan" label="Mã lớp học phần" rules={[{ required: true }]}>
           <Input />
@@ -1031,7 +1209,7 @@ const LopHanhChinhModal: FC<{ open: boolean; data?: any; onClose: () => void; on
   useEffect(() => {
     if (!open) return;
     form.setFieldsValue(data || {});
-    giaoVienApi.list({ itemsPerPage: 100 } as any).then((res: any) => setGiaoVien(res.data.list || res.data?.data?.data || []));
+    giaoVienApi.list({ itemsPerPage: 100 } as any).then((res: any) => setGiaoVien((res.data.list || res.data?.data?.data || []).filter(Boolean)));
   }, [data, form, open]);
 
   return (
@@ -1061,7 +1239,7 @@ const LopHanhChinhModal: FC<{ open: boolean; data?: any; onClose: () => void; on
           <Input />
         </Form.Item>
         <Form.Item name="giao_vien_chu_nhiem_id" label="Giáo viên chủ nhiệm">
-          <Select options={giaoVien.map((x) => ({ value: x.id, label: x.ho_ten }))} allowClear showSearch optionFilterProp="label" />
+          <Select options={giaoVien.map((x) => ({ value: x?.id, label: x?.ho_ten }))} allowClear showSearch optionFilterProp="label" />
         </Form.Item>
         <Form.Item name="nganh" label="Ngành">
           <Input />
@@ -1189,7 +1367,7 @@ const CauHinhTab = () => {
   const columns: ColDef[] = [
     { headerName: "Key", field: "key", filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "Nhóm", field: "group" },
-    { headerName: "Giá trị", field: "value.value" },
+    { headerName: "Giá trị", field: "value.value", valueGetter: safeNestedValue("value.value") },
     { headerName: "Mô tả", field: "mo_ta", flex: 1 },
     {
       headerName: "Hành động",
