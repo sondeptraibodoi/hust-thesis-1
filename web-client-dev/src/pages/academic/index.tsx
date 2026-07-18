@@ -66,6 +66,7 @@ const AcademicPage: FC<{ teacherPage?: TeacherAcademicPage }> = ({ teacherPage }
       return [
         { key: "hoc-ky", label: "Kỳ học", children: <HocKyTab /> },
         { key: "lop-hoc-phan", label: "Lớp học phần", children: <LopHocPhanTab /> },
+        { key: "dang-ky", label: "Xếp lớp đăng ký", children: <DangKyTab /> },
         { key: "lop-hanh-chinh", label: "Lớp chủ nhiệm", children: <LopHanhChinhTab /> },
         { key: "cau-hinh", label: "Cấu hình", children: <CauHinhTab /> },
       ];
@@ -73,7 +74,7 @@ const AcademicPage: FC<{ teacherPage?: TeacherAcademicPage }> = ({ teacherPage }
 
     if (role === ROLE_CODE.STUDENT) {
       return [
-        { key: "lop-mo", label: "Đăng ký môn", children: <LopHocPhanTab mode="student-open" /> },
+        { key: "lop-mo", label: "Đăng ký môn", children: <MonMoDangKyTab /> },
         { key: "dang-ky", label: "Môn đã đăng ký", children: <DangKyTab /> },
         { key: "bang-diem", label: "Bảng điểm", children: <BangDiemTab /> },
         { key: "phuc-khao", label: "Phúc khảo", children: <PhucKhaoTab /> },
@@ -103,7 +104,7 @@ const StatusTag: FC<{ value?: string }> = ({ value }) => {
       ? "green"
       : value === "truot" || value === "da_huy" || value === "tu_choi"
         ? "red"
-        : value === "cho_xu_ly"
+        : value === "cho_xu_ly" || value === "cho_xep_lop"
           ? "gold"
           : "blue";
 
@@ -117,6 +118,7 @@ const StatusTag: FC<{ value?: string }> = ({ value }) => {
     nhap_diem: "Nhập điểm",
     da_chot: "Đã chốt",
     cho_xu_ly: "Chờ xử lý",
+    cho_xep_lop: "Chờ xếp lớp",
     chap_nhan: "Chấp nhận",
     tu_choi: "Từ chối",
   };
@@ -210,6 +212,45 @@ const HocKyTab = () => {
   );
 };
 
+const MonMoDangKyTab = () => {
+  const [keyRender, setKeyRender] = useState(1);
+
+  const columns: ColDef[] = [
+    { headerName: "Mã môn", field: "mon_hoc.ma", valueGetter: safeNestedValue("mon_hoc.ma"), width: 150 },
+    { headerName: "Môn học", field: "mon_hoc.ten_mon_hoc", valueGetter: safeNestedValue("mon_hoc.ten_mon_hoc"), flex: 1, filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Số tín chỉ", field: "mon_hoc.so_tin_chi", valueGetter: safeNestedValue("mon_hoc.so_tin_chi"), width: 130 },
+    { headerName: "Kỳ học", field: "hoc_ky.ten_hoc_ky", valueGetter: safeNestedValue("hoc_ky.ten_hoc_ky"), width: 190 },
+    { headerName: "Số lớp mở", field: "so_lop_mo", width: 130 },
+    {
+      headerName: "Hành động",
+      pinned: "right",
+      width: 130,
+      cellRenderer: ({ data }: any) => (
+        <Tooltip title="Đăng ký môn">
+          <Button
+            type="text"
+            icon={<CheckCircleOutlined />}
+            onClick={async () => {
+              await academicApi.dangKy.create({ hoc_ky_id: data.hoc_ky_id, mon_hoc_id: data.mon_hoc_id });
+              notification.success({ message: "Đã gửi đăng ký, chờ admin xếp lớp" });
+              setKeyRender(Math.random());
+            }}
+          />
+        </Tooltip>
+      ),
+    },
+  ];
+
+  return (
+    <>
+      <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
+      <TableFrame>
+        <BaseTable key={keyRender} columns={columns} api={academicApi.dangKy.monMo} />
+      </TableFrame>
+    </>
+  );
+};
+
 const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
   const [keyRender, setKeyRender] = useState(1);
@@ -225,6 +266,7 @@ const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
     { headerName: "Kỳ học", field: "hoc_ky.ten_hoc_ky", valueGetter: safeNestedValue("hoc_ky.ten_hoc_ky"), filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "Giáo viên", field: "giao_vien_bo_mon.ho_ten", valueGetter: safeNestedValue("giao_vien_bo_mon.ho_ten") },
     { headerName: "Sĩ số", field: "si_so_toi_da", width: 100 },
+    { headerName: "Ca học", field: "ca_hoc", width: 130 },
     { headerName: "Lịch học", field: "lich_hoc" },
     { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     {
@@ -301,41 +343,140 @@ const LopHocPhanTab: FC<{ mode?: "student-open" | "teacher" }> = ({ mode }) => {
 };
 
 const DangKyTab = () => {
+  const { currentUser } = useAppSelector((state: RootState) => state.auth);
   const [keyRender, setKeyRender] = useState(1);
+  const [assigning, setAssigning] = useState<any>();
+  const isAdmin = currentUser?.vai_tro === ROLE_CODE.ADMIN;
+  const isStudent = currentUser?.vai_tro === ROLE_CODE.STUDENT;
+
   const columns: ColDef[] = [
-    { headerName: "Mã lớp", field: "lop_hoc_phan.ma_lop_hoc_phan", valueGetter: safeNestedValue("lop_hoc_phan.ma_lop_hoc_phan") },
-    { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", valueGetter: safeNestedValue("lop_hoc_phan.mon_hoc.ten_mon_hoc"), flex: 1 },
-    { headerName: "Kỳ học", field: "lop_hoc_phan.hoc_ky.ten_hoc_ky", valueGetter: safeNestedValue("lop_hoc_phan.hoc_ky.ten_hoc_ky") },
+    ...(isAdmin
+      ? [
+          { headerName: "MSSV", field: "sinh_vien.mssv", valueGetter: safeNestedValue("sinh_vien.mssv"), width: 130 },
+          { headerName: "Sinh viên", field: "sinh_vien.ho_ten", valueGetter: safeNestedValue("sinh_vien.ho_ten"), flex: 1 },
+        ]
+      : []),
+    { headerName: "Môn học", field: "mon_hoc.ten_mon_hoc", valueGetter: (p: any) => p.data?.mon_hoc?.ten_mon_hoc || p.data?.lop_hoc_phan?.mon_hoc?.ten_mon_hoc || "", flex: 1 },
+    { headerName: "Kỳ học", field: "hoc_ky.ten_hoc_ky", valueGetter: (p: any) => p.data?.hoc_ky?.ten_hoc_ky || p.data?.lop_hoc_phan?.hoc_ky?.ten_hoc_ky || "", width: 180 },
+    { headerName: "Lớp học phần", field: "lop_hoc_phan.ma_lop_hoc_phan", valueGetter: safeNestedValue("lop_hoc_phan.ma_lop_hoc_phan"), width: 150 },
+    { headerName: "Ca học", field: "lop_hoc_phan.ca_hoc", valueGetter: safeNestedValue("lop_hoc_phan.ca_hoc"), width: 130 },
     { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     {
       headerName: "Hành động",
       pinned: "right",
-      width: 120,
-      cellRenderer: ({ data }: any) =>
-        data?.trang_thai === "da_dang_ky" ? (
-          <Tooltip title="Hủy đăng ký">
-            <Button
-              type="text"
-              danger
-              icon={<StopOutlined />}
-              onClick={async () => {
-                await academicApi.dangKy.cancel(data);
-                notification.success({ message: "Đã hủy đăng ký" });
-                setKeyRender(Math.random());
-              }}
-            />
-          </Tooltip>
-        ) : null,
+      width: 150,
+      cellRenderer: ({ data }: any) => (
+        <Space>
+          {isAdmin && data?.trang_thai === "cho_xep_lop" && (
+            <Tooltip title="Xếp lớp học phần">
+              <Button type="link" icon={<TeamOutlined />} onClick={() => setAssigning(data)}>
+                Xếp lớp
+              </Button>
+            </Tooltip>
+          )}
+          {(isAdmin || isStudent) && ["cho_xep_lop", "da_dang_ky"].includes(data?.trang_thai) && (
+            <Tooltip title="Hủy đăng ký">
+              <Button
+                type="text"
+                danger
+                icon={<StopOutlined />}
+                onClick={async () => {
+                  await academicApi.dangKy.cancel(data);
+                  notification.success({ message: "Đã hủy đăng ký" });
+                  setKeyRender(Math.random());
+                }}
+              />
+            </Tooltip>
+          )}
+        </Space>
+      ),
     },
   ];
 
   return (
     <>
       <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
+      {isAdmin && (
+        <div className="px-4 pb-2 text-sm text-[#6b7280]">
+          Danh sách sinh viên đã đăng ký môn và đang chờ admin phân vào lớp học phần / ca học.
+        </div>
+      )}
       <TableFrame>
-        <BaseTable key={keyRender} columns={columns} api={academicApi.dangKy.list} />
+        <BaseTable
+          key={keyRender}
+          columns={columns}
+          api={academicApi.dangKy.list}
+          defaultParams={isAdmin ? { trang_thai: "cho_xep_lop" } : undefined}
+        />
       </TableFrame>
+      <AssignRegistrationClassModal
+        data={assigning}
+        onClose={() => setAssigning(undefined)}
+        onDone={() => {
+          setAssigning(undefined);
+          setKeyRender(Math.random());
+        }}
+      />
     </>
+  );
+};
+
+const AssignRegistrationClassModal: FC<{ data?: any; onClose: () => void; onDone: () => void }> = ({
+  data,
+  onClose,
+  onDone,
+}) => {
+  const [form] = Form.useForm();
+  const [classes, setClasses] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    form.resetFields();
+    academicApi.lopHocPhan
+      .list({ hoc_ky_id: data.hoc_ky_id, mon_hoc_id: data.mon_hoc_id, itemsPerPage: 200 })
+      .then((res) => setClasses((res.data.list || []).filter((item: any) => item.trang_thai === "dang_mo")));
+  }, [data, form]);
+
+  return (
+    <Modal
+      centered
+      open={!!data}
+      title="Xếp lớp học phần"
+      onCancel={onClose}
+      onOk={() => form.submit()}
+      okText="Xếp lớp"
+      cancelText="Đóng"
+      width="min(720px, calc(100vw - 32px))"
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={async (values) => {
+          await academicApi.dangKy.assignClass({ id: data.id, ...values });
+          notification.success({ message: "Đã xếp lớp học phần cho sinh viên" });
+          onDone();
+        }}
+      >
+        <Descriptions bordered size="small" column={1} className="mb-4">
+          <Descriptions.Item label="Sinh viên">{data?.sinh_vien?.ho_ten}</Descriptions.Item>
+          <Descriptions.Item label="MSSV">{data?.sinh_vien?.mssv}</Descriptions.Item>
+          <Descriptions.Item label="Môn học">{data?.mon_hoc?.ten_mon_hoc}</Descriptions.Item>
+          <Descriptions.Item label="Kỳ học">{data?.hoc_ky?.ten_hoc_ky}</Descriptions.Item>
+        </Descriptions>
+        <Form.Item name="lop_hoc_phan_id" label="Lớp học phần / ca học" rules={[{ required: true }]}>
+          <Select
+            showSearch
+            placeholder="Chọn lớp học phần"
+            optionFilterProp="label"
+            options={classes.map((item) => ({
+              value: item.id,
+              label: `${item.ma_lop_hoc_phan || item.ten_lop_hoc_phan} - ${item.ca_hoc || "Chưa có ca"} - ${item.lich_hoc || "Chưa có lịch"}`,
+            }))}
+          />
+        </Form.Item>
+      </Form>
+    </Modal>
   );
 };
 
@@ -626,6 +767,7 @@ const ChamDiemLopDetail: FC<{ data: any; onBack: () => void }> = ({ data, onBack
         <Descriptions.Item label="Môn học">{data.mon_hoc?.ten_mon_hoc}</Descriptions.Item>
         <Descriptions.Item label="Số tín chỉ">{data.mon_hoc?.so_tin_chi ?? ""}</Descriptions.Item>
         <Descriptions.Item label="Kỳ học">{data.hoc_ky?.ten_hoc_ky}</Descriptions.Item>
+        <Descriptions.Item label="Ca học">{data.ca_hoc}</Descriptions.Item>
         <Descriptions.Item label="Phòng học">{data.phong_hoc}</Descriptions.Item>
         <Descriptions.Item label="Lịch học">{data.lich_hoc}</Descriptions.Item>
       </Descriptions>
@@ -1538,6 +1680,9 @@ const LopHocPhanModal: FC<{ open: boolean; data?: any; onClose: () => void; onDo
         </Form.Item>
         <Form.Item name="lich_hoc" label="Lịch học">
           <Input />
+        </Form.Item>
+        <Form.Item name="ca_hoc" label="Ca học">
+          <Input placeholder="Ví dụ: Ca 1, sáng thứ 2, tiết 1-3" />
         </Form.Item>
         <Form.Item name="phong_hoc" label="Phòng học">
           <Input />

@@ -13,6 +13,8 @@ class DangKyMonHoc extends Model
 
     protected $fillable = [
         'sinh_vien_id',
+        'hoc_ky_id',
+        'mon_hoc_id',
         'lop_hoc_phan_id',
         'trang_thai',
         'dang_ky_luc',
@@ -33,6 +35,16 @@ class DangKyMonHoc extends Model
     public function lopHocPhan()
     {
         return $this->belongsTo(LopHocPhan::class, 'lop_hoc_phan_id');
+    }
+
+    public function hocKy()
+    {
+        return $this->belongsTo(HocKy::class, 'hoc_ky_id');
+    }
+
+    public function monHoc()
+    {
+        return $this->belongsTo(MonHoc::class, 'mon_hoc_id');
     }
 
     public function bangDiem()

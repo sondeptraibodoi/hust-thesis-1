@@ -61,8 +61,10 @@ export default {
     delete: (item: any) => sdk.delete(`academic/lop-hanh-chinh/${item.id}`),
   },
   dangKy: {
+    monMo: (params?: CallbackParams | any) => tableGet("academic/dang-ky-mon-hoc/mon-mo", params),
     list: (params?: CallbackParams | any) => tableGet("academic/dang-ky-mon-hoc", params),
     create: (item: any) => sdk.post("academic/dang-ky-mon-hoc", item),
+    assignClass: (item: any) => sdk.put(`academic/dang-ky-mon-hoc/${item.id}/xep-lop`, item),
     cancel: (item: any) => sdk.put(`academic/dang-ky-mon-hoc/${item.id}/huy`, item),
   },
   sinhVien: {

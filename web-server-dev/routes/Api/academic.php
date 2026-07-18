@@ -30,8 +30,10 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'academic'], function 
     Route::put('lop-hanh-chinh/{id}', [LopHanhChinhController::class, 'update']);
     Route::delete('lop-hanh-chinh/{id}', [LopHanhChinhController::class, 'destroy']);
 
+    Route::get('dang-ky-mon-hoc/mon-mo', [DangKyMonHocController::class, 'monMoDangKy']);
     Route::get('dang-ky-mon-hoc', [DangKyMonHocController::class, 'index']);
     Route::post('dang-ky-mon-hoc', [DangKyMonHocController::class, 'store']);
+    Route::put('dang-ky-mon-hoc/{id}/xep-lop', [DangKyMonHocController::class, 'xepLop']);
     Route::put('dang-ky-mon-hoc/{id}/huy', [DangKyMonHocController::class, 'cancel']);
 
     Route::get('bang-diem', [BangDiemController::class, 'index']);

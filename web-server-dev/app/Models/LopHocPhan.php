@@ -20,6 +20,7 @@ class LopHocPhan extends Model
         'si_so_toi_da',
         'phong_hoc',
         'lich_hoc',
+        'ca_hoc',
         'trang_thai',
     ];
 

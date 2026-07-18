@@ -73,6 +73,7 @@ class LopHocPhanController extends Controller
             'si_so_toi_da' => 'nullable|integer|min:1',
             'phong_hoc' => 'nullable|string|max:255',
             'lich_hoc' => 'nullable|string|max:255',
+            'ca_hoc' => 'nullable|string|max:255',
             'trang_thai' => 'nullable|string|max:32',
         ]);
 
@@ -108,6 +109,7 @@ class LopHocPhanController extends Controller
             'si_so_toi_da' => 'nullable|integer|min:1',
             'phong_hoc' => 'nullable|string|max:255',
             'lich_hoc' => 'nullable|string|max:255',
+            'ca_hoc' => 'nullable|string|max:255',
             'trang_thai' => 'nullable|string|max:32',
         ]);
 
