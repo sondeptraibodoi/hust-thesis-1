@@ -115,6 +115,8 @@ class GiaoVienChuNhiemController extends Controller
             'chuongTrinhDaoTao.monHocs',
             'dangKyMonHocs.lopHocPhan.hocKy',
             'dangKyMonHocs.lopHocPhan.monHoc',
+            'dangKyMonHocs.bangDiem.lopHocPhan.hocKy',
+            'dangKyMonHocs.bangDiem.lopHocPhan.monHoc',
             'bangDiems.lopHocPhan.hocKy',
             'bangDiems.lopHocPhan.monHoc',
         ])->findOrFail($id);
@@ -130,16 +132,30 @@ class GiaoVienChuNhiemController extends Controller
         }
 
         $registered = $sinhVien->dangKyMonHocs->map(function ($dangKy) {
+            $bangDiem = $dangKy->bangDiem;
+
+            if ($bangDiem) {
+                $bangDiem->diem_tong_ket = $bangDiem->diem_tong_ket ?? $this->calculateFinalScore($bangDiem);
+                $bangDiem->ket_qua = $this->resolveResult($bangDiem);
+            }
+
             return [
                 'dang_ky_id' => $dangKy->id,
                 'trang_thai' => $dangKy->trang_thai,
                 'lop_hoc_phan' => $dangKy->lopHocPhan,
                 'mon_hoc' => optional($dangKy->lopHocPhan)->monHoc,
                 'hoc_ky' => optional($dangKy->lopHocPhan)->hocKy,
+                'bang_diem' => $bangDiem,
+                'diem_chuyen_can' => optional($bangDiem)->diem_chuyen_can,
+                'diem_giua_ky' => optional($bangDiem)->diem_giua_ky,
+                'diem_cuoi_ky' => optional($bangDiem)->diem_cuoi_ky,
+                'diem_tong_ket' => optional($bangDiem)->diem_tong_ket,
+                'ket_qua' => optional($bangDiem)->ket_qua ?? 'chua_co_diem',
             ];
         })->values();
 
         $bangDiems = $sinhVien->bangDiems->map(function (BangDiem $bangDiem) {
+            $bangDiem->diem_tong_ket = $bangDiem->diem_tong_ket ?? $this->calculateFinalScore($bangDiem);
             $bangDiem->ket_qua = $this->resolveResult($bangDiem);
 
             return $bangDiem;
@@ -148,16 +164,22 @@ class GiaoVienChuNhiemController extends Controller
         $passed = $bangDiems->where('ket_qua', 'qua_mon')->values();
         $failed = $bangDiems->where('ket_qua', 'truot')->values();
         $passedSubjectIds = $passed->map(fn ($item) => $item->lopHocPhan->mon_hoc_id)->unique();
+        $studying = $registered->filter(function ($dangKy) {
+            return $dangKy['trang_thai'] === 'da_dang_ky'
+                && (!isset($dangKy['bang_diem']) || $dangKy['bang_diem']->ket_qua === 'chua_co_diem');
+        })->values();
 
         $requiredSubjects = optional($sinhVien->chuongTrinhDaoTao)->monHocs ?? collect();
-        $owedSubjects = $requiredSubjects->filter(function ($monHoc) use ($passedSubjectIds) {
-            return $monHoc->pivot->bat_buoc && !$passedSubjectIds->contains($monHoc->id);
-        })->values();
+        $owedSubjects = $requiredSubjects->isNotEmpty()
+            ? $requiredSubjects->filter(function ($monHoc) use ($passedSubjectIds) {
+                return $monHoc->pivot->bat_buoc && !$passedSubjectIds->contains($monHoc->id);
+            })->values()
+            : $failed->unique(fn ($bangDiem) => optional($bangDiem->lopHocPhan)->mon_hoc_id)->values();
 
         return $this->responseSuccess([
             'sinh_vien' => $sinhVien,
             'mon_dang_ky' => $registered,
-            'mon_dang_hoc' => $registered->where('trang_thai', 'da_dang_ky')->values(),
+            'mon_dang_hoc' => $studying,
             'mon_da_qua' => $passed,
             'mon_bi_truot' => $failed,
             'mon_con_no' => $owedSubjects,
@@ -181,7 +203,9 @@ class GiaoVienChuNhiemController extends Controller
 
     private function resolveResult(BangDiem $bangDiem): string
     {
-        if ($bangDiem->diem_tong_ket === null) {
+        $diemTongKet = $bangDiem->diem_tong_ket ?? $this->calculateFinalScore($bangDiem);
+
+        if ($diemTongKet === null) {
             return 'chua_co_diem';
         }
 
@@ -190,7 +214,7 @@ class GiaoVienChuNhiemController extends Controller
             ?? 4;
 
         foreach (['diem_chuyen_can', 'diem_giua_ky', 'diem_cuoi_ky', 'diem_tong_ket'] as $field) {
-            $currentScore = $bangDiem->{$field};
+            $currentScore = $field === 'diem_tong_ket' ? $diemTongKet : $bangDiem->{$field};
 
             if ($currentScore !== null && (float) $currentScore < (float) $diemQuaMon) {
                 return 'truot';
@@ -198,5 +222,22 @@ class GiaoVienChuNhiemController extends Controller
         }
 
         return 'qua_mon';
+    }
+
+    private function calculateFinalScore(BangDiem $bangDiem): ?float
+    {
+        $cc = $bangDiem->diem_chuyen_can;
+        $gk = $bangDiem->diem_giua_ky;
+        $ck = $bangDiem->diem_cuoi_ky;
+
+        if ($cc !== null && $gk !== null && $ck !== null) {
+            return round((float) $cc * 0.1 + (float) $gk * 0.3 + (float) $ck * 0.6, 2);
+        }
+
+        if ($gk !== null && $ck !== null) {
+            return round((float) $gk * 0.4 + (float) $ck * 0.6, 2);
+        }
+
+        return null;
     }
 }

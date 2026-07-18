@@ -858,31 +858,26 @@ const PhucKhaoTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readon
 
 const ChuNhiemTab = () => {
   const [keyRender, setKeyRender] = useState(1);
-  const [detail, setDetail] = useState<any>();
-  const [loading, setLoading] = useState(false);
+  const [studentClass, setStudentClass] = useState<any>();
 
   const columns: ColDef[] = [
-    { headerName: "MSSV", field: "mssv", width: 140, filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "Họ tên", field: "ho_ten", flex: 1, filter: "agTextColumnFilter", floatingFilter: true },
-    { headerName: "Email", field: "email", flex: 1 },
-    { headerName: "Lớp", field: "lop_hanh_chinh.ten_lop", valueGetter: safeNestedValue("lop_hanh_chinh.ten_lop"), width: 180 },
-    { headerName: "Trạng thái", field: "trang_thai_hoc_tap", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
+    { headerName: "Mã lớp", field: "ma_lop", width: 160, filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Tên lớp", field: "ten_lop", flex: 1, filter: "agTextColumnFilter", floatingFilter: true },
+    { headerName: "Ngành", field: "nganh", flex: 1 },
+    { headerName: "Khóa", field: "khoa", width: 160 },
+    {
+      headerName: "Giáo viên chủ nhiệm",
+      field: "giao_vien_chu_nhiem.ho_ten",
+      valueGetter: safeNestedValue("giao_vien_chu_nhiem.ho_ten"),
+      flex: 1,
+    },
     {
       headerName: "Hành động",
       pinned: "right",
-      width: 110,
+      width: 130,
       cellRenderer: ({ data }: any) => (
-        <Tooltip title="Xem học vụ">
-          <Button
-            type="text"
-            icon={<FileSearchOutlined />}
-            onClick={async () => {
-              setLoading(true);
-              const res = await academicApi.chuNhiem.tongQuanSinhVien(data.id);
-              setDetail(res.data.data);
-              setLoading(false);
-            }}
-          />
+        <Tooltip title="Danh sách sinh viên">
+          <Button type="text" icon={<TeamOutlined />} onClick={() => setStudentClass(data)} />
         </Tooltip>
       ),
     },
@@ -892,14 +887,9 @@ const ChuNhiemTab = () => {
     <>
       <Toolbar hiddenCreate onReload={() => setKeyRender(Math.random())} />
       <TableFrame>
-        <BaseTable key={keyRender} columns={columns} api={academicApi.chuNhiem.sinhVien} />
+        <BaseTable key={keyRender} columns={columns} api={academicApi.lopHanhChinh.list} />
       </TableFrame>
-      <StudentOverviewModal
-        open={!!detail}
-        loading={loading}
-        data={detail}
-        onClose={() => setDetail(undefined)}
-      />
+      <LopHanhChinhStudentsDrawer data={studentClass} onClose={() => setStudentClass(undefined)} />
     </>
   );
 };
