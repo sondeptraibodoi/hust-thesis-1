@@ -73,27 +73,41 @@ class DangKyMonHocController extends Controller
             ->map(fn ($item) => $item->hoc_ky_id . '-' . $item->mon_hoc_id)
             ->all();
 
-        $items = LopHocPhan::query()
+        $hocKies = HocKy::query()
+            ->where('dang_mo_dang_ky', true)
+            ->when($request->filled('hoc_ky_id'), fn ($query) => $query->where('id', $request->hoc_ky_id))
+            ->get();
+        $monHocs = MonHoc::query()
+            ->where('trang_thai', 'dang_mo')
+            ->when($request->filled('mon_hoc_id'), fn ($query) => $query->where('id', $request->mon_hoc_id))
+            ->get();
+
+        $lopHocPhans = LopHocPhan::query()
             ->with(['hocKy', 'monHoc'])
             ->where('trang_thai', 'dang_mo')
-            ->whereHas('hocKy', fn ($q) => $q->where('dang_mo_dang_ky', true))
-            ->whereHas('monHoc', fn ($q) => $q->where('trang_thai', 'dang_mo'))
+            ->whereIn('hoc_ky_id', $hocKies->pluck('id'))
+            ->whereIn('mon_hoc_id', $monHocs->pluck('id'))
             ->get()
-            ->groupBy(fn ($lop) => $lop->hoc_ky_id . '-' . $lop->mon_hoc_id)
-            ->reject(fn ($group, $key) => in_array($key, $registeredKeys, true))
-            ->map(function ($group, $key) {
-                $first = $group->first();
+            ->groupBy(fn ($lop) => $lop->hoc_ky_id . '-' . $lop->mon_hoc_id);
 
-                return [
-                    'id' => $key,
-                    'hoc_ky_id' => $first->hoc_ky_id,
-                    'mon_hoc_id' => $first->mon_hoc_id,
-                    'hoc_ky' => $first->hocKy,
-                    'mon_hoc' => $first->monHoc,
-                    'so_lop_mo' => $group->count(),
-                    'cac_lop_mo' => $group->values(),
-                ];
+        $items = $hocKies
+            ->flatMap(function ($hocKy) use ($monHocs, $lopHocPhans) {
+                return $monHocs->map(function ($monHoc) use ($hocKy, $lopHocPhans) {
+                    $key = $hocKy->id . '-' . $monHoc->id;
+                    $classes = $lopHocPhans->get($key, collect())->values();
+
+                    return [
+                        'id' => $key,
+                        'hoc_ky_id' => $hocKy->id,
+                        'mon_hoc_id' => $monHoc->id,
+                        'hoc_ky' => $hocKy,
+                        'mon_hoc' => $monHoc,
+                        'so_lop_mo' => $classes->count(),
+                        'cac_lop_mo' => $classes,
+                    ];
+                });
             })
+            ->reject(fn ($item) => in_array($item['id'], $registeredKeys, true))
             ->values();
 
         return $this->responseSuccess($items);
@@ -134,11 +148,6 @@ class DangKyMonHocController extends Controller
             abort_unless($hocKy->dang_mo_dang_ky, 422, 'Hoc ky chua mo dang ky.');
             abort_unless($monHoc->trang_thai === 'dang_mo', 422, 'Mon hoc chua duoc mo dang ky.');
             abort_if($lopHocPhan, 422, 'Sinh vien chi dang ky mon hoc, admin se xep lop hoc phan sau.');
-            abort_unless(
-                LopHocPhan::where('hoc_ky_id', $hocKyId)->where('mon_hoc_id', $monHocId)->where('trang_thai', 'dang_mo')->exists(),
-                422,
-                'Mon hoc chua co lop hoc phan dang mo.'
-            );
         } else {
             abort_unless($canManageLopHocPhan, 403, 'Khong co quyen them sinh vien vao lop hoc phan nay.');
         }

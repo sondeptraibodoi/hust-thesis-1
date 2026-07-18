@@ -220,7 +220,7 @@ const MonMoDangKyTab = () => {
     { headerName: "Môn học", field: "mon_hoc.ten_mon_hoc", valueGetter: safeNestedValue("mon_hoc.ten_mon_hoc"), flex: 1, filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "Số tín chỉ", field: "mon_hoc.so_tin_chi", valueGetter: safeNestedValue("mon_hoc.so_tin_chi"), width: 130 },
     { headerName: "Kỳ học", field: "hoc_ky.ten_hoc_ky", valueGetter: safeNestedValue("hoc_ky.ten_hoc_ky"), width: 190 },
-    { headerName: "Số lớp mở", field: "so_lop_mo", width: 130 },
+    { headerName: "Số lớp mở", field: "so_lop_mo", width: 130, valueGetter: (p: any) => p.data?.so_lop_mo ?? 0 },
     {
       headerName: "Hành động",
       pinned: "right",
