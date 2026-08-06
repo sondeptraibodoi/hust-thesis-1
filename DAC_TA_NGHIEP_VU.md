@@ -10,8 +10,6 @@ Xây dựng hệ thống quản lý học vụ, lớp học, môn học, điểm
 
 Hệ thống hỗ trợ nhà trường quản lý các nghiệp vụ học vụ cơ bản gồm quản lý tài khoản người dùng, quản lý môn học, kỳ học, lớp hành chính, lớp học phần, đăng ký môn học, chấm điểm, chốt điểm, phúc khảo và theo dõi tình trạng học tập của sinh viên.
 
-Ngoài các nghiệp vụ học vụ, hệ thống còn có chức năng kiểm tra trực tuyến thông qua ngân hàng câu hỏi, đề thi, bài làm và thống kê điểm.
-
 ### 1.3. Phạm vi hệ thống
 
 Hệ thống gồm hai phần chính:
@@ -30,7 +28,6 @@ Các nhóm nghiệp vụ chính:
 - Quản lý bảng điểm, chấm điểm, chốt điểm.
 - Quản lý phúc khảo điểm.
 - Theo dõi tổng quan học tập của sinh viên.
-- Quản lý câu hỏi, đề thi, bài kiểm tra trực tuyến.
 
 ## 2. Tác nhân sử dụng hệ thống
 
@@ -65,11 +62,10 @@ Chức năng chính:
 - Xem và quản lý sinh viên thuộc lớp hành chính mình chủ nhiệm.
 - Thêm sinh viên vào lớp chủ nhiệm, xóa sinh viên khỏi lớp chủ nhiệm.
 - Xem tổng quan học tập của sinh viên trong lớp chủ nhiệm.
-- Quản lý câu hỏi, đề thi và các bài kiểm tra trực tuyến trong phạm vi được phân quyền.
 
 ### 2.3. Sinh viên
 
-Sinh viên sử dụng hệ thống để theo dõi thông tin học tập, đăng ký môn học, xem điểm, gửi phúc khảo và làm bài kiểm tra trực tuyến.
+Sinh viên sử dụng hệ thống để theo dõi thông tin học tập, đăng ký môn học, xem điểm và gửi phúc khảo.
 
 Chức năng chính:
 
@@ -81,8 +77,6 @@ Chức năng chính:
 - Xem bảng điểm cá nhân.
 - Gửi yêu cầu phúc khảo khi kỳ học đang mở phúc khảo.
 - Xem kết quả xử lý phúc khảo.
-- Làm bài kiểm tra trực tuyến.
-- Xem lịch sử bài làm và kết quả bài kiểm tra.
 
 ## 3. Đặc tả nghiệp vụ theo phân hệ
 
@@ -112,7 +106,7 @@ Ràng buộc nghiệp vụ:
 
 ### 3.2. Phân hệ quản lý môn học
 
-Môn học là dữ liệu nền để mở lớp học phần, đăng ký môn, tạo đề thi và quản lý điểm.
+Môn học là dữ liệu nền để mở lớp học phần, đăng ký môn và quản lý điểm.
 
 Thông tin môn học gồm:
 
@@ -130,7 +124,7 @@ Nghiệp vụ chính:
 - Quản trị viên cập nhật trạng thái môn học: đang mở hoặc đã đóng.
 - Sinh viên chỉ nhìn thấy các môn học đang mở.
 - Giảng viên chỉ nhìn thấy các môn học được phân công.
-- Môn học được sử dụng khi tạo lớp học phần và đề thi.
+- Môn học được sử dụng khi tạo lớp học phần, đăng ký môn học và quản lý điểm.
 
 Ràng buộc nghiệp vụ:
 
@@ -369,24 +363,6 @@ Ràng buộc nghiệp vụ:
 - Quản trị viên được xem và quản lý toàn bộ.
 - Môn còn nợ được xác định theo chương trình đào tạo nếu sinh viên có chương trình đào tạo; nếu chưa có, hệ thống dùng các môn bị trượt để thống kê.
 
-### 3.9. Phân hệ kiểm tra trực tuyến
-
-Phân hệ kiểm tra trực tuyến hỗ trợ tạo câu hỏi, tạo đề thi, sinh đề ngẫu nhiên, sinh viên làm bài và lưu kết quả bài làm.
-
-Thông tin chính:
-
-- Câu hỏi gồm đề bài, đáp án, môn học, độ khó.
-- Đề thi gồm môn học, tổng số câu hỏi, thời gian thi, người tạo, độ khó, điểm đạt và ghi chú.
-- Bài làm lưu người làm, môn học, đề thi, điểm, thời gian nộp và chi tiết câu trả lời.
-
-Nghiệp vụ chính:
-
-- Quản trị viên và giảng viên quản lý ngân hàng câu hỏi.
-- Quản trị viên và giảng viên tạo, sửa, xóa đề thi.
-- Hệ thống có thể tạo đề thi ngẫu nhiên.
-- Sinh viên lấy đề thi, làm bài và nộp bài.
-- Hệ thống lưu bài làm, chấm điểm theo đáp án và cho sinh viên xem kết quả.
-
 ## 4. Mô hình dữ liệu nghiệp vụ
 
 ### 4.1. Người dùng
@@ -415,7 +391,7 @@ Nghiệp vụ chính:
 `mon_hocs`
 
 - Lưu danh mục môn học.
-- Được dùng trong lớp học phần, đăng ký môn học, câu hỏi và đề thi.
+- Được dùng trong lớp học phần, đăng ký môn học và quản lý điểm.
 
 `mon_hoc_tien_quyet`
 
@@ -465,28 +441,6 @@ Nghiệp vụ chính:
 
 - Lưu yêu cầu phúc khảo điểm của sinh viên.
 - Liên kết bảng điểm, sinh viên, lớp học phần và giảng viên xử lý.
-
-### 4.5. Kiểm tra trực tuyến
-
-`cau_hois`
-
-- Lưu ngân hàng câu hỏi.
-
-`de_this`
-
-- Lưu đề thi.
-
-`cau_hoi_de_thi`
-
-- Lưu câu hỏi thuộc đề thi và điểm từng câu.
-
-`bai_kiem_tra`
-
-- Lưu bài làm của sinh viên.
-
-`cau_hoi_bai_kiem_tra`
-
-- Lưu câu trả lời chi tiết trong bài làm.
 
 ## 5. Luồng nghiệp vụ tiêu biểu
 
@@ -567,7 +521,6 @@ Nghiệp vụ chính:
 - Xử lý phúc khảo của lớp mình phụ trách.
 - Quản lý lớp chủ nhiệm nếu được phân công.
 - Xem tổng quan học tập của sinh viên trong lớp chủ nhiệm.
-- Quản lý câu hỏi và đề thi trong phân hệ kiểm tra trực tuyến.
 
 ### 6.3. Đối với sinh viên
 
@@ -579,8 +532,6 @@ Nghiệp vụ chính:
 - Xem bảng điểm cá nhân.
 - Gửi phúc khảo điểm.
 - Xem kết quả xử lý phúc khảo.
-- Làm bài kiểm tra trực tuyến.
-- Xem lịch sử bài làm và kết quả.
 
 ## 7. Yêu cầu phi chức năng
 
@@ -616,4 +567,4 @@ Nghiệp vụ chính:
 
 Dự án hướng tới xây dựng một hệ thống quản lý học vụ phục vụ ba nhóm người dùng chính: quản trị viên, giảng viên và sinh viên. Hệ thống bao phủ các nghiệp vụ cốt lõi của quá trình đào tạo gồm quản lý tài khoản, môn học, lớp học, đăng ký học phần, chấm điểm, phúc khảo và theo dõi kết quả học tập.
 
-Với kiến trúc client-server, hệ thống có khả năng tách biệt giao diện và xử lý nghiệp vụ, thuận lợi cho việc bảo trì, mở rộng và tích hợp thêm các chức năng nâng cao như thống kê, kiểm tra trực tuyến hoặc hỗ trợ nhận dạng điểm từ ảnh.
+Với kiến trúc client-server, hệ thống có khả năng tách biệt giao diện và xử lý nghiệp vụ, thuận lợi cho việc bảo trì, mở rộng và tích hợp thêm các chức năng nâng cao như thống kê hoặc hỗ trợ nhận dạng điểm từ ảnh.
