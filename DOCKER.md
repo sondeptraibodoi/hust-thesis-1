@@ -10,19 +10,21 @@ Sau khi container len:
 
 - Client: http://localhost:5173/sohoa
 - Backend API: http://localhost:8000
-- AI API: http://localhost:8001
-- PostgreSQL local tren may ban: localhost:5432, database `hust`, user `postgres`, password `12345678`
+- PostgreSQL Docker: localhost:5432, database `sohoa`, user `postgres`, password `secret`
 - Redis: localhost:6379, password `secret`
 
-Mac dinh cau hinh tren dung PostgreSQL local tren may ban. Trong container, host DB local la `host.docker.internal`, khong phai `127.0.0.1`.
+Mac dinh cau hinh tren dung PostgreSQL cai trong Docker. Backend ket noi DB bang cac bien:
 
-Neu muon quay lai dung PostgreSQL trong Docker, dung file override:
-
-```sh
-docker compose --profile docker-db -f docker-compose.yml -f docker-compose.docker-db.yml up --build
+```
+DB_CONNECTION=pgsql
+DB_HOST=db
+DB_PORT=5432
+DB_DATABASE=sohoa
+DB_USERNAME=postgres
+DB_PASSWORD=secret
 ```
 
-Khi dung DB Docker: database `sohoa`, user `postgres`, password `secret`.
+Neu muon doi thong tin DB, tao file `.env` o thu muc root cung cap voi `docker-compose.yml` va khai bao lai cac bien `DB_*` tuong ung.
 
 Lan dau chay, backend se tu:
 

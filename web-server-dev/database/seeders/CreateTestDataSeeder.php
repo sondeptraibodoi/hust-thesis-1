@@ -17,126 +17,133 @@ class CreateTestDataSeeder extends Seeder
      */
     public function run()
     {
+        $now = Carbon::now();
         $users = [
             [
                 "username" => "administrator",
                 "mat_khau" => bcrypt("12345678"),
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
+                "created_at" => $now,
+                "updated_at" => $now,
                 "vai_tro" => RoleCode::ADMIN,
-                'email' => "zoubis2001@gmail.com",
-                'ho_ten' => 'Administrator'
+                "ma_so" => "ADM00001",
+                "email" => "zoubis2001@gmail.com",
+                "ho_ten" => "Administrator",
             ],
             [
-                "username" => "sinhvien@hust.com",
+                "username" => "son.ct20230999P@sis.hust.edu.vn",
                 "mat_khau" => bcrypt("12345678"),
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
+                "created_at" => $now,
+                "updated_at" => $now,
                 "vai_tro" => RoleCode::STUDENT,
-                'email' => "sinhvien@hust.com",
-                'ho_ten' => 'Sinh viên'
+                "ma_so" => "20230999P",
+                "email" => "son.ct20230999P@sis.hust.edu.vn",
+                "ho_ten" => "Cấn Thái Sơn",
             ],
             [
-                "username" => "giaovien@hust.com",
+                "username" => "an.nvGV00001@sis.hust.edu.vn",
                 "mat_khau" => bcrypt("12345678"),
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
+                "created_at" => $now,
+                "updated_at" => $now,
                 "vai_tro" => RoleCode::TEACHER,
-                "email" => "giaovien@hust.com",
-                'ho_ten' => 'Giáo Viên'
+                "ma_so" => "GV00001",
+                "email" => "an.nvGV00001@sis.hust.edu.vn",
+                "ho_ten" => "Nguyễn Văn An",
             ],
             [
-                "username" => "giaovien.bomon@hust.com",
+                "username" => "binh.ttGV00002@sis.hust.edu.vn",
                 "mat_khau" => bcrypt("12345678"),
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
+                "created_at" => $now,
+                "updated_at" => $now,
                 "vai_tro" => RoleCode::TEACHER,
-                "email" => "giaovien.bomon@hust.com",
-                'ho_ten' => 'Giao vien bo mon'
+                "ma_so" => "GV00002",
+                "email" => "binh.ttGV00002@sis.hust.edu.vn",
+                "ho_ten" => "Trần Thị Bình",
             ],
             [
-                "username" => "giaovien.chunhiem@hust.com",
+                "username" => "chau.pmGV00003@sis.hust.edu.vn",
                 "mat_khau" => bcrypt("12345678"),
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
+                "created_at" => $now,
+                "updated_at" => $now,
                 "vai_tro" => RoleCode::TEACHER,
-                "email" => "giaovien.chunhiem@hust.com",
-                'ho_ten' => 'Giao vien chu nhiem'
+                "ma_so" => "GV00003",
+                "email" => "chau.pmGV00003@sis.hust.edu.vn",
+                "ho_ten" => "Phạm Minh Châu",
             ],
             [
-                "username" => "student@hust.com",
+                "username" => "nam.lh20230001P@sis.hust.edu.vn",
                 "mat_khau" => bcrypt("12345678"),
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
+                "created_at" => $now,
+                "updated_at" => $now,
                 "vai_tro" => RoleCode::STUDENT,
-                "email" => "student@hust.com",
-                'ho_ten' => 'Sinh viên 1'
+                "ma_so" => "20230001P",
+                "email" => "nam.lh20230001P@sis.hust.edu.vn",
+                "ho_ten" => "Lê Hoàng Nam",
             ],
             [
-                "username" => "student2@hust.com",
+                "username" => "ha.vt20230002P@sis.hust.edu.vn",
                 "mat_khau" => bcrypt("12345678"),
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
+                "created_at" => $now,
+                "updated_at" => $now,
                 "vai_tro" => RoleCode::STUDENT,
-                "email" => "student2@hust.com",
-                'ho_ten' => 'Sinh viên 2'
+                "ma_so" => "20230002P",
+                "email" => "ha.vt20230002P@sis.hust.edu.vn",
+                "ho_ten" => "Vũ Thu Hà",
             ],
             [
-                "username" => "student3@hust.com",
+                "username" => "anh.dm20230003P@sis.hust.edu.vn",
                 "mat_khau" => bcrypt("12345678"),
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
+                "created_at" => $now,
+                "updated_at" => $now,
                 "vai_tro" => RoleCode::STUDENT,
-                "email" => "student3@hust.com",
-                'ho_ten' => 'Sinh viên 3'
+                "ma_so" => "20230003P",
+                "email" => "anh.dm20230003P@sis.hust.edu.vn",
+                "ho_ten" => "Đỗ Minh Anh",
             ],
             [
-                "username" => "student4@hust.com",
+                "username" => "bao.pq20230004P@sis.hust.edu.vn",
                 "mat_khau" => bcrypt("12345678"),
-                "created_at" => Carbon::now(),
-                "updated_at" => Carbon::now(),
+                "created_at" => $now,
+                "updated_at" => $now,
                 "vai_tro" => RoleCode::STUDENT,
-                "email" => "student4@hust.com",
-                'ho_ten' => 'Sinh viên 4'
+                "ma_so" => "20230004P",
+                "email" => "bao.pq20230004P@sis.hust.edu.vn",
+                "ho_ten" => "Phạm Quốc Bảo",
             ],
         ];
+
         foreach ($users as $user) {
-            $check = User::where("username", $user["username"])->first();
-            if (!empty($check)) {
-                $check->update([
-                    'username' => $user['username'],
-                    'email' => $user['email'],
-                    'mat_khau' => $user['mat_khau'],
-                    'vai_tro' => $user['vai_tro'],
-                    'updated_at' => $user['updated_at'],
-                    'created_at' => $user['created_at'],
-                ]);
-            } else {
-                $check = User::create([
-                    'username' => $user['username'],
-                    'email' => $user['email'],
-                    'mat_khau' => $user['mat_khau'],
-                    'vai_tro' => $user['vai_tro'],
-                    'updated_at' => $user['updated_at'],
-                    'created_at' => $user['created_at'],
-                ]);
-                if($user['vai_tro'] === RoleCode::STUDENT) {
-                    SinhVien::create([
-                        'mssv' => (string) mt_rand(10000000, 99999999),
-                        'nguoi_dung_id' => $check->id,
-                        'ho_ten' => $user['ho_ten'],
-                        'email' => $user['email'],
-                    ]);
-                }
-                if(in_array($user['vai_tro'], RoleCode::TEACHER_ROLES, true)) {
-                    GiaoVien::create([
-                        'nguoi_dung_id' => $check->id,
-                        'ho_ten' => $user['ho_ten'],
-                        'email' => $user['email'],
-                    ]);
-                }
+            $check = User::updateOrCreate(
+                ["username" => $user["username"]],
+                [
+                    "email" => $user["email"],
+                    "mat_khau" => $user["mat_khau"],
+                    "vai_tro" => $user["vai_tro"],
+                    "updated_at" => $user["updated_at"],
+                    "created_at" => $user["created_at"],
+                ]
+            );
+
+            if ($user["vai_tro"] === RoleCode::STUDENT) {
+                SinhVien::updateOrCreate(
+                    ["nguoi_dung_id" => $check->id],
+                    [
+                        "mssv" => $user["ma_so"],
+                        "ho_ten" => $user["ho_ten"],
+                        "email" => $user["email"],
+                    ]
+                );
+            }
+
+            if (in_array($user["vai_tro"], RoleCode::TEACHER_ROLES, true)) {
+                GiaoVien::updateOrCreate(
+                    ["nguoi_dung_id" => $check->id],
+                    [
+                        "ma_giao_vien" => $user["ma_so"],
+                        "ho_ten" => $user["ho_ten"],
+                        "email" => $user["email"],
+                    ]
+                );
             }
         }
-
     }
 }

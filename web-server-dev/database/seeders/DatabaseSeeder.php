@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
             CreateTestDataSeeder::class,
             AcademicConfigSeeder::class,
             CreateMonHocSeeder::class,
-            DeThiSeeder::class
         ]);
     }
 }

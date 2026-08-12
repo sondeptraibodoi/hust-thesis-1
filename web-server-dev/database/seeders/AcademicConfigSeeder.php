@@ -15,7 +15,7 @@ class AcademicConfigSeeder extends Seeder
             [
                 'value' => ['value' => 4.0],
                 'group' => 'academic',
-                'mo_ta' => 'Diem tong ket toi thieu de qua mon.',
+                'mo_ta' => 'Điểm tổng kết tối thiểu qua môn.',
             ]
         );
 
@@ -24,14 +24,14 @@ class AcademicConfigSeeder extends Seeder
             [
                 'value' => ['value' => 7],
                 'group' => 'academic',
-                'mo_ta' => 'So ngay sinh vien duoc gui phuc khao sau khi cong bo diem.',
+                'mo_ta' => 'Số ngày tối thiểu sinh viên gửi phúc khảo khi công bố điểm.',
             ]
         );
 
         HocKy::updateOrCreate(
             ['ma_hoc_ky' => '2025-2026-1'],
             [
-                'ten_hoc_ky' => 'Hoc ky 1 nam hoc 2025-2026',
+                'ten_hoc_ky' => 'Học kỳ 1 năm học 2025-2026',
                 'nam_hoc' => '2025-2026',
                 'hoc_ky_so' => 1,
                 'dang_mo_dang_ky' => false,

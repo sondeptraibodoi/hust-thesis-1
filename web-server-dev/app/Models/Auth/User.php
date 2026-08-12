@@ -58,7 +58,7 @@ class User extends Authenticatable
     }
     public function isSysAdmin()
     {
-        return $this->username == "administrator";
+        return $this->vai_tro === RoleCode::ADMIN;
     }
 
     public function getRoleCodeAttribute()
