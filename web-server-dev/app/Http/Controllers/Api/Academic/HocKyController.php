@@ -17,7 +17,7 @@ class HocKyController extends Controller
             $query->where('trang_thai', $request->trang_thai);
         }
 
-        return $this->responseSuccess($query->paginate($request->get('per_page', 20)));
+        return $this->responseSuccess($query->paginate($this->perPage($request)));
     }
 
     public function store(Request $request)

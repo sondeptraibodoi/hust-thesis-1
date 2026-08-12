@@ -171,10 +171,32 @@ class QueryBuilder
     }
     public function paginate()
     {
+        if (func_num_args() === 0) {
+            $option = $this->request->pagination();
+
+            return $this->callAllAddToQuery()->__call("paginate", [
+                (int) $option["per_page"],
+                ["*"],
+                "page",
+                $option["page"],
+            ]);
+        }
+
         return $this->callAllAddToQuery()->__call("paginate", func_get_args());
     }
     public function simplePaginate()
     {
+        if (func_num_args() === 0) {
+            $option = $this->request->pagination();
+
+            return $this->callAllAddToQuery()->__call("simplePaginate", [
+                (int) $option["per_page"],
+                ["*"],
+                "page",
+                $option["page"],
+            ]);
+        }
+
         return $this->callAllAddToQuery()->__call("simplePaginate", func_get_args());
     }
     public function clone()

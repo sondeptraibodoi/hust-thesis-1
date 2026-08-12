@@ -21,7 +21,7 @@ class LopHanhChinhController extends Controller
             abort(403, 'Khong co quyen xem lop hanh chinh.');
         }
 
-        return $this->responseSuccess($query->paginate($request->get('per_page', 20)));
+        return $this->responseSuccess($query->paginate($this->perPage($request)));
     }
 
     public function store(Request $request)

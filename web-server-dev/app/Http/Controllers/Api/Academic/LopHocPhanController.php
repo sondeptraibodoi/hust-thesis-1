@@ -22,6 +22,16 @@ class LopHocPhanController extends Controller
             $query->where('mon_hoc_id', $request->mon_hoc_id);
         }
 
+        if ($request->filled('trang_thai')) {
+            $query->where('trang_thai', $request->trang_thai);
+        }
+
+        if ($request->filled('mon_hoc_trang_thai')) {
+            $query->whereHas('monHoc', function ($q) use ($request) {
+                $q->where('trang_thai', $request->mon_hoc_trang_thai);
+            });
+        }
+
         if ($user->isTeacher()) {
             $giaoVienId = optional($user->giaoVien)->id;
             if ($request->boolean('teaching_only')) {
@@ -57,7 +67,7 @@ class LopHocPhanController extends Controller
             }
         }
 
-        return $this->responseSuccess($query->paginate($request->get('per_page', 20)));
+        return $this->responseSuccess($query->paginate($this->perPage($request)));
     }
 
     public function store(Request $request)

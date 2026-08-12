@@ -56,7 +56,7 @@ class DangKyMonHocController extends Controller
             $query->where('sinh_vien_id', $request->sinh_vien_id);
         }
 
-        return $this->responseSuccess($query->latest()->paginate($request->get('per_page', 20)));
+        return $this->responseSuccess($query->latest()->paginate($this->perPage($request)));
     }
 
     public function monMoDangKy(Request $request)
@@ -202,6 +202,7 @@ class DangKyMonHocController extends Controller
 
         abort_unless($dangKy->hoc_ky_id === $lopHocPhan->hoc_ky_id, 422, 'Lop hoc phan khong thuoc ky hoc sinh vien dang ky.');
         abort_unless($dangKy->mon_hoc_id === $lopHocPhan->mon_hoc_id, 422, 'Lop hoc phan khong dung mon sinh vien dang ky.');
+        abort_unless($lopHocPhan->monHoc->trang_thai === 'dang_mo', 422, 'Mon hoc chua duoc mo dang ky.');
         abort_unless($lopHocPhan->trang_thai === 'dang_mo', 422, 'Lop hoc phan khong dang mo.');
         $this->ensureClassHasCapacity($lopHocPhan, $dangKy->id);
 

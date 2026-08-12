@@ -41,7 +41,7 @@ class BangDiemController extends Controller
             $query->where('sinh_vien_id', $request->sinh_vien_id);
         }
 
-        $data = $query->paginate($request->get('per_page', 20));
+        $data = $query->paginate($this->perPage($request));
         $data->getCollection()->transform(function (BangDiem $bangDiem) {
             $bangDiem->ket_qua = $this->resolveResult($bangDiem);
 

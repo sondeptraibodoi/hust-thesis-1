@@ -34,7 +34,13 @@ class QueryBuilderRequest extends Request
         $fieldsLimitName = config("query-builder.parameters.limit", "limit");
 
         $page = $this->get($fieldsPageName);
-        $per_page = $this->get($fieldsPerPageName, config("query-builder.pagination.default_size"));
+        $per_page = config("query-builder.pagination.default_size");
+        foreach (array_unique([$fieldsPerPageName, "per_page", "perpage", "perPage", "itemsPerPage"]) as $perPageName) {
+            if ($this->has($perPageName)) {
+                $per_page = $this->get($perPageName);
+                break;
+            }
+        }
         $is_paginate = $this->boolean($fieldsIsPaginateName) || !empty($page);
         $fields_limit_name = $this->get($fieldsLimitName);
 
@@ -94,6 +100,10 @@ class QueryBuilderRequest extends Request
                 config("query-builder.parameters.append", "append"),
                 config("query-builder.parameters.pagination.page", "page"),
                 config("query-builder.parameters.pagination.per_page", "perpage"),
+                "per_page",
+                "perpage",
+                "perPage",
+                "itemsPerPage",
                 config("query-builder.parameters.pagination.is_paginate", "paginate"),
                 config("query-builder.parameters.include", "include"),
             ])

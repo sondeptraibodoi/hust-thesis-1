@@ -38,7 +38,7 @@ class GiaoVienChuNhiemController extends Controller
             $query->where('lop_hanh_chinh_id', $request->lop_hanh_chinh_id);
         }
 
-        return $this->responseSuccess($query->paginate($request->get('per_page', 20)));
+        return $this->responseSuccess($query->paginate($this->perPage($request)));
     }
 
     public function assignSinhViens(Request $request, $lopId)

@@ -20,6 +20,9 @@ class MonHocController extends Controller
         if($user->vai_tro === RoleCode::STUDENT) {
             $query->where('trang_thai', 'dang_mo');
         }
+        if($request->filled('trang_thai')) {
+            $query->where('trang_thai', $request->trang_thai);
+        }
         if($user->isTeacher()) {
             $mon = GiaoVienMon::where('giao_vien_id', $user->giaoVien->id)->get()->pluck('mon_hoc_id');
             $query->whereIn('id', $mon);

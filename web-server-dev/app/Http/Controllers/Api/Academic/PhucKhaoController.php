@@ -42,7 +42,7 @@ class PhucKhaoController extends Controller
             $query->where('lop_hoc_phan_id', $request->lop_hoc_phan_id);
         }
 
-        return $this->responseSuccess($query->latest()->paginate($request->get('per_page', 20)));
+        return $this->responseSuccess($query->latest()->paginate($this->perPage($request)));
     }
 
     public function store(Request $request)
@@ -58,6 +58,7 @@ class PhucKhaoController extends Controller
         $bangDiem = BangDiem::with('lopHocPhan.hocKy')->findOrFail($data['bang_diem_id']);
 
         abort_unless($bangDiem->sinh_vien_id === optional($user->sinhVien)->id, 403, 'Khong co quyen phuc khao bang diem nay.');
+        abort_unless($bangDiem->trang_thai === 'da_chot', 422, 'Bang diem chua duoc cong bo.');
         abort_unless($bangDiem->lopHocPhan->hocKy->dang_mo_phuc_khao, 422, 'Hoc ky chua mo phuc khao.');
 
         $phucKhao = PhucKhao::create([

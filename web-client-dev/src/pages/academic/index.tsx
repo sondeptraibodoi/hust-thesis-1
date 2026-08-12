@@ -40,6 +40,7 @@ import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 type TeacherAcademicPage = "lop-giang-day" | "cham-diem" | "phuc-khao" | "chu-nhiem";
+const OPEN_REGISTRATION_STATUS = "dang_mo";
 
 const AcademicPage: FC<{ teacherPage?: TeacherAcademicPage }> = ({ teacherPage }) => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
@@ -434,8 +435,22 @@ const AssignRegistrationClassModal: FC<{ data?: any; onClose: () => void; onDone
 
     form.resetFields();
     academicApi.lopHocPhan
-      .list({ hoc_ky_id: data.hoc_ky_id, mon_hoc_id: data.mon_hoc_id, itemsPerPage: 200 })
-      .then((res) => setClasses((res.data.list || []).filter((item: any) => item.trang_thai === "dang_mo")));
+      .list({
+        hoc_ky_id: data.hoc_ky_id,
+        mon_hoc_id: data.mon_hoc_id,
+        trang_thai: OPEN_REGISTRATION_STATUS,
+        mon_hoc_trang_thai: OPEN_REGISTRATION_STATUS,
+        itemsPerPage: 200,
+      })
+      .then((res) =>
+        setClasses(
+          (res.data.list || []).filter(
+            (item: any) =>
+              item.trang_thai === OPEN_REGISTRATION_STATUS &&
+              item.mon_hoc?.trang_thai === OPEN_REGISTRATION_STATUS
+          )
+        )
+      );
   }, [data, form]);
 
   return (
@@ -811,9 +826,15 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent
   const [addStudentOpen, setAddStudentOpen] = useState(false);
   const isStudent = currentUser?.vai_tro === ROLE_CODE.STUDENT;
   const canGradeRow = (row: any) =>
-    currentUser?.vai_tro === ROLE_CODE.ADMIN || row?.lop_hoc_phan?.giao_vien_bo_mon_id === currentUser?.info?.id;
+    currentUser?.vai_tro === ROLE_CODE.ADMIN ||
+    (currentUser?.vai_tro === ROLE_CODE.TEACHER && row?.lop_hoc_phan?.giao_vien_bo_mon_id === currentUser?.info?.id);
+  const isPublishedGrade = (row: any) => row?.trang_thai === "da_chot";
   const canRequestReview = (row: any) =>
-    isStudent && row?.diem_tong_ket !== null && row?.diem_tong_ket !== undefined && row?.ket_qua !== "chua_co_diem";
+    isStudent &&
+    isPublishedGrade(row) &&
+    row?.diem_tong_ket !== null &&
+    row?.diem_tong_ket !== undefined &&
+    row?.ket_qua !== "chua_co_diem";
   const canEditGradeCell = (params: any) =>
     !readonly &&
     canGradeRow(params.data) &&
@@ -875,7 +896,7 @@ const BangDiemTab: FC<{ readonly?: boolean; lopHocPhanId?: number; canAddStudent
       width: 160,
       cellRenderer: ({ data }: any) => (
         <Space>
-          {canGradeRow(data) && !readonly && (
+          {!isStudent && canGradeRow(data) && !readonly && (
             <Tooltip title="Nhập điểm">
               <Button type="text" icon={<EditOutlined />} onClick={() => setEditing(data)} />
             </Tooltip>
@@ -1636,7 +1657,17 @@ const LopHocPhanModal: FC<{ open: boolean; data?: any; onClose: () => void; onDo
     if (!open) return;
     form.setFieldsValue(data || { trang_thai: "dang_mo" });
     academicApi.hocKy.list({ itemsPerPage: 100 }).then((res) => setHocKy((res.data.list || []).filter(Boolean)));
-    monHocApi.list({ itemsPerPage: 100 } as any).then((res: any) => setMonHoc((res.data.list || res.data?.data?.data || []).filter(Boolean)));
+    monHocApi.list({ itemsPerPage: 100, trang_thai: OPEN_REGISTRATION_STATUS } as any).then((res: any) => {
+      const rows = (res.data.list || res.data?.data?.data || []).filter(Boolean);
+      const currentSubject =
+        data?.mon_hoc && !rows.some((item: any) => item.id === data.mon_hoc_id) ? [data.mon_hoc] : [];
+
+      setMonHoc(
+        [...currentSubject, ...rows].filter(
+          (item: any) => item.trang_thai === OPEN_REGISTRATION_STATUS || item.id === data?.mon_hoc_id
+        )
+      );
+    });
     giaoVienApi.list({ itemsPerPage: 100 } as any).then((res: any) => setGiaoVien((res.data.list || res.data?.data?.data || []).filter(Boolean)));
   }, [data, form, open]);
 
