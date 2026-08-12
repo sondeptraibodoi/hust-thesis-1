@@ -3,9 +3,17 @@ set -e
 
 cd /var/www/web-server
 
+fix_laravel_permissions() {
+  mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
+  chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
+  chmod -R ug+rwX storage bootstrap/cache 2>/dev/null || true
+}
+
 if [ ! -f .env ]; then
   cp .env.example .env
 fi
+
+fix_laravel_permissions
 
 if [ ! -d vendor ] || [ ! -f vendor/autoload.php ]; then
   composer install
@@ -46,5 +54,7 @@ elif [ "${RUN_SEEDERS:-false}" = "auto" ]; then
     echo "Seed data already exists (${USER_COUNT} users). Skipping seeders."
   fi
 fi
+
+fix_laravel_permissions
 
 exec "$@"

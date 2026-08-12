@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Academic;
 
 use App\Constants\RoleCode;
 use App\Http\Controllers\Controller;
+use App\Models\HocKy;
 use App\Models\LopHocPhan;
 use Illuminate\Http\Request;
 
@@ -87,6 +88,8 @@ class LopHocPhanController extends Controller
             'trang_thai' => 'nullable|string|max:32',
         ]);
 
+        $this->ensureCurrentSemester($data['hoc_ky_id']);
+
         return $this->responseCreated(LopHocPhan::create($data));
     }
 
@@ -122,6 +125,10 @@ class LopHocPhanController extends Controller
             'ca_hoc' => 'nullable|string|max:255',
             'trang_thai' => 'nullable|string|max:32',
         ]);
+
+        if (array_key_exists('hoc_ky_id', $data)) {
+            $this->ensureCurrentSemester($data['hoc_ky_id']);
+        }
 
         $lopHocPhan->update($data);
 
@@ -165,5 +172,14 @@ class LopHocPhanController extends Controller
     private function ensureAdmin(Request $request): void
     {
         abort_unless($request->user()->vai_tro === RoleCode::ADMIN, 403, 'Khong co quyen thuc hien thao tac nay.');
+    }
+
+    private function ensureCurrentSemester($hocKyId): void
+    {
+        abort_unless(
+            HocKy::query()->whereKey($hocKyId)->where('trang_thai', 'dang_dien_ra')->exists(),
+            422,
+            'Chi duoc chon hoc ky dang dien ra.'
+        );
     }
 }

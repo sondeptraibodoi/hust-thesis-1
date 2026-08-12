@@ -38,9 +38,11 @@ import {
 import { AgGridReact } from "ag-grid-react";
 import { FC, ReactNode, useEffect, useMemo, useState } from "react";
 import { Navigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 type TeacherAcademicPage = "lop-giang-day" | "cham-diem" | "phuc-khao" | "chu-nhiem";
 const OPEN_REGISTRATION_STATUS = "dang_mo";
+const CURRENT_SEMESTER_STATUS = "dang_dien_ra";
 
 const AcademicPage: FC<{ teacherPage?: TeacherAcademicPage }> = ({ teacherPage }) => {
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
@@ -349,6 +351,13 @@ const DangKyTab = () => {
   const [assigning, setAssigning] = useState<any>();
   const isAdmin = currentUser?.vai_tro === ROLE_CODE.ADMIN;
   const isStudent = currentUser?.vai_tro === ROLE_CODE.STUDENT;
+  const hasAnyGrade = (row: any) => {
+    const bangDiem = row?.bang_diem;
+
+    return ["diem_chuyen_can", "diem_giua_ky", "diem_cuoi_ky", "diem_tong_ket", "diem_chu"].some(
+      (field) => bangDiem?.[field] !== null && bangDiem?.[field] !== undefined && bangDiem?.[field] !== ""
+    );
+  };
 
   const columns: ColDef[] = [
     ...(isAdmin
@@ -375,16 +384,23 @@ const DangKyTab = () => {
               </Button>
             </Tooltip>
           )}
-          {(isAdmin || isStudent) && ["cho_xep_lop", "da_dang_ky"].includes(data?.trang_thai) && (
+          {(isAdmin || isStudent) && ["cho_xep_lop", "da_dang_ky"].includes(data?.trang_thai) && !hasAnyGrade(data) && (
             <Tooltip title="Hủy đăng ký">
               <Button
                 type="text"
                 danger
                 icon={<StopOutlined />}
                 onClick={async () => {
-                  await academicApi.dangKy.cancel(data);
-                  notification.success({ message: "Đã hủy đăng ký" });
-                  setKeyRender(Math.random());
+                  try {
+                    await academicApi.dangKy.cancel(data);
+                    notification.success({ message: "Đã hủy đăng ký" });
+                    setKeyRender(Math.random());
+                  } catch (error: any) {
+                    notification.warning({
+                      message: "Không hủy được đăng ký",
+                      description: error?.response?.data?.message || "Môn học này không thể hủy đăng ký.",
+                    });
+                  }
                 }}
               />
             </Tooltip>
@@ -972,6 +988,7 @@ const PhucKhaoTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readon
   const { currentUser } = useAppSelector((state: RootState) => state.auth);
   const [keyRender, setKeyRender] = useState(1);
   const [resolveItem, setResolveItem] = useState<any>();
+  const isStudent = currentUser?.vai_tro === ROLE_CODE.STUDENT;
   const canResolveRow = (row: any) =>
     !readonly &&
     (currentUser?.vai_tro === ROLE_CODE.ADMIN || row?.lop_hoc_phan?.giao_vien_bo_mon_id === currentUser?.info?.id);
@@ -980,8 +997,13 @@ const PhucKhaoTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readon
     { headerName: "Sinh viên", field: "sinh_vien.ho_ten", valueGetter: safeNestedValue("sinh_vien.ho_ten"), filter: "agTextColumnFilter", floatingFilter: true },
     { headerName: "Môn học", field: "lop_hoc_phan.mon_hoc.ten_mon_hoc", valueGetter: safeNestedValue("lop_hoc_phan.mon_hoc.ten_mon_hoc"), flex: 1 },
     { headerName: "Điểm cũ", field: "diem_cu", width: 100 },
-    { headerName: "Điểm mới", field: "diem_moi", width: 100 },
+    { headerName: "Điểm mới", field: "diem_moi", width: 100},
+    { headerName: "Ngày xử lý", field: "ngay_xu_ly", flex: 1, valueGetter: (params: any) => {
+      if(!params.data) return "";
+      return !params.data.ngay_xu_ly ? "" : dayjs(params.data.ngay_xu_ly).format('DD/MM/YYYY');
+    } },
     { headerName: "Nội dung", field: "noi_dung", flex: 1 },
+    { headerName: "Kết quả xử lý", field: "ket_qua_xu_ly", flex: 1 },
     { headerName: "Trạng thái", field: "trang_thai", cellRenderer: (p: any) => <StatusTag value={p.value} /> },
     {
       headerName: "Hành động",
@@ -995,6 +1017,10 @@ const PhucKhaoTab: FC<{ readonly?: boolean; lopHocPhanId?: number }> = ({ readon
         ) : null,
     },
   ];
+
+  if (isStudent) {
+    columns.pop();
+  }
 
   return (
     <>
@@ -1656,7 +1682,9 @@ const LopHocPhanModal: FC<{ open: boolean; data?: any; onClose: () => void; onDo
   useEffect(() => {
     if (!open) return;
     form.setFieldsValue(data || { trang_thai: "dang_mo" });
-    academicApi.hocKy.list({ itemsPerPage: 100 }).then((res) => setHocKy((res.data.list || []).filter(Boolean)));
+    academicApi.hocKy
+      .list({ itemsPerPage: 100, trang_thai: CURRENT_SEMESTER_STATUS })
+      .then((res) => setHocKy((res.data.list || []).filter(Boolean)));
     monHocApi.list({ itemsPerPage: 100, trang_thai: OPEN_REGISTRATION_STATUS } as any).then((res: any) => {
       const rows = (res.data.list || res.data?.data?.data || []).filter(Boolean);
       const currentSubject =
@@ -1840,10 +1868,27 @@ const PhucKhaoCreateModal: FC<{ data?: any; onClose: () => void }> = ({ data, on
         form={form}
         layout="vertical"
         onFinish={async (values) => {
-          await academicApi.phucKhao.create({ bang_diem_id: data.id, ...values });
-          notification.success({ message: "Đã gửi phúc khảo" });
-          form.resetFields();
-          onClose();
+          try {
+            await academicApi.phucKhao.create({ bang_diem_id: data.id, ...values });
+            notification.success({ message: "Đã gửi phúc khảo" });
+            form.resetFields();
+            onClose();
+          } catch (error: any) {
+            const response = error?.response?.data;
+            notification.warning({
+              message: "Không gửi được phúc khảo",
+              description: response?.message || "Vui lòng kiểm tra lại thông tin phúc khảo.",
+            });
+
+            if (response?.errors) {
+              form.setFields(
+                Object.keys(response.errors).map((name) => ({
+                  name,
+                  errors: response.errors[name],
+                }))
+              );
+            }
+          }
         }}
       >
         <Form.Item label="Môn học">
@@ -2005,6 +2050,8 @@ const StudentOverviewModal: FC<{ open: boolean; loading?: boolean; data?: any; o
 const StudentOverview: FC<{ data?: any }> = ({ data }) => {
   if (!data) return null;
 
+  const overviewKey = data.sinh_vien?.id || data.sinh_vien?.mssv || "unknown";
+
   return (
     <Space direction="vertical" className="w-full" size="middle">
       <Descriptions bordered size="small" column={{ xs: 1, sm: 2, md: 3 }}>
@@ -2019,22 +2066,22 @@ const StudentOverview: FC<{ data?: any }> = ({ data }) => {
           {
             key: "dang-hoc",
             label: <OverviewTabLabel title="Môn đang học" count={data.mon_dang_hoc?.length || 0} color="blue" />,
-            children: <OverviewSubjectTable items={data.mon_dang_hoc} />,
+            children: <OverviewSubjectTable tableKeyPrefix={`${overviewKey}-dang-hoc`} items={data.mon_dang_hoc} />,
           },
           {
             key: "da-qua",
             label: <OverviewTabLabel title="Môn đã qua" count={data.mon_da_qua?.length || 0} color="green" />,
-            children: <OverviewSubjectTable items={data.mon_da_qua} />,
+            children: <OverviewSubjectTable tableKeyPrefix={`${overviewKey}-da-qua`} items={data.mon_da_qua} />,
           },
           {
             key: "bi-truot",
             label: <OverviewTabLabel title="Môn bị trượt" count={data.mon_bi_truot?.length || 0} color="red" />,
-            children: <OverviewSubjectTable items={data.mon_bi_truot} />,
+            children: <OverviewSubjectTable tableKeyPrefix={`${overviewKey}-bi-truot`} items={data.mon_bi_truot} />,
           },
           {
             key: "con-no",
             label: <OverviewTabLabel title="Môn còn nợ" count={data.mon_con_no?.length || 0} color="gold" />,
-            children: <OverviewSubjectTable items={data.mon_con_no} />,
+            children: <OverviewSubjectTable tableKeyPrefix={`${overviewKey}-con-no`} items={data.mon_con_no} />,
           },
         ]}
       />
@@ -2051,7 +2098,7 @@ const OverviewTabLabel: FC<{ title: string; count: number; color: string }> = ({
   </Space>
 );
 
-const OverviewSubjectTable: FC<{ items?: any[] }> = ({ items = [] }) => {
+const OverviewSubjectTable: FC<{ items?: any[]; tableKeyPrefix?: string }> = ({ items = [], tableKeyPrefix = "overview" }) => {
   const rows = items.map((item, index) => {
     const lopHocPhan = item.lop_hoc_phan;
     const monHoc = item.mon_hoc || lopHocPhan?.mon_hoc || item;
@@ -2072,6 +2119,21 @@ const OverviewSubjectTable: FC<{ items?: any[] }> = ({ items = [] }) => {
       trang_thai: item.trang_thai,
     };
   });
+  const tableKey = rows
+    .map((row) =>
+      [
+        row.id,
+        row.ma_mon,
+        row.lop_hoc_phan,
+        row.diem_chuyen_can,
+        row.diem_giua_ky,
+        row.diem_cuoi_ky,
+        row.diem_tong_ket,
+        row.ket_qua,
+        row.trang_thai,
+      ].join(":")
+    )
+    .join("|");
 
   const columns: ColDef[] = [
     { headerName: "Mã môn", field: "ma_mon", width: 120 },
@@ -2087,7 +2149,7 @@ const OverviewSubjectTable: FC<{ items?: any[] }> = ({ items = [] }) => {
     <div>
       <div style={{ height: rows.length ? Math.min(420, 112 + rows.length * 42) : 220 }} className="w-full">
         <BaseTable
-          key={`overview-${rows.length}`}
+          key={`${tableKeyPrefix}-${tableKey || "empty"}`}
           columns={columns}
           api={async () =>
             ({

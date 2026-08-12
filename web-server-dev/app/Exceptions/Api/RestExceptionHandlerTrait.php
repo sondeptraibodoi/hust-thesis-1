@@ -74,8 +74,9 @@ trait RestExceptionHandlerTrait
                 $response["message"] = trans("response.429");
                 break;
             case 422:
-                $response["message"] = trans("response.422");
-                $response["errors"] = $exception->original["errors"];
+                $original = property_exists($exception, "original") ? $exception->original : null;
+                $response["message"] = $exception->getMessage() ?: trans("response.422");
+                $response["errors"] = is_array($original) && isset($original["errors"]) ? $original["errors"] : [];
                 break;
             case 419:
                 if ($isDebug) {

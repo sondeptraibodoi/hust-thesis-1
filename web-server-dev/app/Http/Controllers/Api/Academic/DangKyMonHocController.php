@@ -223,7 +223,7 @@ class DangKyMonHocController extends Controller
 
     public function cancel(Request $request, $id)
     {
-        $dangKy = DangKyMonHoc::with(['hocKy', 'lopHocPhan.hocKy'])->findOrFail($id);
+        $dangKy = DangKyMonHoc::with(['hocKy', 'lopHocPhan.hocKy', 'bangDiem'])->findOrFail($id);
         $user = $request->user();
 
         abort_unless(
@@ -235,6 +235,7 @@ class DangKyMonHocController extends Controller
         $hocKy = optional($dangKy->lopHocPhan)->hocKy ?? $dangKy->hocKy;
 
         abort_unless($user->vai_tro === RoleCode::ADMIN || optional($hocKy)->dang_mo_dang_ky, 422, 'Hoc ky da dong dang ky.');
+        abort_if($this->registrationHasAnyGrade($dangKy), 422, 'Mon hoc da co bang diem, khong the huy dang ky.');
 
         $dangKy->update([
             'trang_thai' => 'da_huy',
@@ -242,6 +243,18 @@ class DangKyMonHocController extends Controller
         ]);
 
         return $this->responseUpdated($dangKy->fresh(['hocKy', 'monHoc', 'lopHocPhan.monHoc']));
+    }
+
+    private function registrationHasAnyGrade(DangKyMonHoc $dangKy): bool
+    {
+        $bangDiem = $dangKy->bangDiem;
+
+        if (!$bangDiem) {
+            return false;
+        }
+
+        return collect(['diem_chuyen_can', 'diem_giua_ky', 'diem_cuoi_ky', 'diem_tong_ket', 'diem_chu'])
+            ->contains(fn ($field) => $bangDiem->{$field} !== null && $bangDiem->{$field} !== '');
     }
 
     private function ensureClassHasCapacity(LopHocPhan $lopHocPhan, ?int $exceptDangKyId = null): void

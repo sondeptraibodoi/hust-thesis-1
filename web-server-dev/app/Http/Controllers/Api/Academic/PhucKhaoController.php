@@ -59,7 +59,7 @@ class PhucKhaoController extends Controller
 
         abort_unless($bangDiem->sinh_vien_id === optional($user->sinhVien)->id, 403, 'Khong co quyen phuc khao bang diem nay.');
         abort_unless($bangDiem->trang_thai === 'da_chot', 422, 'Bang diem chua duoc cong bo.');
-        abort_unless($bangDiem->lopHocPhan->hocKy->dang_mo_phuc_khao, 422, 'Hoc ky chua mo phuc khao.');
+        abort_unless($bangDiem->lopHocPhan->hocKy->dang_mo_phuc_khao, 422, 'Học kỳ chưa mở phúc khảo.');
 
         $phucKhao = PhucKhao::create([
             'bang_diem_id' => $bangDiem->id,
