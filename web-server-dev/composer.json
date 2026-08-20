@@ -56,6 +56,23 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
+        "policy": {
+            "advisories": {
+                "block": false,
+                "ignore": {
+                    "dompdf/dompdf": {
+                        "constraint": "^2.0.7",
+                        "on-audit": false,
+                        "reason": "Temporary local-dev unblock for Laravel 8 compatibility"
+                    },
+                    "spatie/laravel-medialibrary": {
+                        "constraint": "9.0.0",
+                        "on-audit": false,
+                        "reason": "Temporary local-dev unblock for Laravel 8 compatibility"
+                    }
+                }
+            }
+        },
         "sort-packages": true
     },
     "extra": {
